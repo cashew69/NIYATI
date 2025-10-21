@@ -323,3 +323,4 @@ GLint getUniformLocation(ShaderProgram* program, const char* name) {
     }
     return location;
 }
+

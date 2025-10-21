@@ -49,3 +49,9 @@ typedef struct {
     int shaderCount;
 } ShaderProgram;
 
+typedef struct {
+    GLint location;
+    ShaderProgram program;
+    char *varInShader;
+    int count;
+} Uniform;

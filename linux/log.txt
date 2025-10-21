@@ -5,8 +5,8 @@ got GLX Context 4.6
 OPENGL INFORMATION
 ******************
 OpenGL Vendor : AMD
-OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, LLVM 20.1.8, DRM 3.64, 6.16.8-arch3-1)
-OpenGL Version : 4.6 (Core Profile) Mesa 25.2.3-arch1.2
+OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, LLVM 20.1.8, DRM 3.64, 6.17.3-3-cachyos)
+OpenGL Version : 4.6 (Core Profile) Mesa 25.2.5-cachyos1.2
 GLSL Version : 4.60
 Total number of OpenGL Extensions : 236
 GL_AMD_conservative_depth 
