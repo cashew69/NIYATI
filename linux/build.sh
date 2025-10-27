@@ -1,1 +1,1 @@
-g++ core/gl/window.cpp -lGL -lX11 -lGLEW
+g++ window.cpp -lGL -lX11 -lGLEW -lassimp
