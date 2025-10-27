@@ -1,7 +1,3 @@
-// Extended Model Loading with Material Support
-// This file includes complete material loading from Assimp
-
-// Attribute indices (from your shaders.c)
 enum {
     ATTRIB_POSITION = 0,
     ATTRIB_NORMAL = 1,
@@ -9,7 +5,6 @@ enum {
     ATTRIB_TEXCOORD = 3
 };
 
-// Helper function to extract directory from filepath
 const char* getDirectoryFromPath(const char* filepath) {
     static char dir[512];
     const char* lastSlash = strrchr(filepath, '/');
@@ -23,7 +18,6 @@ const char* getDirectoryFromPath(const char* filepath) {
     }
     return ".";
 }
-
 
 void setMaterialUniforms(ShaderProgram* program, Material* material) {
     GLint isEmissiveLoc = getUniformLocation(program, "uIsEmissive");
@@ -59,7 +53,6 @@ void setMaterialUniforms(ShaderProgram* program, Material* material) {
         }
     }
 
-    // Handle transparency
     if (material->opacity < 1.0f) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -68,7 +61,6 @@ void setMaterialUniforms(ShaderProgram* program, Material* material) {
     }
 }
 
-// Function to create VAO and VBOs for a model
 Bool createVAO_VBO(GLuint* vao, GLuint* vbo_position, GLuint* vbo_normal, GLuint* vbo_color, 
                    GLuint* vbo_texcoord, GLuint* ibo, const ModelVertexData* data) {
     if (!vao || !vbo_position || !data || data->vertexCount == 0) {
@@ -121,35 +113,29 @@ Bool createVAO_VBO(GLuint* vao, GLuint* vbo_position, GLuint* vbo_normal, GLuint
     return True;
 }
 
-// Helper function to load material from Assimp
 void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, const char* modelDirectory) {
-    // Extract diffuse color
-     aiColor4D diffuse;
+    aiColor4D diffuse;
     if (aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_DIFFUSE, &diffuse) == AI_SUCCESS) {
         material->diffuseColor[0] = diffuse.r;
         material->diffuseColor[1] = diffuse.g;
         material->diffuseColor[2] = diffuse.b;
     } else {
-        // Default diffuse color
         material->diffuseColor[0] = 0.8f;
         material->diffuseColor[1] = 0.8f;
         material->diffuseColor[2] = 0.8f;
     }
 
-    // Extract specular color
-     aiColor4D specular;
+    aiColor4D specular;
     if (aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_SPECULAR, &specular) == AI_SUCCESS) {
         material->specularColor[0] = specular.r;
         material->specularColor[1] = specular.g;
         material->specularColor[2] = specular.b;
     } else {
-        // Default specular color
         material->specularColor[0] = 1.0f;
         material->specularColor[1] = 1.0f;
         material->specularColor[2] = 1.0f;
     }
 
-    // Extract shininess
     float shininess;
     if (aiGetMaterialFloat(aiMat, AI_MATKEY_SHININESS, &shininess) == AI_SUCCESS) {
         material->shininess = shininess;
@@ -157,7 +143,6 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
         material->shininess = 32.0f;
     }
 
-    // Extract opacity
     float opacity;
     if (aiGetMaterialFloat(aiMat, AI_MATKEY_OPACITY, &opacity) == AI_SUCCESS) {
         material->opacity = opacity;
@@ -165,16 +150,13 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
         material->opacity = 1.0f;
     }
 
-    // Check if material is emissive
-     aiColor4D emissive;
+    aiColor4D emissive;
     if (aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_EMISSIVE, &emissive) == AI_SUCCESS) {
-        // If any emissive component is non-zero
         material->isEmissive = (emissive.r > 0.01f || emissive.g > 0.01f || emissive.b > 0.01f);
     } else {
         material->isEmissive = False;
     }
 
-    // Load diffuse texture
     aiString texPath;
     if (aiGetMaterialTexture(aiMat, aiTextureType_DIFFUSE, 0, &texPath, NULL, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
         char fullPath[512];
@@ -185,14 +167,12 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
         material->diffuseTexture = 0;
     }
 
-    // Load normal texture
     if (aiGetMaterialTexture(aiMat, aiTextureType_NORMALS, 0, &texPath, NULL, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
         char fullPath[512];
         snprintf(fullPath, sizeof(fullPath), "%s/%s", modelDirectory, texPath.data);
         material->normalTexture = loadGLTexture(fullPath);
         fprintf(gpFile, "Loaded normal texture: %s\n", fullPath);
     } else {
-        // Try height map as alternative for normal map
         if (aiGetMaterialTexture(aiMat, aiTextureType_HEIGHT, 0, &texPath, NULL, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
             char fullPath[512];
             snprintf(fullPath, sizeof(fullPath), "%s/%s", modelDirectory, texPath.data);
@@ -204,14 +184,90 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
     }
 }
 
-// Function to load a model using Assimp with full material support
+Mesh* createMesh(const ModelVertexData* data, const Material* material) {
+    if (!data || data->vertexCount == 0) {
+        fprintf(gpFile, "Error: Invalid vertex data for mesh creation\n");
+        return NULL;
+    }
+
+    Mesh* mesh = (Mesh*)calloc(1, sizeof(Mesh));
+    if (!mesh) {
+        fprintf(gpFile, "Error: Failed to allocate memory for mesh\n");
+        return NULL;
+    }
+
+    if (!createVAO_VBO(&mesh->vao, &mesh->vbo_position, &mesh->vbo_normal,
+                       &mesh->vbo_color, &mesh->vbo_texcoord, &mesh->ibo, data)) {
+        fprintf(gpFile, "Error: Failed to create VAO/VBO for mesh\n");
+        free(mesh);
+        return NULL;
+    }
+
+    mesh->indexCount = data->indexCount;
+
+    if (material) {
+        memcpy(mesh->material.diffuseColor, material->diffuseColor, sizeof(float) * 3);
+        memcpy(mesh->material.specularColor, material->specularColor, sizeof(float) * 3);
+        mesh->material.shininess = material->shininess;
+        mesh->material.opacity = material->opacity;
+        mesh->material.isEmissive = material->isEmissive;
+        mesh->material.diffuseTexture = material->diffuseTexture;
+        mesh->material.normalTexture = material->normalTexture;
+    } else {
+        mesh->material.diffuseColor[0] = 0.8f;
+        mesh->material.diffuseColor[1] = 0.8f;
+        mesh->material.diffuseColor[2] = 0.8f;
+        mesh->material.specularColor[0] = 1.0f;
+        mesh->material.specularColor[1] = 1.0f;
+        mesh->material.specularColor[2] = 1.0f;
+        mesh->material.shininess = 32.0f;
+        mesh->material.opacity = 1.0f;
+        mesh->material.isEmissive = False;
+        mesh->material.diffuseTexture = 0;
+        mesh->material.normalTexture = 0;
+    }
+
+    for (int j = 0; j < 16; j++) {
+        mesh->modelMatrix[j] = (j % 5 == 0) ? 1.0f : 0.0f;
+    }
+
+    mesh->userFragmentCode = NULL;
+
+    fprintf(gpFile, "Mesh created: %zu indices\n", mesh->indexCount);
+    return mesh;
+}
+
+void freeMesh(Mesh* mesh) {
+    if (!mesh) return;
+
+    if (mesh->material.diffuseTexture) {
+        glDeleteTextures(1, &mesh->material.diffuseTexture);
+    }
+    if (mesh->material.normalTexture) {
+        glDeleteTextures(1, &mesh->material.normalTexture);
+    }
+
+    if (mesh->userFragmentCode) {
+        free(mesh->userFragmentCode);
+    }
+
+    glDeleteVertexArrays(1, &mesh->vao);
+    glDeleteBuffers(1, &mesh->vbo_position);
+    if (mesh->vbo_normal) glDeleteBuffers(1, &mesh->vbo_normal);
+    if (mesh->vbo_color) glDeleteBuffers(1, &mesh->vbo_color);
+    if (mesh->vbo_texcoord) glDeleteBuffers(1, &mesh->vbo_texcoord);
+    if (mesh->ibo) glDeleteBuffers(1, &mesh->ibo);
+
+    free(mesh);
+}
+
 Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale) {
     const struct aiScene* scene = aiImportFile(filename, 
         aiProcess_Triangulate | 
         aiProcess_GenNormals | 
         aiProcess_FlipUVs | 
         aiProcess_JoinIdenticalVertices |
-        aiProcess_CalcTangentSpace);  // Added for normal mapping
+        aiProcess_CalcTangentSpace);
     
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         fprintf(gpFile, "Error: Failed to load model %s: %s\n", filename, aiGetErrorString());
@@ -220,7 +276,6 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
 
     fprintf(gpFile, "Loading model: %s\n", filename);
     fprintf(gpFile, "Number of meshes: %d\n", scene->mNumMeshes);
-    fprintf(gpFile, "Number of materials: %d\n", scene->mNumMaterials);
 
     *meshCount = scene->mNumMeshes;
     *meshes = (Mesh*)calloc(*meshCount, sizeof(Mesh));
@@ -230,17 +285,12 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
         return False;
     }
 
-    // Get model directory for texture loading
     const char* modelDir = getDirectoryFromPath(filename);
 
     for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
         struct aiMesh* aiMesh = scene->mMeshes[i];
         ModelVertexData data = {0};
 
-        fprintf(gpFile, "Processing mesh %d: %d vertices, %d faces\n", 
-                i, aiMesh->mNumVertices, aiMesh->mNumFaces);
-
-        // Extract vertex positions
         data.vertexCount = aiMesh->mNumVertices;
         data.positions = (float*)malloc(data.vertexCount * 3 * sizeof(float));
         
@@ -250,7 +300,6 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
             data.positions[v * 3 + 2] = aiMesh->mVertices[v].z * scale;
         }
 
-        // Extract normals
         if (aiMesh->mNormals) {
             data.normals = (float*)malloc(data.vertexCount * 3 * sizeof(float));
             for (unsigned int v = 0; v < aiMesh->mNumVertices; v++) {
@@ -260,7 +309,6 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
             }
         }
 
-        // Extract texture coordinates
         if (aiMesh->mTextureCoords[0]) {
             data.texCoords = (float*)malloc(data.vertexCount * 2 * sizeof(float));
             for (unsigned int v = 0; v < aiMesh->mNumVertices; v++) {
@@ -269,7 +317,6 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
             }
         }
 
-        // Extract vertex colors (if available)
         if (aiMesh->mColors[0]) {
             data.colors = (float*)malloc(data.vertexCount * 3 * sizeof(float));
             for (unsigned int v = 0; v < aiMesh->mNumVertices; v++) {
@@ -279,7 +326,6 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
             }
         }
 
-        // Extract indices
         if (aiMesh->mNumFaces > 0) {
             data.indexCount = aiMesh->mNumFaces * 3;
             data.indices = (unsigned int*)malloc(data.indexCount * sizeof(unsigned int));
@@ -291,39 +337,31 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
             }
         }
 
-        // Create OpenGL buffers
+        Material material = {0};
+        if (aiMesh->mMaterialIndex >= 0 && aiMesh->mMaterialIndex < scene->mNumMaterials) {
+            struct aiMaterial* aiMat = scene->mMaterials[aiMesh->mMaterialIndex];
+            loadMaterialFromAssimp(&material, aiMat, modelDir);
+        }
+
         createVAO_VBO(&(*meshes)[i].vao, &(*meshes)[i].vbo_position, &(*meshes)[i].vbo_normal,
                       &(*meshes)[i].vbo_color, &(*meshes)[i].vbo_texcoord, &(*meshes)[i].ibo, &data);
         
         (*meshes)[i].indexCount = data.indexCount;
         
-        // Load material from Assimp
-        if (aiMesh->mMaterialIndex >= 0 && aiMesh->mMaterialIndex < scene->mNumMaterials) {
-            struct aiMaterial* aiMat = scene->mMaterials[aiMesh->mMaterialIndex];
-            loadMaterialFromAssimp(&(*meshes)[i].material, aiMat, modelDir);
-            fprintf(gpFile, "Loaded material for mesh %d\n", i);
-        } else {
-            // Set default material if none exists
-            fprintf(gpFile, "Using default material for mesh %d\n", i);
-            (*meshes)[i].material.diffuseColor[0] = 0.8f;
-            (*meshes)[i].material.diffuseColor[1] = 0.8f;
-            (*meshes)[i].material.diffuseColor[2] = 0.8f;
-            (*meshes)[i].material.specularColor[0] = 1.0f;
-            (*meshes)[i].material.specularColor[1] = 1.0f;
-            (*meshes)[i].material.specularColor[2] = 1.0f;
-            (*meshes)[i].material.shininess = 32.0f;
-            (*meshes)[i].material.opacity = 1.0f;
-            (*meshes)[i].material.isEmissive = False;
-            (*meshes)[i].material.diffuseTexture = 0;
-            (*meshes)[i].material.normalTexture = 0;
-        }
+        memcpy((*meshes)[i].material.diffuseColor, material.diffuseColor, sizeof(float) * 3);
+        memcpy((*meshes)[i].material.specularColor, material.specularColor, sizeof(float) * 3);
+        (*meshes)[i].material.shininess = material.shininess;
+        (*meshes)[i].material.opacity = material.opacity;
+        (*meshes)[i].material.isEmissive = material.isEmissive;
+        (*meshes)[i].material.diffuseTexture = material.diffuseTexture;
+        (*meshes)[i].material.normalTexture = material.normalTexture;
         
-        // Initialize identity matrix
         for (int j = 0; j < 16; j++) {
             (*meshes)[i].modelMatrix[j] = (j % 5 == 0) ? 1.0f : 0.0f;
         }
+        
+        (*meshes)[i].userFragmentCode = NULL;
 
-        // Free temporary vertex data
         free(data.positions);
         if (data.normals) free(data.normals);
         if (data.colors) free(data.colors);
@@ -336,10 +374,10 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
     return True;
 }
 
-// Function to free a loaded model (with texture cleanup)
 void freeModel(Mesh* meshes, int meshCount) {
+    if (!meshes) return;
+    
     for (int i = 0; i < meshCount; i++) {
-        // Delete textures
         if (meshes[i].material.diffuseTexture) {
             glDeleteTextures(1, &meshes[i].material.diffuseTexture);
         }
@@ -347,12 +385,10 @@ void freeModel(Mesh* meshes, int meshCount) {
             glDeleteTextures(1, &meshes[i].material.normalTexture);
         }
         
-        // Free user fragment code if allocated
         if (meshes[i].userFragmentCode) {
             free(meshes[i].userFragmentCode);
         }
         
-        // Delete OpenGL buffers
         glDeleteVertexArrays(1, &meshes[i].vao);
         glDeleteBuffers(1, &meshes[i].vbo_position);
         if (meshes[i].vbo_normal) glDeleteBuffers(1, &meshes[i].vbo_normal);

@@ -24,7 +24,7 @@ using namespace vmath;
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "structs.h"
+#include "core/gl/structs.h"
 
 // Global scene data
 ShaderProgram* mainShaderProgram = NULL;
@@ -39,7 +39,12 @@ int meshCount = 0;
 char gszLogFileName[] = "log.txt";
 FILE *gpFile = NULL;
 
-#include "shaders.cpp"
-#include "texture.cpp"
-#include "modelloading.cpp"
-#include "renderer.cpp"
+Mesh* terrainMesh = NULL;
+
+#include "core/gl/shaders.cpp"
+#include "core/gl/texture.cpp"
+#include "core/gl/modelloading.cpp"
+#include "core/gl/renderer.cpp"
+#include "engine/perlin/perlin.c"
+#include "user/terrain.cpp"
+

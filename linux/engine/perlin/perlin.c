@@ -1,4 +1,4 @@
-
+#include "perlin.h"
 
 #define PERLINGRID 50
 
@@ -10,35 +10,36 @@ int hash(int x, int z)
     return h ^ (h >> 16);                 
 }
 
-vec2 getDistanceVector(vec2 corner, vec2 point)
+vec2_perlin getDistanceVector(vec2_perlin corner, vec2_perlin point)
 {
-    vec2 distanceVec;
+    vec2_perlin distanceVec;
     distanceVec.x = point.x - corner.x;
     distanceVec.z = point.z - corner.z;
     return distanceVec;
 }
 
-float dotproduct(vec2 a, vec2 b)
+float dotproduct(vec2_perlin a, vec2_perlin b)
 {
-    return (a.x * b.x) + (a.z * b.z) ;
+    return (a.x * b.x) + (a.z * b.z);
 }
 
 float lerp(float a, float b, float t)  
 {
     return a + (b - a) * t;
 }
-float smootherstep(t) 
+
+float smootherstep(float t) 
 {
-    return t × t × t × (t × (t × 6 - 15) + 10);
+    return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-vec2 getGradient(int x, int z) 
+vec2_perlin getGradient(int x, int z) 
 {
     int hashedValue = hash(x, z);
     
     int direction = hashedValue & 3;  // Gets value 0, 1, 2, or 3
     
-    vec2 gradient;
+    vec2_perlin gradient;
     
     if (direction == 0) {
         gradient.x = 1.0;
@@ -70,29 +71,29 @@ float perlinNoise(float x, float z)
     int z1 = z0 + 1;
     
     // Step 2: Get gradients at INTEGER grid corners
-    vec2 grad00 = getGradient(x0, z0); 
-    vec2 grad10 = getGradient(x1, z0);
-    vec2 grad01 = getGradient(x0, z1);
-    vec2 grad11 = getGradient(x1, z1);
+    vec2_perlin grad00 = getGradient(x0, z0); 
+    vec2_perlin grad10 = getGradient(x1, z0);
+    vec2_perlin grad01 = getGradient(x0, z1);
+    vec2_perlin grad11 = getGradient(x1, z1);
     
     // Step 3: Calculate position within cell 
     float dx = x - x0;
     float dz = z - z0;
     
     // Step 4: Calculate distance vectors from each corner to sample point
-    vec2 dist00;
+    vec2_perlin dist00;
     dist00.x = dx;  
     dist00.z = dz; 
     
-    vec2 dist10;
+    vec2_perlin dist10;
     dist10.x = dx - 1; 
     dist10.z = dz;
     
-    vec2 dist01;
+    vec2_perlin dist01;
     dist01.x = dx;
     dist01.z = dz - 1;
     
-    vec2 dist11;
+    vec2_perlin dist11;
     dist11.x = dx - 1;
     dist11.z = dz - 1;
     
@@ -115,6 +116,8 @@ float perlinNoise(float x, float z)
     
     // Interpolate vertically between bottom and top
     float result = lerp(lerpBottom, lerpTop, v);
+
+    printf("%f\n", result);
     
     return result;
 }

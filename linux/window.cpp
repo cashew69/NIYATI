@@ -1,4 +1,5 @@
-#include "core/gl/common.h"
+#include "common.h"
+//#include "user/terrain.cpp"
 
 
 // Macros
@@ -411,8 +412,10 @@ int initialize(void)
 	printGLInfo();
 
     // Load shader source from files
-    const GLchar* vertexShaderSource = readShaderFile("core/shaders/main_vs.glsl");
-    const GLchar* fragmentShaderSource = readShaderFile("core/shaders/main_fs[lambart].glsl");
+    //const GLchar* vertexShaderSource = readShaderFile("core/shaders/main_vs.glsl");
+    const GLchar* vertexShaderSource = readShaderFile("user/svs.glsl");
+    //const GLchar* fragmentShaderSource = readShaderFile("core/shaders/main_fs[lambart].glsl");
+    const GLchar* fragmentShaderSource = readShaderFile("user/sfs.glsl");
 
 
     if (!vertexShaderSource || !fragmentShaderSource)
@@ -457,6 +460,8 @@ int initialize(void)
     //buildShaderProgram(ShaderSources, types, 2, &program, attribs, indices, 4);
     //free(ShaderSources);
 
+    // Terrian
+    terrainMesh = createTerrainMesh();
 
 	// Depth Related Code
 	glClearDepth(1.0f);
@@ -610,7 +615,11 @@ void uninitialize(void)
 		glDeleteProgram(iShaderProgramObject);
 		iShaderProgramObject = 0;
 	}*/
-
+    // In your cleanup function
+    /*if (terrainMesh) {
+    freeMesh(terrainMesh);
+    terrainMesh = NULL;
+    }*/
 
     GLXContext currentContext = glXGetCurrentContext();
     if (currentContext && currentContext == glxContext)

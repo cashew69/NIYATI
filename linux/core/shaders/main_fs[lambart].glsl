@@ -12,7 +12,6 @@ uniform vec3 uDiffuseColor;
 uniform vec3 uSpecularColor;
 uniform float uShininess;
 
-// Add these
 uniform bool uHasDiffuseTexture;
 uniform sampler2D uDiffuseTexture;
 

@@ -2,6 +2,6 @@ typedef struct
 {
     float x;
     float z;
-} vec2;
+} vec2_perlin;
 
 
