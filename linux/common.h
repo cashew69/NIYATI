@@ -39,6 +39,14 @@ int meshCount = 0;
 char gszLogFileName[] = "log.txt";
 FILE *gpFile = NULL;
 
+// Global Uniform Variables
+GLint projLocUniform;
+GLint viewLocUniform;
+GLint modelLocUniform;
+GLint lightPosLocUniform;
+GLint lightColorLocUniform;
+GLint viewPosLocUniform;
+
 Mesh* terrainMesh = NULL;
 
 #include "core/gl/shaders.cpp"
@@ -47,4 +55,5 @@ Mesh* terrainMesh = NULL;
 #include "core/gl/renderer.cpp"
 #include "engine/perlin/perlin.c"
 #include "user/terrain.cpp"
+//#include "inputhandler.c"
 

@@ -117,7 +117,6 @@ float perlinNoise(float x, float z)
     // Interpolate vertically between bottom and top
     float result = lerp(lerpBottom, lerpTop, v);
 
-    printf("%f\n", result);
     
     return result;
 }

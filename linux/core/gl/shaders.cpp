@@ -19,10 +19,9 @@ void freeThyShaderProgram(ShaderProgram* program) {
     }
 }
 
-// function to read shader source from a file
 char* readShaderFile(const char* filename)
 {
-    FILE* file = fopen(filename, "rb"); // Binary mode to avoid newline issues
+    FILE* file = fopen(filename, "r"); // https://man7.org/linux/man-pages/man3/fopen.3.html
     if (!file)
     {
         fprintf(gpFile, "Failed to open shader file: %s (Error: %s)\n", filename, strerror(errno));
@@ -49,10 +48,9 @@ char* readShaderFile(const char* filename)
         fclose(file);
         return NULL;
     }
-    rewind(file); // Reset to start of file
+    rewind(file); 
 
-    // Allocate memory for shader source (including null terminator)
-    char* shaderSource = (char*)malloc(fileSize + 1);
+    char* shaderSource = (char*)malloc(fileSize + 1); // +1 for null terminator babes
     if (!shaderSource)
     {
         fprintf(gpFile, "Memory allocation failed for shader file: %s (Size: %ld bytes)\n", filename, fileSize);
@@ -60,7 +58,6 @@ char* readShaderFile(const char* filename)
         return NULL;
     }
 
-    // Read file contents
     size_t bytesRead = fread(shaderSource, 1, fileSize, file);
     shaderSource[bytesRead] = '\0'; // Null-terminate the string
 
@@ -68,7 +65,8 @@ char* readShaderFile(const char* filename)
     {
         fprintf(gpFile, "Failed to read entire shader file: %s (Expected: %ld bytes, Read: %zu bytes)\n", 
                 filename, fileSize, bytesRead);
-        // Log first few characters (if any) to check for content issues
+
+        // Logging first few characters (if any) to check for content issues
         if (bytesRead > 0)
         {
             fprintf(gpFile, "First %zu bytes of %s: '%.10s'\n", bytesRead, filename, shaderSource);

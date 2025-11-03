@@ -462,6 +462,7 @@ int initialize(void)
 
     // Terrian
     terrainMesh = createTerrainMesh();
+    setUniforms();
 
 	// Depth Related Code
 	glClearDepth(1.0f);
