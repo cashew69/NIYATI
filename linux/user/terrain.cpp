@@ -71,7 +71,7 @@ Mesh* createTerrainMesh() {
                 perlinNoise(x * TERRAIN_SCALE, (z + 1) * TERRAIN_SCALE) * TERRAIN_HEIGHT : 
                 perlinNoise(x * TERRAIN_SCALE, z * TERRAIN_SCALE) * TERRAIN_HEIGHT;
             
-            // Calculate normal using cross product
+            // normal using cross product
             float nx = heightL - heightR;
             float ny = 2.0f;  // Scale factor for smoothness
             float nz = heightD - heightU;
@@ -83,7 +83,6 @@ Mesh* createTerrainMesh() {
                 normals[normIndex++] = ny / length;
                 normals[normIndex++] = nz / length;
             } else {
-                // Fallback to up vector if normal is degenerate
                 normals[normIndex++] = 0.0f;
                 normals[normIndex++] = 1.0f;
                 normals[normIndex++] = 0.0f;
@@ -95,7 +94,7 @@ Mesh* createTerrainMesh() {
     int indIndex = 0;
     for (int z = 0; z < TERRAIN_DEPTH - 1; z++) {
         for (int x = 0; x < TERRAIN_WIDTH - 1; x++) {
-            // Calculate vertex indices for quad corners
+            // vertex indices for quad corners
             int topLeft = z * TERRAIN_WIDTH + x;
             int topRight = topLeft + 1;
             int bottomLeft = (z + 1) * TERRAIN_WIDTH + x;
@@ -156,4 +155,23 @@ Mesh* createTerrainMesh() {
     return terrain;
 }
 
+void renderTerrain()
+{
+// RENDER TERRAIN MESH
+        if (terrainMesh != NULL) {
+            mat4 modelMatrix = mat4::identity(); // Terrain at origin
+            
+            if (modelLocUniform != -1) {
+                glUniformMatrix4fv(modelLocUniform, 1, GL_FALSE, modelMatrix);
+            }
+            
+            glBindVertexArray(terrainMesh->vao);
+            
+            if (terrainMesh->ibo && terrainMesh->indexCount > 0) {
+                glDrawElements(GL_TRIANGLES, terrainMesh->indexCount, GL_UNSIGNED_INT, NULL);
+            }
+            
+            glBindVertexArray(0);
+        }
 
+}

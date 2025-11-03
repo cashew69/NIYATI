@@ -44,6 +44,8 @@ void renderer(float rotationAngle) {
             
             glBindVertexArray(0);
         }
+
+        renderUserMeshes();
         
        
         glUseProgram(0);

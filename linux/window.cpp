@@ -449,10 +449,10 @@ int initialize(void)
     }
 
     // Load model
-    if (!loadModel("user/models/model.fbx", &sceneMeshes, &meshCount, 1.0f)) {
+    /*if (!loadModel("user/models/model.fbx", &sceneMeshes, &meshCount, 1.0f)) {
         fprintf(gpFile, "Failed to load model\n");
         // Continue without model for now
-    }
+    }*/
 
     //GLenum types = {GL_VERTEX, GL_FRAGMENT_SHADER};
     const char* attribs[] = {"aPosition", "aNormal", "aColor", "aTexCoord"};
@@ -476,8 +476,8 @@ int initialize(void)
 	glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 	
     perspectiveProjectionMatrix = mat4::identity();
-    viewMatrix = vmath::lookat(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-
+    //viewMatrix = vmath::lookat(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    viewMatrix = vmath::lookat(vec3(0.0f, 50.0f, 150.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	// Warmup Resize means dummy resize
 	resize(winwidth, winheight);
 
