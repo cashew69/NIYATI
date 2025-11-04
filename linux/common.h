@@ -46,6 +46,7 @@ GLint modelLocUniform;
 GLint lightPosLocUniform;
 GLint lightColorLocUniform;
 GLint viewPosLocUniform;
+GLint colorTextureLocUniform;
 
 Mesh* terrainMesh = NULL;
 

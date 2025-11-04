@@ -247,13 +247,11 @@ GL_OES_EGL_image
 GL_S3_s3tc 
 +++++ (null) +++++ 
 ******************
-Successfully read shader file: user/svs.glsl
-Successfully read shader file: user/sfs.glsl
+Successfully read shader file: core/shaders/main_vs.glsl
+Successfully read shader file: core/shaders/main_fs[lambart].glsl
 Shader Program Linked Successfully
+Warning: Uniform 'uColorTexture' not found in program
 Generating terrain mesh...
 Mesh created: 237606 indices
 Terrain mesh created successfully: 40000 vertices, 237606 indices
-Warning: Uniform 'uLightPos' not found in program
-Warning: Uniform 'uLightColor' not found in program
-Warning: Uniform 'uViewPos' not found in program
 initialize() SUCCEEDED

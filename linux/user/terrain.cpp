@@ -136,6 +136,9 @@ Mesh* createTerrainMesh() {
     material.diffuseTexture = 0;
     material.normalTexture = 0;
     
+    loadPNGTexture(&material.diffuseTexture, const_cast<char*>("brainUV.png"), 4,0);
+
+    //setMaterialUniforms(mainShaderProgram, &material);
     // USE GENERIC MESH CREATION
     Mesh* terrain = createMesh(&data, &material);
     

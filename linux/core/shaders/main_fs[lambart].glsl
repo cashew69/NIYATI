@@ -14,6 +14,7 @@ uniform float uShininess;
 
 uniform bool uHasDiffuseTexture;
 uniform sampler2D uDiffuseTexture;
+uniform sampler2D uColorTexture;
 
 void main() {
     // Ambient
@@ -39,5 +40,5 @@ void main() {
     vec3 specular = spec * uLightColor * uSpecularColor;
     
     vec3 result = ambient + diffuse + specular;
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result , 1.0);
 }

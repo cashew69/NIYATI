@@ -7,6 +7,7 @@ void setUniforms()
         lightPosLocUniform = getUniformLocation(mainShaderProgram, "uLightPos");
         lightColorLocUniform = getUniformLocation(mainShaderProgram, "uLightColor");
         viewPosLocUniform = getUniformLocation(mainShaderProgram, "uViewPos");
+        colorTextureLocUniform = getUniformLocation(mainShaderProgram, "uColorTexture");
 }
   
 
@@ -26,6 +27,8 @@ void renderer(float rotationAngle) {
         if (lightPosLocUniform != -1) glUniform3fv(lightPosLocUniform, 1, lightPos);
         if (lightColorLocUniform != -1) glUniform3fv(lightColorLocUniform, 1, lightColor);
         if (viewPosLocUniform != -1) glUniform3fv(viewPosLocUniform, 1, viewPos);
+
+        if (colorTextureLocUniform != -1) glUniform1i(colorTextureLocUniform, 2);
         
         // Render existing model meshes
         for (int i = 0; i < meshCount; i++) {

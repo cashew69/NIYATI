@@ -412,10 +412,10 @@ int initialize(void)
 	printGLInfo();
 
     // Load shader source from files
-    //const GLchar* vertexShaderSource = readShaderFile("core/shaders/main_vs.glsl");
-    const GLchar* vertexShaderSource = readShaderFile("user/svs.glsl");
-    //const GLchar* fragmentShaderSource = readShaderFile("core/shaders/main_fs[lambart].glsl");
-    const GLchar* fragmentShaderSource = readShaderFile("user/sfs.glsl");
+    const GLchar* vertexShaderSource = readShaderFile("core/shaders/main_vs.glsl");
+    //const GLchar* vertexShaderSource = readShaderFile("user/svs.glsl");
+    const GLchar* fragmentShaderSource = readShaderFile("core/shaders/main_fs[lambart].glsl");
+    //const GLchar* fragmentShaderSource = readShaderFile("user/sfs.glsl");
 
 
     if (!vertexShaderSource || !fragmentShaderSource)
@@ -461,8 +461,8 @@ int initialize(void)
     //free(ShaderSources);
 
     // Terrian
-    terrainMesh = createTerrainMesh();
     setUniforms();
+    terrainMesh = createTerrainMesh();
 
 	// Depth Related Code
 	glClearDepth(1.0f);
