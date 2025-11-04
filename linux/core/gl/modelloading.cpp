@@ -59,6 +59,7 @@ void setMaterialUniforms(ShaderProgram* program, Material* material) {
     } else {
         glDisable(GL_BLEND);
     }
+
 }
 
 Bool createVAO_VBO(GLuint* vao, GLuint* vbo_position, GLuint* vbo_normal, GLuint* vbo_color, 

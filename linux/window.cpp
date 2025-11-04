@@ -461,8 +461,8 @@ int initialize(void)
     //free(ShaderSources);
 
     // Terrian
-    setUniforms();
     terrainMesh = createTerrainMesh();
+    setUniforms();
 
 	// Depth Related Code
 	glClearDepth(1.0f);

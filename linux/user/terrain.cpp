@@ -137,8 +137,9 @@ Mesh* createTerrainMesh() {
     material.normalTexture = 0;
     
     loadPNGTexture(&material.diffuseTexture, const_cast<char*>("brainUV.png"), 4,0);
+    fprintf(gpFile, "Inside create Terrain Mesh\n");
 
-    //setMaterialUniforms(mainShaderProgram, &material);
+    fprintf(gpFile, "Called setMaterialUniforms\n");
     // USE GENERIC MESH CREATION
     Mesh* terrain = createMesh(&data, &material);
     
@@ -168,6 +169,7 @@ void renderTerrain()
                 glUniformMatrix4fv(modelLocUniform, 1, GL_FALSE, modelMatrix);
             }
             
+            setMaterialUniforms(mainShaderProgram, &terrainMesh->material);
             glBindVertexArray(terrainMesh->vao);
             
             if (terrainMesh->ibo && terrainMesh->indexCount > 0) {
