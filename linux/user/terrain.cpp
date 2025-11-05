@@ -1,10 +1,10 @@
 //#include "../engine/perlin/perlin.c"
 
 // Terrain configuration
-#define TERRAIN_WIDTH 200
-#define TERRAIN_DEPTH 200
-#define TERRAIN_SCALE 0.05f
-#define TERRAIN_HEIGHT 20.0f
+#define TERRAIN_WIDTH 64
+#define TERRAIN_DEPTH 64
+#define VARY_FREQUENCY 0.05f
+#define TERRAIN_HEIGHT 10.0f
 
 // Create terrain mesh using generic mesh creation
 Mesh* createTerrainMesh() {
@@ -36,14 +36,17 @@ Mesh* createTerrainMesh() {
     for (int z = 0; z < TERRAIN_DEPTH; z++) {
         for (int x = 0; x < TERRAIN_WIDTH; x++) {
             // Position - centered around origin
-            positions[posIndex++] = (float)x - TERRAIN_WIDTH / 2.0f;
+            positions[posIndex++] = (float)x*10 - TERRAIN_WIDTH / 2.0f;
+            printf("VALUE: %f  ", positions[posIndex]);
+            printf("INDEX: %d  ", posIndex);
+            printf("X VAL: %f | \n", (float)x);
             
             // Height from Perlin noise
-            float height = perlinNoise(x * TERRAIN_SCALE, z * TERRAIN_SCALE);
+            float height = perlinNoise(x * VARY_FREQUENCY, z * VARY_FREQUENCY);
             height = height * TERRAIN_HEIGHT;
             positions[posIndex++] = height;
             
-            positions[posIndex++] = (float)z - TERRAIN_DEPTH / 2.0f;
+            positions[posIndex++] = (float)z*10 - TERRAIN_DEPTH / 2.0f;
             
             // Texture coordinates
             texCoords[texIndex++] = (float)x / (float)TERRAIN_WIDTH;
@@ -56,20 +59,20 @@ Mesh* createTerrainMesh() {
         for (int x = 0; x < TERRAIN_WIDTH; x++) {
             // Sample nearby heights for normal calculation
             float heightL = (x > 0) ? 
-                perlinNoise((x - 1) * TERRAIN_SCALE, z * TERRAIN_SCALE) * TERRAIN_HEIGHT : 
-                perlinNoise(x * TERRAIN_SCALE, z * TERRAIN_SCALE) * TERRAIN_HEIGHT;
+                perlinNoise((x - 1) * VARY_FREQUENCY, z * VARY_FREQUENCY) * TERRAIN_HEIGHT : 
+                perlinNoise(x * VARY_FREQUENCY, z * VARY_FREQUENCY) * TERRAIN_HEIGHT;
                 
             float heightR = (x < TERRAIN_WIDTH - 1) ? 
-                perlinNoise((x + 1) * TERRAIN_SCALE, z * TERRAIN_SCALE) * TERRAIN_HEIGHT : 
-                perlinNoise(x * TERRAIN_SCALE, z * TERRAIN_SCALE) * TERRAIN_HEIGHT;
+                perlinNoise((x + 1) * VARY_FREQUENCY, z * VARY_FREQUENCY) * TERRAIN_HEIGHT : 
+                perlinNoise(x * VARY_FREQUENCY, z * VARY_FREQUENCY) * TERRAIN_HEIGHT;
                 
             float heightD = (z > 0) ? 
-                perlinNoise(x * TERRAIN_SCALE, (z - 1) * TERRAIN_SCALE) * TERRAIN_HEIGHT : 
-                perlinNoise(x * TERRAIN_SCALE, z * TERRAIN_SCALE) * TERRAIN_HEIGHT;
+                perlinNoise(x * VARY_FREQUENCY, (z - 1) * VARY_FREQUENCY) * TERRAIN_HEIGHT : 
+                perlinNoise(x * VARY_FREQUENCY, z * VARY_FREQUENCY) * TERRAIN_HEIGHT;
                 
             float heightU = (z < TERRAIN_DEPTH - 1) ? 
-                perlinNoise(x * TERRAIN_SCALE, (z + 1) * TERRAIN_SCALE) * TERRAIN_HEIGHT : 
-                perlinNoise(x * TERRAIN_SCALE, z * TERRAIN_SCALE) * TERRAIN_HEIGHT;
+                perlinNoise(x * VARY_FREQUENCY, (z + 1) * VARY_FREQUENCY) * TERRAIN_HEIGHT : 
+                perlinNoise(x * VARY_FREQUENCY, z * VARY_FREQUENCY) * TERRAIN_HEIGHT;
             
             // normal using cross product
             float nx = heightL - heightR;

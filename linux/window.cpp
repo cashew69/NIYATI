@@ -462,13 +462,16 @@ int initialize(void)
 
     // Terrian
     terrainMesh = createTerrainMesh();
+    
+
+    // Set VS uniforms
     setUniforms();
 
 	// Depth Related Code
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
 
 	// From Here onwards OpenGL Starts
@@ -477,7 +480,7 @@ int initialize(void)
 	
     perspectiveProjectionMatrix = mat4::identity();
     //viewMatrix = vmath::lookat(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-    viewMatrix = vmath::lookat(vec3(0.0f, 50.0f, 150.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    viewMatrix = vmath::lookat(vec3(0.0f, 50.0f, 190.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	// Warmup Resize means dummy resize
 	resize(winwidth, winheight);
 
@@ -522,7 +525,7 @@ void resize(int width, int height)
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
 	// Perspective Projection Matrix
-	perspectiveProjectionMatrix = vmath::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	perspectiveProjectionMatrix = vmath::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 10000.0f);
 	
 }
 

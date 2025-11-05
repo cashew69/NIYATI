@@ -20,6 +20,8 @@ const char* getDirectoryFromPath(const char* filepath) {
 }
 
 void setMaterialUniforms(ShaderProgram* program, Material* material) {
+
+    fprintf(gpFile, "In program shaderprog:%d inside setMaterialUni\n", program);
     GLint isEmissiveLoc = getUniformLocation(program, "uIsEmissive");
     if (isEmissiveLoc != -1) glUniform1i(isEmissiveLoc, material->isEmissive);
     GLint diffuseLoc = getUniformLocation(program, "uDiffuseColor");

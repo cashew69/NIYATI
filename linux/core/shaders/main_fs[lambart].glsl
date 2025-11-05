@@ -12,6 +12,11 @@ uniform vec3 uDiffuseColor;
 uniform vec3 uSpecularColor;
 uniform float uShininess;
 
+uniform bool uIsEmissive;
+uniform float uOpacity;
+uniform bool uHasNormalTexture;
+uniform sampler2D uNormalTexture;
+
 uniform bool uHasDiffuseTexture;
 uniform sampler2D uDiffuseTexture;
 uniform sampler2D uColorTexture;
@@ -26,6 +31,11 @@ void main() {
     if (uHasDiffuseTexture) {
         materialDiffuse = texture(uDiffuseTexture, TexCoord).rgb;
     }
+
+    // Emissive
+    // Opacity
+    // Texture based Normals
+    
     
     // Diffuse
     vec3 norm = normalize(Normal);
