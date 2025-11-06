@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(quads, equal_spacing, ccw) in;
+layout(isolines, equal_spacing, ccw) in;
 
 in vec3 tcNormal[];
 in vec2 tcTexCoord[];
@@ -20,29 +20,29 @@ void main(void)
     float v = gl_TessCoord.y;
 
     // Texture Coordinates - Bilinear Interpolation
-    vec2 t0 = tcTexCoord[0];
-    vec2 t1 = tcTexCoord[1];
-    vec2 t2 = tcTexCoord[2];
-    vec2 t3 = tcTexCoord[3];
+    vec2 texCoord00 = tcTexCoord[0]; // bottom-left
+    vec2 texCoord10 = tcTexCoord[1]; // bottom-right
+    vec2 texCoord01 = tcTexCoord[2]; // top-left
+    vec2 texCoord11 = tcTexCoord[3]; // top-right
 
-    //vec2 tx = mix(t0, t1, u);
-    vec2 tx = (t1 - t0) * u + t0;
-    //vec2 ty = mix(t2, t3, u);
-    vec2 ty = (t3 - t2) * u + t2;
-    TexCoord = (ty - tx) * v + tx;
+    vec2 texBottom = mix(texCoord00, texCoord10, u);
+    vec2 texTop = mix(texCoord01, texCoord11, u);
+    TexCoord = mix(texBottom, texTop, v);
 
     // Sample heightmap
-    float height = texture(uHeightMap, TexCoord).y * 64.0 - 0.0;
+    float height = texture(uHeightMap, TexCoord).r * 64.0 - 16.0;
+// Replace texture sampling with forced wave pattern:
+    //float height = 50.0 * sin(TexCoord.x * 3.14159) * sin(TexCoord.y * 3.14159);
 
     // Position Coordinates - Bilinear Interpolation
-    vec4 p0 = gl_in[0].gl_Position;
-    vec4 p1 = gl_in[1].gl_Position;
-    vec4 p2 = gl_in[2].gl_Position;
-    vec4 p3 = gl_in[3].gl_Position;
+    vec4 p00 = gl_in[0].gl_Position; // bottom-left
+    vec4 p10 = gl_in[1].gl_Position; // bottom-right
+    vec4 p01 = gl_in[2].gl_Position; // top-left
+    vec4 p11 = gl_in[3].gl_Position; // top-right
 
-    vec4 pos0 = mix(p0, p1, u);
-    vec4 pos1 = mix(p2, p3, u);
-    vec4 pos = mix(pos0, pos1, v);
+    vec4 pBottom = mix(p00, p10, u);
+    vec4 pTop = mix(p01, p11, u);
+    vec4 pos = mix(pBottom, pTop, v);
 
     // Normal - Bilinear Interpolation
     vec3 n0 = tcNormal[0];

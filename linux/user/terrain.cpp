@@ -189,9 +189,6 @@ void renderTerrain()
 
 
 
-
-
-
 // Plane configuration
 #define PLANE_WIDTH 16
 #define PLANE_DEPTH 16
@@ -223,10 +220,11 @@ Mesh* createTerrainMesh() {
     int idx = 0;
     for (int z = 0; z < PLANE_DEPTH; z++) {
         for (int x = 0; x < PLANE_WIDTH; x++) {
-            // Position - simple grid centered at origin
-            positions[idx * 3 + 0] = (float)x - PLANE_WIDTH / 2.0f;
+            // Position - simple grid centered at origin with spacing
+            float spacing = 10.0f; // Adjust this for terrain size
+            positions[idx * 3 + 0] = (float)x * spacing - (PLANE_WIDTH * spacing) / 2.0f;
             positions[idx * 3 + 1] = 0.0f;
-            positions[idx * 3 + 2] = (float)z - PLANE_DEPTH / 2.0f;
+            positions[idx * 3 + 2] = (float)z * spacing - (PLANE_DEPTH * spacing) / 2.0f;
             
             // Normal pointing up
             normals[idx * 3 + 0] = 0.0f;
@@ -242,20 +240,22 @@ Mesh* createTerrainMesh() {
     }
     
     // Generate indices for quad patches (4 vertices per patch)
+    // IMPORTANT: Order vertices for correct bilinear interpolation
+    // [0]=bottom-left, [1]=bottom-right, [2]=top-left, [3]=top-right
     idx = 0;
     for (int z = 0; z < PLANE_DEPTH - 1; z++) {
         for (int x = 0; x < PLANE_WIDTH - 1; x++) {
-            // Quad vertices (counter-clockwise)
-            int topLeft = z * PLANE_WIDTH + x;
-            int topRight = topLeft + 1;
-            int bottomLeft = (z + 1) * PLANE_WIDTH + x;
+            // Vertex indices for quad corners
+            int bottomLeft = z * PLANE_WIDTH + x;
             int bottomRight = bottomLeft + 1;
+            int topLeft = (z + 1) * PLANE_WIDTH + x;
+            int topRight = topLeft + 1;
             
-            // One quad patch (4 vertices)
-            indices[idx++] = topLeft;
-            indices[idx++] = topRight;
-            indices[idx++] = bottomRight;
-            indices[idx++] = bottomLeft;
+            // Quad patch with correct vertex order for tessellation
+            indices[idx++] = bottomLeft;   // 0: bottom-left
+            indices[idx++] = bottomRight;  // 1: bottom-right
+            indices[idx++] = topLeft;      // 2: top-left
+            indices[idx++] = topRight;     // 3: top-right
         }
     }
     
@@ -283,8 +283,10 @@ Mesh* createTerrainMesh() {
     material.diffuseTexture = 0;
     material.normalTexture = 0;
     
+    // Note: Heightmap should be loaded separately and bound in display()
+    // This is just for the diffuse/color texture
     loadPNGTexture(&material.diffuseTexture, const_cast<char*>("brainUV.png"), 3, 0);
-    fprintf(gpFile, "Loaded heightmap texture\n");
+    fprintf(gpFile, "Loaded diffuse texture\n");
     
     // Create mesh
     Mesh* plane = createMesh(&data, &material);
@@ -305,7 +307,7 @@ Mesh* createTerrainMesh() {
     return plane;
 }
 
-void renderTerrain() {
+void renderTerrain(GLint HeightMap) {
     // Render 16x16 grid with tessellation
     if (terrainMesh != NULL) {
         mat4 modelMatrix = mat4::identity();
@@ -315,6 +317,17 @@ void renderTerrain() {
         }
         
         setMaterialUniforms(mainShaderProgram, &terrainMesh->material);
+        
+        GLint heightLoc = getUniformLocation(mainShaderProgram, "uHeightMap");
+        if (heightLoc != -1) {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, HeightMap);
+            glUniform1i(heightLoc, 3);
+            fprintf(gpFile, "Heightmap bound: ID=%u, Loc=%d\n", HeightMap, heightLoc);
+        }
+
+
+
         glBindVertexArray(terrainMesh->vao);
         
         if (terrainMesh->ibo && terrainMesh->indexCount > 0) {

@@ -22,6 +22,13 @@ uniform sampler2D uDiffuseTexture;
 uniform sampler2D uColorTexture;
 
 void main() {
+
+    // Debug: visualize height
+    float h = (FragPos.y + 32.0) / 64.0; // Normalize height to 0-1
+    FragColor = vec4(h, h, h, 1.0);
+    return;
+    
+    // ... rest of your lighting code
     // Ambient
     float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * uLightColor;
@@ -46,4 +53,6 @@ void main() {
     
     vec3 result = ambient + diffuse + specular;
     FragColor = vec4(result, 1.0);
+
+
 }

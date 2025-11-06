@@ -24,9 +24,12 @@ GLXFBConfig glxFBConfig;
 // OpenGL related vars.
 GLXContext glxContext = NULL;
 
-GLuint Heightmap = 0;
+GLuint HeightMap = 0;
 
 float rotationAngle = 0.0f;
+
+float camz = 200.0f;
+float camy = 50.0f;
 
 int main(void)
 {
@@ -277,6 +280,18 @@ int main(void)
                                 toggleFullScreen();
                             }
 
+                    case 'w':
+                        printf("Moving Forward %f \n ", camz);
+                        camz += 1.0f;
+                    case 's':
+                        printf("Moving Backward %f \n ", camz);
+                        camz -= 1.0f;
+                    case 'a':
+                        printf("Moving Y up %f \n ", camy);
+                        camy += 1.0f;
+                    case 'd':
+                        printf("Moving Y down %f \n ", camy);
+                        camy -= 1.0f;
                         break;
                     default:
                         break;
@@ -470,7 +485,7 @@ int initialize(void)
     // Terrian
     terrainMesh = createTerrainMesh();
     
-    loadPNGTexture(&Heightmap, const_cast<char*>("heightmap.png"), 4,1);
+    loadPNGTexture(&HeightMap, const_cast<char*>("heightmap.png"), 4,1);
 
     // Set VS uniforms
     setUniforms();
@@ -488,7 +503,6 @@ int initialize(void)
 	
     perspectiveProjectionMatrix = mat4::identity();
     //viewMatrix = vmath::lookat(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-    viewMatrix = vmath::lookat(vec3(0.0f, 50.0f, 100.0f), vec3(0.0f, 50.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	// Warmup Resize means dummy resize
 	resize(winwidth, winheight);
 
@@ -541,16 +555,12 @@ void display(void)
 {
 	// code
 
+    viewMatrix = vmath::lookat(vec3(0.0f, camy, camz), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	// Clear OpenGL Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    int heightLoc = getUniformLocation(mainShaderProgram, "uHeightMap");
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, Heightmap );
-    glUniform1i(heightLoc, 3);
-
-    renderer(rotationAngle);
-
+    renderer(rotationAngle, HeightMap);
+    
 	// Swap THe Buffers
     glXSwapBuffers(gpDisplay, window);
 }

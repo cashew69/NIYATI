@@ -1,5 +1,5 @@
 
-void renderUserMeshes()
+void renderUserMeshes(GLint HeightMap)
 {
-    renderTerrain();
+    renderTerrain(HeightMap);
 }

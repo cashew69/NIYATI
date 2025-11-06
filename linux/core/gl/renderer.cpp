@@ -10,7 +10,7 @@ void setUniforms()
 }
   
 
-void renderer(float rotationAngle) {
+void renderer(float rotationAngle, GLint HeightMap) {
     if (mainShaderProgram && mainShaderProgram->id) {
         glUseProgram(mainShaderProgram->id);
         
@@ -47,7 +47,7 @@ void renderer(float rotationAngle) {
             glBindVertexArray(0);
         }
 
-        renderUserMeshes();
+        renderUserMeshes(HeightMap);
         
         fprintf(gpFile, "In program shaderprog:%d \n", mainShaderProgram);
        
