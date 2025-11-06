@@ -44,9 +44,9 @@ bool loadPNGTexture(GLuint *texture, char *file, int numberOfChannels, int repea
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         glGenTextures(1, texture);
         glBindTexture(GL_TEXTURE_2D, *texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); // for light GL_REPLACE to GL_MODULATE
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); // for light GL_REPLACE to GL_MODULATE
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         // Set tiling mode if repeat == 1
         if (repeat == 1) {
@@ -64,6 +64,7 @@ bool loadPNGTexture(GLuint *texture, char *file, int numberOfChannels, int repea
         if(numberOfChannels == 4)
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+            glGenerateMipmap(GL_TEXTURE_2D);
 
         }
 

@@ -49,6 +49,7 @@ GLint viewPosLocUniform;
 GLint colorTextureLocUniform;
 
 Mesh* terrainMesh = NULL;
+Mesh* planeMesh = NULL;
 
 
 #include "core/gl/shaders.cpp"

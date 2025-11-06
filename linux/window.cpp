@@ -24,6 +24,7 @@ GLXFBConfig glxFBConfig;
 // OpenGL related vars.
 GLXContext glxContext = NULL;
 
+GLuint Heightmap = 0;
 
 float rotationAngle = 0.0f;
 
@@ -412,16 +413,20 @@ int initialize(void)
 	printGLInfo();
 
     // Load shader source from files
-    const GLchar* vertexShaderSource = readShaderFile("core/shaders/main_vs.glsl");
-    //const GLchar* vertexShaderSource = readShaderFile("user/svs.glsl");
-    const GLchar* fragmentShaderSource = readShaderFile("core/shaders/main_fs[lambart].glsl");
-    //const GLchar* fragmentShaderSource = readShaderFile("user/sfs.glsl");
+    //const GLchar* vertexShaderSource = readShaderFile("core/shaders/main_vs.glsl");
+    const GLchar* tessellationControlShaderSource = readShaderFile("main_tcs.glsl");
+    const GLchar* tessellationEvaluationShaderSource = readShaderFile("main_tes.glsl");
+    const GLchar* vertexShaderSource = readShaderFile("user/svs.glsl");
+    //const GLchar* fragmentShaderSource = readShaderFile("core/shaders/main_fs[lambart].glsl");
+    const GLchar* fragmentShaderSource = readShaderFile("user/sfs.glsl");
 
 
     if (!vertexShaderSource || !fragmentShaderSource)
     {
         fprintf(gpFile, "Failed to load shader source files\n");
         if (vertexShaderSource) free((void*)vertexShaderSource);
+        if (tessellationControlShaderSource) free((void*)vertexShaderSource);
+        if (tessellationEvaluationShaderSource) free((void*)vertexShaderSource);
         if (fragmentShaderSource) free((void*)fragmentShaderSource);
         return (-7);
     }
@@ -432,6 +437,8 @@ int initialize(void)
     mainShaderProgram->shaderCount = 0;
 
     Shader* vertexShader = shaderCompile(vertexShaderSource, GL_VERTEX_SHADER);
+    Shader* tessControlShader = shaderCompile(tessellationControlShaderSource, GL_TESS_CONTROL_SHADER);
+    Shader* tessEvalShader = shaderCompile(tessellationEvaluationShaderSource, GL_TESS_EVALUATION_SHADER);
     Shader* fragmentShader = shaderCompile(fragmentShaderSource, GL_FRAGMENT_SHADER);
     
     if (!vertexShader || !fragmentShader) {
@@ -439,11 +446,11 @@ int initialize(void)
         return -1;
     }
 
-    Shader* shaders[] = {vertexShader, fragmentShader};
+    Shader* shaders[] = {vertexShader, tessControlShader, tessEvalShader, fragmentShader};
     const char* attribNames[] = {"aPosition", "aNormal", "aColor", "aTexCoord"};
     GLint attribIndices[] = {ATTRIB_POSITION, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_TEXCOORD};
     
-    if (!shaderLink(shaders, 2, mainShaderProgram, attribNames, attribIndices, 4)) {
+    if (!shaderLink(shaders, 4, mainShaderProgram, attribNames, attribIndices, 4)) {
         fprintf(gpFile, "Shader linking failed\n");
         return -1;
     }
@@ -463,6 +470,7 @@ int initialize(void)
     // Terrian
     terrainMesh = createTerrainMesh();
     
+    loadPNGTexture(&Heightmap, const_cast<char*>("heightmap.png"), 4,1);
 
     // Set VS uniforms
     setUniforms();
@@ -480,7 +488,7 @@ int initialize(void)
 	
     perspectiveProjectionMatrix = mat4::identity();
     //viewMatrix = vmath::lookat(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-    viewMatrix = vmath::lookat(vec3(0.0f, 50.0f, 190.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    viewMatrix = vmath::lookat(vec3(0.0f, 50.0f, 100.0f), vec3(0.0f, 50.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	// Warmup Resize means dummy resize
 	resize(winwidth, winheight);
 
@@ -536,7 +544,10 @@ void display(void)
 	// Clear OpenGL Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+    int heightLoc = getUniformLocation(mainShaderProgram, "uHeightMap");
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, Heightmap );
+    glUniform1i(heightLoc, 3);
 
     renderer(rotationAngle);
 
