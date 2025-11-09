@@ -1,3 +1,24 @@
+GLchar *getShaderTypeName(GLenum SHADER_TYPE)
+{
+	switch (SHADER_TYPE)
+	{
+	case GL_VERTEX_SHADER:
+		return (GLchar *)"Vertex";
+	case GL_FRAGMENT_SHADER:
+		return (GLchar *)"Fragment";
+	case GL_GEOMETRY_SHADER:
+		return (GLchar *)"Geometry";
+	case GL_COMPUTE_SHADER:
+		return (GLchar *)"Compute";
+	case GL_TESS_CONTROL_SHADER:
+		return (GLchar *)"Tessellation Control";
+	case GL_TESS_EVALUATION_SHADER:
+		return (GLchar *)"Tessellation Evaluation";
+	default:
+		return (GLchar *)"Unknown";
+	}
+}
+
 
 
 void freeThyShader(Shader* shader) {
@@ -83,26 +104,7 @@ char* readShaderFile(const char* filename)
 }
 
 
-GLchar *getShaderTypeName(GLenum SHADER_TYPE)
-{
-	switch (SHADER_TYPE)
-	{
-	case GL_VERTEX_SHADER:
-		return (GLchar *)"Vertex";
-	case GL_FRAGMENT_SHADER:
-		return (GLchar *)"Fragment";
-	case GL_GEOMETRY_SHADER:
-		return (GLchar *)"Geometry";
-	case GL_COMPUTE_SHADER:
-		return (GLchar *)"Compute";
-	case GL_TESS_CONTROL_SHADER:
-		return (GLchar *)"Tessellation Control";
-	case GL_TESS_EVALUATION_SHADER:
-		return (GLchar *)"Tessellation Evaluation";
-	default:
-		return (GLchar *)"Unknown";
-	}
-}
+
 
 Shader* shaderCompile(const GLchar *ShaderSourceCode, GLenum SHADER_TYPE)
 {

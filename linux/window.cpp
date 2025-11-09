@@ -25,11 +25,12 @@ GLXFBConfig glxFBConfig;
 GLXContext glxContext = NULL;
 
 GLuint HeightMap = 0;
+int togglePolyLine = 0;
 
 float rotationAngle = 0.0f;
 
-float camz = 200.0f;
-float camy = 50.0f;
+float camz = 600.0f;
+float camy = 10.0f;
 
 int main(void)
 {
@@ -282,17 +283,36 @@ int main(void)
 
                     case 'w':
                         printf("Moving Forward %f \n ", camz);
-                        camz += 1.0f;
+                        camz -= 1.0f;
+                        break;
                     case 's':
                         printf("Moving Backward %f \n ", camz);
-                        camz -= 1.0f;
+                        camz += 1.0f;
+                        break;
                     case 'a':
                         printf("Moving Y up %f \n ", camy);
-                        camy += 1.0f;
-                    case 'd':
-                        printf("Moving Y down %f \n ", camy);
                         camy -= 1.0f;
                         break;
+                    case 'd':
+                        printf("Moving Y down %f \n ", camy);
+                        camy += 1.0f;
+                        break;
+
+                    case 'l':
+                        if(togglePolyLine == 0)
+                        {
+                            togglePolyLine = 1;
+                            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                            fprintf(gpFile, "Wireframe mode enabled\n");
+                        }
+                        else
+                        {
+                            togglePolyLine = 0;
+                            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                            fprintf(gpFile, "Wireframe mode disabled\n");
+                        }
+                        break;
+
                     default:
                         break;
                 }
@@ -471,10 +491,10 @@ int initialize(void)
     }
 
     // Load model
-    /*if (!loadModel("user/models/model.fbx", &sceneMeshes, &meshCount, 1.0f)) {
+    if (!loadModel("user/models/model.fbx", &sceneMeshes, &meshCount, 1.0f)) {
         fprintf(gpFile, "Failed to load model\n");
         // Continue without model for now
-    }*/
+    }
 
     //GLenum types = {GL_VERTEX, GL_FRAGMENT_SHADER};
     const char* attribs[] = {"aPosition", "aNormal", "aColor", "aTexCoord"};
@@ -500,8 +520,8 @@ int initialize(void)
 	// From Here onwards OpenGL Starts
 	// Tell OpenGl To Chose the color to clear the screen
 	glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
-	
-    perspectiveProjectionMatrix = mat4::identity();
+    // Enable wireframe mode to see tessellation
+        perspectiveProjectionMatrix = mat4::identity();
     //viewMatrix = vmath::lookat(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	// Warmup Resize means dummy resize
 	resize(winwidth, winheight);

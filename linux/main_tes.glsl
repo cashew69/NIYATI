@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(isolines, equal_spacing, ccw) in;
+layout(quads, equal_spacing, ccw) in;
 
 in vec3 tcNormal[];
 in vec2 tcTexCoord[];

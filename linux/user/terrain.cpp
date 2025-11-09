@@ -190,8 +190,8 @@ void renderTerrain()
 
 
 // Plane configuration
-#define PLANE_WIDTH 16
-#define PLANE_DEPTH 16
+#define PLANE_WIDTH 64
+#define PLANE_DEPTH 64
 
 // Create simple flat plane mesh for tessellation
 Mesh* createTerrainMesh() {
