@@ -28,6 +28,7 @@ using namespace vmath;
 
 // Global scene data
 ShaderProgram* mainShaderProgram = NULL;
+ShaderProgram* tessellatedTerrain = NULL;
 Mesh* sceneMeshes = NULL;
 
 // Matrices
