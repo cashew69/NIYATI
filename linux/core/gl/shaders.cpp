@@ -19,6 +19,25 @@ GLchar *getShaderTypeName(GLenum SHADER_TYPE)
 	}
 }
 
+GLenum getShaderTypeFromIndex(int i)
+{
+    switch (i)
+    {
+        case 0:
+            return GL_VERTEX_SHADER;
+        case 1:
+            return GL_TESS_CONTROL_SHADER;
+        case 2:
+            return GL_TESS_EVALUATION_SHADER;
+        case 3:
+            return GL_GEOMETRY_SHADER;
+        case 4:
+            return GL_FRAGMENT_SHADER;
+        default:
+            return (-1);
+    }
+}
+
 
 
 void freeThyShader(Shader* shader) {
@@ -173,6 +192,7 @@ Shader* shaderCompile(const GLchar *ShaderSourceCode, GLenum SHADER_TYPE)
 	return shader;
 }
 
+
 Bool shaderLink(Shader** shaders, int shaderCount, ShaderProgram* program, const char** attribNames, GLint* attribIndices, int attribCount)
 {
     if (!program || !shaders || shaderCount <= 0) {
@@ -281,7 +301,7 @@ Bool buildShaderProgram(const GLchar **SourceCodes, GLenum* shaderTypes, int sha
     (*program)->id = 0;
     (*program)->shaderCount = 0;
 
-    Shader* shaders[6]; // Max 6 shader types (adjust as needed)
+    Shader* shaders[6]; 
     for (int i = 0; i < shaderCount && i < 6; i++) {
         shaders[i] = shaderCompile(SourceCodes[i], shaderTypes[i]);
         if (!shaders[i]) {
@@ -300,6 +320,68 @@ Bool buildShaderProgram(const GLchar **SourceCodes, GLenum* shaderTypes, int sha
     return True;
 }
 
+Bool buildShaderProgramFromFiles(const char** filePaths, int maxShaderSlots,
+                                  ShaderProgram** program, const char** attribNames, 
+                                  GLint* attribIndices, int attribCount)
+{
+    if (!filePaths || maxShaderSlots <= 0 || !program) {
+        fprintf(gpFile, "Error: Invalid parameters for buildShaderProgramFromFiles\n");
+        return False;
+    }
+
+    int actualShaderCount = 0;
+    for (int i = 0; i < maxShaderSlots; i++) {
+        if (filePaths[i] != NULL) {
+            actualShaderCount++;
+        }
+    }
+
+    if (actualShaderCount == 0) {
+        fprintf(gpFile, "Error: No shader files provided\n");
+        return False;
+    }
+
+    const GLchar** sources = (const GLchar**)malloc(actualShaderCount * sizeof(GLchar*));
+    GLenum* shaderTypes = (GLenum*)malloc(actualShaderCount * sizeof(GLenum));
+    
+    if (!sources || !shaderTypes) {
+        fprintf(gpFile, "Error: Failed to allocate memory\n");
+        if (sources) free(sources);
+        if (shaderTypes) free(shaderTypes);
+        return False;
+    }
+
+    int loadedCount = 0;
+    for (int i = 0; i < maxShaderSlots; i++) {
+        if (filePaths[i] != NULL) {
+            sources[loadedCount] = readShaderFile(filePaths[i]);
+            if (!sources[loadedCount]) {
+                fprintf(gpFile, "Error: Failed to load shader file: %s\n", filePaths[i]);
+                // Clean up
+                for (int j = 0; j < loadedCount; j++) {
+                    free((void*)sources[j]);
+                }
+                free(sources);
+                free(shaderTypes);
+                return False;
+            }
+            shaderTypes[loadedCount] = getShaderTypeFromIndex(i);
+            loadedCount++;
+        }
+    }
+
+    Bool success = buildShaderProgram(sources, shaderTypes, actualShaderCount, 
+                                      program, attribNames, attribIndices, attribCount);
+
+    // Clean up
+    for (int i = 0; i < loadedCount; i++) {
+        free((void*)sources[i]);
+    }
+    free(sources);
+    free(shaderTypes);
+
+    return success;
+}
 
 // Utility to use a shader program
 void useShaderProgram(ShaderProgram* program) {

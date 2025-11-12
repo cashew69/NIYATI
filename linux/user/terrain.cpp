@@ -172,7 +172,7 @@ void renderTerrain()
                 glUniformMatrix4fv(modelLocUniform, 1, GL_FALSE, modelMatrix);
             }
             
-            setMaterialUniforms(mainShaderProgram, &terrainMesh->material);
+            setMaterialUniforms(tessellationShaderProgram, &terrainMesh->material);
             glBindVertexArray(terrainMesh->vao);
             
             if (terrainMesh->ibo && terrainMesh->indexCount > 0) {
@@ -316,9 +316,9 @@ void renderTerrain(GLint HeightMap) {
             glUniformMatrix4fv(modelLocUniform, 1, GL_FALSE, modelMatrix);
         }
         
-        setMaterialUniforms(mainShaderProgram, &terrainMesh->material);
+        setMaterialUniforms(tessellationShaderProgram, &terrainMesh->material);
         
-        GLint heightLoc = getUniformLocation(mainShaderProgram, "uHeightMap");
+        GLint heightLoc = getUniformLocation(tessellationShaderProgram, "uHeightMap");
         if (heightLoc != -1) {
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, HeightMap);

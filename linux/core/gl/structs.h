@@ -40,8 +40,8 @@ typedef struct {
 } Shader;
 
 typedef struct {
-
-} Shaders;
+    const GLchar* textData;
+} shaderSource;
 
 typedef struct {
     GLuint id;

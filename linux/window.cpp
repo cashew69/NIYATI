@@ -29,7 +29,7 @@ int togglePolyLine = 0;
 
 float rotationAngle = 0.0f;
 
-float camz = 600.0f;
+float camz = 60.0f;
 float camy = 10.0f;
 
 int main(void)
@@ -239,7 +239,6 @@ int main(void)
     {
     while(XPending(gpDisplay))
     {
-        XNextEvent(gpDisplay, &event);
         switch(event.type)
         {
             case MapNotify:
@@ -448,85 +447,67 @@ int initialize(void)
 	printGLInfo();
 
     // Load shader source from files
-    //const GLchar* vertexShaderSource = readShaderFile("core/shaders/main_vs.glsl");
-    const GLchar* tessellationControlShaderSource = readShaderFile("user/main_tcs.glsl");
-    const GLchar* tessellationEvaluationShaderSource = readShaderFile("user/main_tes.glsl");
-    const GLchar* vertexShaderSource = readShaderFile("user/svs.glsl");
-    //const GLchar* fragmentShaderSource = readShaderFile("core/shaders/main_fs[lambart].glsl");
-    const GLchar* fragmentShaderSource = readShaderFile("user/sfs.glsl");
+    // (shared by both programs)
+    const char* attribNames[] = {"aPosition", "aNormal", "aColor", "aTexCoord"};
+    GLint attribIndices[] = {ATTRIB_POSITION, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_TEXCOORD};
 
 
-    if (!vertexShaderSource || !fragmentShaderSource)
-    {
-        fprintf(gpFile, "Failed to load shader source files\n");
-        if (vertexShaderSource) free((void*)vertexShaderSource);
-        if (tessellationControlShaderSource) free((void*)vertexShaderSource);
-        if (tessellationEvaluationShaderSource) free((void*)vertexShaderSource);
-        if (fragmentShaderSource) free((void*)fragmentShaderSource);
+    // ===== Main Shader Program (Vertex + Fragment) =====
+    const char* mainShaderFiles[5] = {
+        "core/shaders/main_vs.glsl",  
+        NULL,                        
+        NULL,                       
+        NULL,                      
+        "core/shaders/main_fs[lambart].glsl"  
+    };
+    if (!buildShaderProgramFromFiles(mainShaderFiles, 5, 
+                &mainShaderProgram, attribNames, attribIndices, 4)) {
+        fprintf(gpFile, "Failed to build main shader program\n");
         return (-7);
     }
 
-    // Create shader program
-    mainShaderProgram = (ShaderProgram*)malloc(sizeof(ShaderProgram));
-    mainShaderProgram->id = 0;
-    mainShaderProgram->shaderCount = 0;
-
-    Shader* vertexShader = shaderCompile(vertexShaderSource, GL_VERTEX_SHADER);
-    Shader* tessControlShader = shaderCompile(tessellationControlShaderSource, GL_TESS_CONTROL_SHADER);
-    Shader* tessEvalShader = shaderCompile(tessellationEvaluationShaderSource, GL_TESS_EVALUATION_SHADER);
-    Shader* fragmentShader = shaderCompile(fragmentShaderSource, GL_FRAGMENT_SHADER);
-    
-    if (!vertexShader || !fragmentShader) {
-        fprintf(gpFile, "Shader compilation failed\n");
-        return -1;
+    // ===== Tessellation Shader Program (Vertex + TCS + TES + Fragment) =====
+    const char* tessShaderFiles[5] = {
+        "user/svs.glsl",       
+        "user/main_tcs.glsl", 
+        "user/main_tes.glsl",
+        NULL,               
+        "user/sfs.glsl"    
+    };
+    if (!buildShaderProgramFromFiles(tessShaderFiles, 5, 
+                &tessellationShaderProgram, attribNames, attribIndices, 4)) {
+        fprintf(gpFile, "Failed to build tessellation shader program\n");
+        return (-7);
     }
 
-    Shader* shaders[] = {vertexShader, tessControlShader, tessEvalShader, fragmentShader};
-    const char* attribNames[] = {"aPosition", "aNormal", "aColor", "aTexCoord"};
-    GLint attribIndices[] = {ATTRIB_POSITION, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_TEXCOORD};
     
-    if (!shaderLink(shaders, 4, mainShaderProgram, attribNames, attribIndices, 4)) {
-        fprintf(gpFile, "Shader linking failed\n");
-        return -1;
-    }
-
-    // Load model
     if (!loadModel("user/models/model.fbx", &sceneMeshes, &meshCount, 1.0f)) {
         fprintf(gpFile, "Failed to load model\n");
-        // Continue without model for now
     }
 
-    //GLenum types = {GL_VERTEX, GL_FRAGMENT_SHADER};
-    const char* attribs[] = {"aPosition", "aNormal", "aColor", "aTexCoord"};
-    GLint indices[] = {ATTRIB_POSITION, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_TEXCOORD};
-    //buildShaderProgram(ShaderSources, types, 2, &program, attribs, indices, 4);
-    //free(ShaderSources);
-
-    // Terrian
+    // ===== Terrain =====
     terrainMesh = createTerrainMesh();
-    
-    loadPNGTexture(&HeightMap, const_cast<char*>("heightmap.png"), 4,1);
-
+    loadPNGTexture(&HeightMap, const_cast<char*>("heightmap.png"), 4, 1);
     // Set VS uniforms
-    setUniforms();
+    //setUniforms();
 
-	// Depth Related Code
-	glClearDepth(1.0f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
+    // Depth Related Code
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     //glEnable(GL_CULL_FACE);
 
 
-	// From Here onwards OpenGL Starts
-	// Tell OpenGl To Chose the color to clear the screen
-	glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+    // From Here onwards OpenGL Starts
+    // Tell OpenGl To Chose the color to clear the screen
+    glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
     // Enable wireframe mode to see tessellation
-        perspectiveProjectionMatrix = mat4::identity();
+    perspectiveProjectionMatrix = mat4::identity();
     //viewMatrix = vmath::lookat(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-	// Warmup Resize means dummy resize
-	resize(winwidth, winheight);
+    // Warmup Resize means dummy resize
+    resize(winwidth, winheight);
 
-	return(0);
+    return(0);
 }
 
 
@@ -555,13 +536,13 @@ void toggleFullScreen(void)
 
 void resize(int width, int height)
 {
-	// code
+    // code
 
-	// if height accidently becomes 0 or less than 1 make it 1
-	if (height <= 0)
-	{
-		height = 1;
-	}
+    // if height accidently becomes 0 or less than 1 make it 1
+    if (height <= 0)
+    {
+        height = 1;
+    }
 	
 	// Set the ViewPort
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
