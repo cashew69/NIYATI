@@ -29,7 +29,7 @@ int togglePolyLine = 0;
 
 float rotationAngle = 0.0f;
 
-float camz = 60.0f;
+float camz = 600.0f;
 float camy = 10.0f;
 
 int main(void)
@@ -239,6 +239,7 @@ int main(void)
     {
     while(XPending(gpDisplay))
     {
+        XNextEvent(gpDisplay, &event);
         switch(event.type)
         {
             case MapNotify:
