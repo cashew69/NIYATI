@@ -486,6 +486,8 @@ int initialize(void)
         fprintf(gpFile, "Failed to load model\n");
     }
 
+    initGrassInstancing();
+
     // ===== Terrain =====
     terrainMesh = createTerrainMesh();
     loadPNGTexture(&HeightMap, const_cast<char*>("heightmap.png"), 4, 1);
@@ -647,6 +649,7 @@ void uninitialize(void)
     freeMesh(terrainMesh);
     terrainMesh = NULL;
     }*/
+    cleanupGrassInstances();
 
     GLXContext currentContext = glXGetCurrentContext();
     if (currentContext && currentContext == glxContext)

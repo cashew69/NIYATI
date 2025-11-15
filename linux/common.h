@@ -3,6 +3,7 @@
 #include <stdlib.h> // for exit
 #include <memory.h> // for memset
 #include <string.h>
+#include <ctime>
 
 // Xlib header files.
 #include <X11/Xlib.h> // for all xlib api's

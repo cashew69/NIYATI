@@ -1,3 +1,3 @@
 
-#include "terrain.cpp"
-#include "grassblade.cpp"
+#include "terrain/terrain.cpp"
+#include "grass/grassblade.cpp"
