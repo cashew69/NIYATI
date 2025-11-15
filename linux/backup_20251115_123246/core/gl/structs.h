@@ -32,7 +32,7 @@ typedef struct {
     GLuint ibo;
     size_t indexCount;
     Material material;
-    struct Transform* transform;
+    float modelMatrix[16];
     char* userFragmentCode;
 } Mesh;
 

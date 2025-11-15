@@ -482,7 +482,7 @@ int initialize(void)
     }
 
     
-    if (!loadModel("user/models/model.fbx", &sceneMeshes, &meshCount, 1.0f)) {
+    if (!loadModel("user/models/grassblade.fbx", &sceneMeshes, &meshCount, 1.0f)) {
         fprintf(gpFile, "Failed to load model\n");
     }
 

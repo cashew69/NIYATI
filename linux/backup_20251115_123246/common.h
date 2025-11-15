@@ -26,9 +26,8 @@ using namespace vmath;
 #include <assimp/postprocess.h>
 
 // Include transform system before structs
-#include "engine/transform.h"
 #include "core/gl/structs.h"
-
+#include "engine/transform.h"
 
 // Global scene data
 ShaderProgram* mainShaderProgram = NULL;
