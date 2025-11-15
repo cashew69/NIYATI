@@ -63,7 +63,6 @@ Mesh* planeMesh = NULL;
 #include "core/gl/modelloading.cpp"
 #include "core/gl/camera.cpp"
 #include "engine/perlin/perlin.c"
-#include "user/terrain.cpp"
 #include "user/userrendercalls.cpp"
 #include "core/gl/renderer.cpp"
 //#include "inputhandler.c"
