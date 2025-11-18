@@ -58,3 +58,22 @@ typedef struct {
     char *varInShader;
     int count;
 } Uniform;
+
+struct boundingRect
+{
+    vec3 ox;
+    vec3 ex;
+    vec3 oz;
+    vec3 ez;
+
+};
+struct Plane {
+    vec3 normal;
+    float distance;
+};
+
+struct cullfrustum {
+    Plane planes[6];  // LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR
+};
+
+

@@ -480,6 +480,20 @@ int initialize(void)
         fprintf(gpFile, "Failed to build tessellation shader program\n");
         return (-7);
     }
+// ===== Main Shader Program (Vertex + Fragment) =====
+    const char* lineShaderFiles[5] = {
+        "core/shaders/lineVert.glsl",  
+        NULL,                        
+        NULL,                       
+        NULL,                      
+        "core/shaders/lineFrag.glsl"  
+    };
+    if (!buildShaderProgramFromFiles(lineShaderFiles, 5, 
+                &lineShaderProgram, attribNames, attribIndices, 4)) {
+        fprintf(gpFile, "Failed to build main shader program\n");
+        return (-7);
+    }
+
 
     
     if (!loadModel("user/models/grassblade.fbx", &sceneMeshes, &meshCount, 1.0f)) {
@@ -487,6 +501,8 @@ int initialize(void)
     }
 
     initGrassInstancing();
+    setupBoundsRendering();
+    printBounds();
 
     // ===== Terrain =====
     terrainMesh = createTerrainMesh();
@@ -514,7 +530,28 @@ int initialize(void)
 }
 
 
-
+void print_fps() {
+    static double last_time = 0.0;
+    static int frame_count = 0;
+    static double fps = 0.0;
+    
+    // Get current time in seconds
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    double current_time = ts.tv_sec + ts.tv_nsec / 1000000000.0;
+    
+    frame_count++;
+    
+    // Calculate FPS every second
+    double elapsed = current_time - last_time;
+    if (elapsed >= 1.0) {
+        fps = frame_count / elapsed;
+        printf("FPS: %.2f\n", fps);
+        
+        frame_count = 0;
+        last_time = current_time;
+    }
+}
 
 
 void toggleFullScreen(void)
@@ -571,6 +608,7 @@ void display(void)
 
 void update(void)
 {
+    print_fps();
 	// code
     rotationAngle += 0.5f;
     if (rotationAngle >= 360.0f) {

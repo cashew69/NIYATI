@@ -5,6 +5,9 @@
 #include <string.h>
 #include <ctime>
 
+#include <time.h>
+
+
 // Xlib header files.
 #include <X11/Xlib.h> // for all xlib api's
 #include <X11/Xutil.h> // for visual info and related api.
@@ -29,10 +32,13 @@ using namespace vmath;
 // Include transform system before structs
 #include "engine/transform.h"
 #include "core/gl/structs.h"
-
+#include "engine/culling.cpp"
+//#include "user/sharedtypes.h" 
 
 // Global scene data
 ShaderProgram* mainShaderProgram = NULL;
+ShaderProgram* lineShaderProgram = NULL;
+
 ShaderProgram* tessellationShaderProgram = NULL;
 Mesh* sceneMeshes = NULL;
 
@@ -57,8 +63,10 @@ GLint colorTextureLocUniform;
 Mesh* terrainMesh = NULL;
 Mesh* planeMesh = NULL;
 
+cullfrustum viewFrustum;
 
 #include "engine/transform.cpp"
+#include "engine/culling.cpp"
 #include "core/gl/shaders.cpp"
 #include "core/gl/texture.cpp"
 #include "core/gl/modelloading.cpp"
