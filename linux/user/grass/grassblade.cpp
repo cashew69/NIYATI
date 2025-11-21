@@ -1,6 +1,10 @@
+// Include shared types (boundingRect, Frustum, culling functions)
+
 #define CHUNKSIZE 64
 #define INSTANCES 409600
-#define CHUNKSCALE 10
+#define CHUNKSCALE 64
+
+bool grassCullingEnabled = false;
 
 GLuint instanceVBO;
 GLuint boundsVBO;
@@ -8,7 +12,6 @@ GLuint boundsVAO;
 GLuint boundsEBO;
 Transform** instanceTransforms;
 vec3* grass_positions;
-
 
 struct boundingRect bounds[4096];
 
@@ -297,37 +300,49 @@ void renderGrassBlade()
 
     glBindVertexArray(sceneMeshes[0].vao);
     
-    int numChunks = PLANE_DEPTH * PLANE_WIDTH;
-    int grassPerChunk = INSTANCES / numChunks;
-    int visibleChunks = 0;
-    
-    // Render each chunk individually with frustum culling
-    for (int chunkIndex = 0; chunkIndex < numChunks; chunkIndex++)
-    {
-        // Check if this chunk is visible
-        if (isChunkVisible(bounds[chunkIndex], viewFrustum))
+    if (grassCullingEnabled) {
+        // Render with frustum culling
+        int numChunks = PLANE_DEPTH * PLANE_WIDTH;
+        int grassPerChunk = INSTANCES / numChunks;
+        int visibleChunks = 0;
+        
+        for (int chunkIndex = 0; chunkIndex < numChunks; chunkIndex++)
         {
-            // Calculate the starting instance index for this chunk
-            int startInstance = chunkIndex * grassPerChunk;
-            
-            // Render only the grass instances for this visible chunk
-            glDrawElementsInstancedBaseInstance(
-                GL_TRIANGLES, 
-                sceneMeshes[0].indexCount, 
-                GL_UNSIGNED_INT, 
-                NULL, 
-                grassPerChunk,
-                startInstance
-            );
-            
-            visibleChunks++;
+            if (isChunkVisible(bounds[chunkIndex], viewFrustum))
+            {
+                int startInstance = chunkIndex * grassPerChunk;
+                
+                glDrawElementsInstancedBaseInstance(
+                    GL_TRIANGLES, 
+                    sceneMeshes[0].indexCount, 
+                    GL_UNSIGNED_INT, 
+                    NULL, 
+                    grassPerChunk,
+                    startInstance
+                );
+                
+                visibleChunks++;
+            }
         }
+    } else {
+        // Render all grass without culling
+        glDrawElementsInstanced(GL_TRIANGLES, sceneMeshes[0].indexCount, 
+                               GL_UNSIGNED_INT, NULL, INSTANCES);
     }
     
     glBindVertexArray(0);
-    
-    // Optional: Print culling stats (can be removed for production)
-    // printf("Visible chunks: %d / %d\n", visibleChunks, numChunks);
+}
+
+void toggleCulling()
+{
+    grassCullingEnabled = !grassCullingEnabled;
+    const char* state = grassCullingEnabled ? "ENABLED" : "DISABLED";
+    printf("====================================\n");
+    printf("   GRASS FRUSTUM CULLING %s   \n", state);
+    printf("====================================\n");
+    if (!grassCullingEnabled) {
+        printf("   → Rendering ALL %d grass instances (no culling)\n", INSTANCES);
+    }
 }
 
 void updateInstanceTransforms()

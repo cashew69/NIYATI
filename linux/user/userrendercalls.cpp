@@ -36,6 +36,7 @@ void renderUserMeshes(GLint HeightMap)
         setCommonUniformsForCurrentProgram(mainShaderProgram, perspectiveProjectionMatrix, viewMatrix, lightPos, lightColor, viewPos);
 
         renderGrassBlade();
+
     }
     
     if (lineShaderProgram && lineShaderProgram->id)
@@ -55,7 +56,10 @@ void renderUserMeshes(GLint HeightMap)
     glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f); // Yellow color
     
     renderBoundingBoxes();
+
 }
+
+
 
 
     // Terrain
@@ -66,5 +70,7 @@ void renderUserMeshes(GLint HeightMap)
 
     }
 
+
     glUseProgram(0);
+
 }

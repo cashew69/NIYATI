@@ -63,10 +63,8 @@ GLint colorTextureLocUniform;
 Mesh* terrainMesh = NULL;
 Mesh* planeMesh = NULL;
 
-cullfrustum viewFrustum;
 
 #include "engine/transform.cpp"
-#include "engine/culling.cpp"
 #include "core/gl/shaders.cpp"
 #include "core/gl/texture.cpp"
 #include "core/gl/modelloading.cpp"

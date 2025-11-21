@@ -29,8 +29,17 @@ int togglePolyLine = 0;
 
 float rotationAngle = 0.0f;
 
-float camz = 600.0f;
+float camz = 60.0f;
 float camy = 10.0f;
+float eyex = 0.0f;
+float eyez = 0.0f;
+
+int mouse_x = 0;
+int mouse_y = 0;
+bool mouse_captured = false;
+float camera_yaw = 0.0f;
+float camera_pitch = 0.0f;
+float mouse_sensitivity = 0.1f;
 
 int main(void)
 {
@@ -175,7 +184,7 @@ int main(void)
     windowAttributes.border_pixel = 0;
     windowAttributes.background_pixmap = 0;
     windowAttributes.background_pixel = XBlackPixel(gpDisplay, visualInfo->screen);
-    windowAttributes.event_mask = KeyPressMask | ButtonPressMask | FocusChangeMask | StructureNotifyMask | ExposureMask;
+    windowAttributes.event_mask = KeyPressMask | ButtonPressMask | PointerMotionMask | FocusChangeMask | StructureNotifyMask | ExposureMask;
     Window root = XRootWindow(gpDisplay, visualInfo->screen);
     printf("XRootWindow before colormap: %lu\n", root);
     windowAttributes.colormap = XCreateColormap(gpDisplay, root, visualInfo->visual, AllocNone);
@@ -253,6 +262,22 @@ int main(void)
             case ConfigureNotify:
                 resize(event.xconfigure.width, event.xconfigure.height);
                 break;
+            case MotionNotify:
+                if (mouse_captured)
+                {
+                    int delta_x = event.xmotion.x - mouse_x;
+                    int delta_y = event.xmotion.y - mouse_y;
+                    
+                    camera_yaw += delta_x * mouse_sensitivity;
+                    camera_pitch -= delta_y * mouse_sensitivity;
+                    
+                    if (camera_pitch > 89.0f) camera_pitch = 89.0f;
+                    if (camera_pitch < -89.0f) camera_pitch = -89.0f;
+                    
+                    mouse_x = event.xmotion.x;
+                    mouse_y = event.xmotion.y;
+                }
+                break;
             case KeyPress:
                 keysym = XkbKeycodeToKeysym(gpDisplay, event.xkey.keycode, 0, 0);
                 switch(keysym)
@@ -282,20 +307,27 @@ int main(void)
                             }
 
                     case 'w':
-                        printf("Moving Forward %f \n ", camz);
                         camz -= 1.0f;
                         break;
                     case 's':
-                        printf("Moving Backward %f \n ", camz);
                         camz += 1.0f;
                         break;
                     case 'a':
-                        printf("Moving Y up %f \n ", camy);
                         camy -= 1.0f;
                         break;
                     case 'd':
-                        printf("Moving Y down %f \n ", camy);
                         camy += 1.0f;
+                        break;
+
+                    case 'q':
+                        eyex -= 1.0f;
+                        break;
+                    case 'e':
+                        eyex += 1.0f;
+                        break;
+                    case 'c':
+                    case 'C':
+                        toggleCulling();
                         break;
 
                     case 'l':
@@ -325,10 +357,23 @@ int main(void)
                         break;
                     case 2: // MID
                         break;
-                    case 3: // RIGHT
+                    case 3:
+                        mouse_captured = !mouse_captured;
+                        if (mouse_captured)
+                        {
+                            XGrabPointer(gpDisplay, window, True, 
+                                       PointerMotionMask | ButtonReleaseMask,
+                                       GrabModeAsync, GrabModeAsync, 
+                                       window, None, CurrentTime);
+                        }
+                        else
+                        {
+                            XUngrabPointer(gpDisplay, CurrentTime);
+                        }
                         break;
                 }
                 break;
+
             case 33:
                 bDone = True;
                 break;
@@ -594,15 +639,23 @@ void resize(int width, int height)
 
 void display(void)
 {
-	// code
-
-    viewMatrix = vmath::lookat(vec3(0.0f, camy, camz), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-	// Clear OpenGL Buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    float yaw_rad = camera_yaw * 3.14159265f / 180.0f;
+    float pitch_rad = camera_pitch * 3.14159265f / 180.0f;
+    
+    vec3 direction;
+    direction[0] = cos(pitch_rad) * sin(yaw_rad);
+    direction[1] = sin(pitch_rad);
+    direction[2] = cos(pitch_rad) * cos(yaw_rad);
+    
+    vec3 camera_pos(0.0f, camy, camz);
+    vec3 camera_target = camera_pos + direction;
+    
+    viewMatrix = vmath::lookat(camera_pos, camera_target, vec3(0.0f, 1.0f, 0.0f));
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     renderer(rotationAngle, HeightMap);
-    
-	// Swap THe Buffers
+
     glXSwapBuffers(gpDisplay, window);
 }
 
