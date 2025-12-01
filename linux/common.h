@@ -1,3 +1,5 @@
+
+
 // Standard header files.
 #include <stdio.h> // for printf
 #include <stdlib.h> // for exit
@@ -6,25 +8,11 @@
 #include <ctime>
 
 #include <time.h>
-
-
-// Xlib header files.
-#include <X11/Xlib.h> // for all xlib api's
-#include <X11/Xutil.h> // for visual info and related api.
-#include <X11/XKBlib.h> // for Keyboard related.
-
 #include "vmath.h"
-
 using namespace vmath;
-
-// OpenGL related header files. 
-#include <GL/glew.h> // Must be before gl.h
-#include <GL/gl.h>
-#include <GL/glx.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -32,8 +20,6 @@ using namespace vmath;
 // Include transform system before structs
 #include "engine/transform.h"
 #include "core/gl/structs.h"
-#include "engine/culling.cpp"
-//#include "user/sharedtypes.h" 
 
 // Global scene data
 ShaderProgram* mainShaderProgram = NULL;
@@ -62,6 +48,14 @@ GLint colorTextureLocUniform;
 
 Mesh* terrainMesh = NULL;
 Mesh* planeMesh = NULL;
+
+// Ship State (Externs)
+vec3 shipPosition;
+vec3 shipRotation;
+vec3 shipForward;
+vec3 shipUp;
+vec3 shipRight;
+
 
 
 #include "engine/transform.cpp"

@@ -29,38 +29,14 @@ vec3 viewPos = vec3(0.0f, 50.0f, 150.0f);
 void renderUserMeshes(GLint HeightMap)
 {
 
-    getFrustum();
     if (mainShaderProgram && mainShaderProgram->id) 
     {
         glUseProgram(mainShaderProgram->id);
         setCommonUniformsForCurrentProgram(mainShaderProgram, perspectiveProjectionMatrix, viewMatrix, lightPos, lightColor, viewPos);
 
-        renderGrassBlade();
+        renderShip();
 
     }
-    
-    if (lineShaderProgram && lineShaderProgram->id)
-{
-    glUseProgram(lineShaderProgram->id);
-    
-    // Set uniforms for line shader
-    GLint modelLoc = glGetUniformLocation(lineShaderProgram->id, "model");
-    GLint viewLoc = glGetUniformLocation(lineShaderProgram->id, "view");
-    GLint projLoc = glGetUniformLocation(lineShaderProgram->id, "projection");
-    GLint colorLoc = glGetUniformLocation(lineShaderProgram->id, "lineColor");
-    
-    mat4 modelMatrix = mat4::identity();
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, modelMatrix);
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, viewMatrix);
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, perspectiveProjectionMatrix);
-    glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f); // Yellow color
-    
-    renderBoundingBoxes();
-
-}
-
-
-
 
     // Terrain
     if (tessellationShaderProgram && tessellationShaderProgram->id) {
