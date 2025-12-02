@@ -17,6 +17,8 @@ Transform* createTransform(vec3 position, vec3 rotation, vec3 scale) {
     transform->position = position;
     transform->rotation = rotation;
     transform->scale = scale;
+    transform->orientation = quaternion(0.0f, 0.0f, 0.0f, 1.0f); // Identity quaternion
+    transform->useQuaternion = false;
     transform->localMatrix = mat4::identity();
     transform->isDirty = true;
     transform->parent = NULL;
@@ -31,6 +33,8 @@ void initTransform(Transform* transform) {
     transform->position = vec3(0.0f, 0.0f, 0.0f);
     transform->rotation = vec3(0.0f, 0.0f, 0.0f);
     transform->scale = vec3(1.0f, 1.0f, 1.0f);
+    transform->orientation = quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+    transform->useQuaternion = false;
     transform->localMatrix = mat4::identity();
     transform->isDirty = true;
     transform->parent = NULL;
@@ -54,7 +58,20 @@ void setPosition(Transform* transform, vec3 position) {
 void setRotation(Transform* transform, vec3 rotation) {
     if (!transform) return;
     transform->rotation = rotation;
+    transform->useQuaternion = false;
     markDirty(transform);
+}
+
+// Set absolute rotation (Quaternion)
+void setRotation(Transform* transform, quaternion rotation) {
+    if (!transform) return;
+    transform->orientation = rotation;
+    transform->useQuaternion = true;
+    markDirty(transform);
+}
+
+quaternion getRotationQ(const Transform* transform) {
+    return transform ? transform->orientation : quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // Set absolute scale
@@ -138,15 +155,19 @@ mat4 getLocalMatrix(Transform* transform) {
         
         mat4 rotationMatrix = mat4::identity();
         
-        // Apply rotations in order: Z * Y * X (standard rotation order)
-        if (transform->rotation[2] != 0.0f) {
-            rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
-        }
-        if (transform->rotation[1] != 0.0f) {
-            rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
-        }
-        if (transform->rotation[0] != 0.0f) {
-            rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
+        if (transform->useQuaternion) {
+            rotationMatrix = transform->orientation.asMatrix();
+        } else {
+            // Apply rotations in order: Z * Y * X (standard rotation order)
+            if (transform->rotation[2] != 0.0f) {
+                rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
+            }
+            if (transform->rotation[1] != 0.0f) {
+                rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
+            }
+            if (transform->rotation[0] != 0.0f) {
+                rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
+            }
         }
         
         mat4 scaleMatrix = vmath::scale(
@@ -183,9 +204,14 @@ vec3 getForward(const Transform* transform) {
     
     // Calculate forward vector from rotation
     mat4 rotationMatrix = mat4::identity();
-    rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
-    rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
-    rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
+    
+    if (transform->useQuaternion) {
+        rotationMatrix = transform->orientation.asMatrix();
+    } else {
+        rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
+        rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
+        rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
+    }
     
     // Transform the default forward vector
     vec3 forward = vec3(
@@ -196,39 +222,49 @@ vec3 getForward(const Transform* transform) {
     return forward;
 }
 
-// Get right vector (based on rotation)
-vec3 getRight(const Transform* transform) {
-    if (!transform) return vec3(1.0f, 0.0f, 0.0f);
-    
-    mat4 rotationMatrix = mat4::identity();
-    rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
-    rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
-    rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
-    
-    vec3 right = vec3(
-        rotationMatrix[0][0],
-        rotationMatrix[1][0],
-        rotationMatrix[2][0]
-    );
-    return right;
-}
+    // Get right vector (based on rotation)
+    vec3 getRight(const Transform* transform) {
+        if (!transform) return vec3(1.0f, 0.0f, 0.0f);
+        
+        mat4 rotationMatrix = mat4::identity();
+        
+        if (transform->useQuaternion) {
+            rotationMatrix = transform->orientation.asMatrix();
+        } else {
+            rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
+            rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
+            rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
+        }
+        
+        vec3 right = vec3(
+            rotationMatrix[0][0],
+            rotationMatrix[1][0],
+            rotationMatrix[2][0]
+        );
+        return right;
+    }
 
-// Get up vector (based on rotation)
-vec3 getUp(const Transform* transform) {
-    if (!transform) return vec3(0.0f, 1.0f, 0.0f);
-    
-    mat4 rotationMatrix = mat4::identity();
-    rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
-    rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
-    rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
-    
-    vec3 up = vec3(
-        rotationMatrix[0][1],
-        rotationMatrix[1][1],
-        rotationMatrix[2][1]
-    );
-    return up;
-}
+    // Get up vector (based on rotation)
+    vec3 getUp(const Transform* transform) {
+        if (!transform) return vec3(0.0f, 1.0f, 0.0f);
+        
+        mat4 rotationMatrix = mat4::identity();
+        
+        if (transform->useQuaternion) {
+            rotationMatrix = transform->orientation.asMatrix();
+        } else {
+            rotationMatrix = vmath::rotate(transform->rotation[2], vec3(0.0f, 0.0f, 1.0f));
+            rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[1], vec3(0.0f, 1.0f, 0.0f));
+            rotationMatrix = rotationMatrix * vmath::rotate(transform->rotation[0], vec3(1.0f, 0.0f, 0.0f));
+        }
+        
+        vec3 up = vec3(
+            rotationMatrix[0][1],
+            rotationMatrix[1][1],
+            rotationMatrix[2][1]
+        );
+        return up;
+    }
 
 // Set parent transform
 void setParent(Transform* transform, Transform* parent) {
@@ -271,6 +307,8 @@ void resetTransform(Transform* transform) {
     
     transform->position = vec3(0.0f, 0.0f, 0.0f);
     transform->rotation = vec3(0.0f, 0.0f, 0.0f);
+    transform->orientation = quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+    transform->useQuaternion = false;
     transform->scale = vec3(1.0f, 1.0f, 1.0f);
     markDirty(transform);
 }

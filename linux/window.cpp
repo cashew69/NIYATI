@@ -248,22 +248,47 @@ int main(void)
                             bFullscreen = !bFullscreen;
                             break;
                         case XK_w:
-                            camz -= 1.0f;
+                        case XK_W:
+                            camera_pos[2] -= 1.0f;
+                            handleShipInput('W', true);
                             break;
                         case XK_s:
-                            camz += 1.0f;
+                        case XK_S:
+                            camera_pos[2] += 1.0f;
+                            handleShipInput('S', true);
                             break;
                         case XK_a:
-                            eyex -= 1.0f;
+                        case XK_A:
+                            camera_pos[0] -= 1.0f;
+                            handleShipInput('A', true);
                             break;
                         case XK_d:
-                            eyex += 1.0f;
+                        case XK_D:
+                            camera_pos[0] += 1.0f;
+                            handleShipInput('D', true);
                             break;
                         case XK_q:
-                            camy -= 1.0f;
+                            camera_pos[1] -= 1.0f;
                             break;
                         case XK_e:
-                            camy += 1.0f;
+                            camera_pos[1] += 1.0f;
+                            break;
+                        // Ship Pitch/Yaw controls
+                        case XK_8:
+                        case XK_KP_8:
+                            handleShipInput('8', true);
+                            break;
+                        case XK_5:
+                        case XK_KP_5:
+                            handleShipInput('5', true);
+                            break;
+                        case XK_4:
+                        case XK_KP_4:
+                            handleShipInput('4', true);
+                            break;
+                        case XK_6:
+                        case XK_KP_6:
+                            handleShipInput('6', true);
                             break;
                         case XK_l:
                         case XK_L:

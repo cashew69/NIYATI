@@ -4,11 +4,20 @@
 // SHARED GLOBAL VARIABLES (definitions)
 // ============================================================================
 
-// Camera variables
-float camz = 100.0f;
-float camy = 10.0f;
-float eyex = 0.0f;
-float eyez = 0.0f;
+// New Camera Control Variables
+int cameraMode = 0; // 0=FPS, 1=Manual, 2=Orbit
+vec3 camCenter(0.0f, 0.0f, 0.0f);
+vec3 camUp(0.0f, 1.0f, 0.0f);
+
+// Orbit Camera Variables
+float orbitRadius = 100.0f;
+float orbitYaw = 0.0f;
+float orbitPitch = 0.0f;
+bool orbitKeyboardControl = false;
+bool showOrbitVisuals = true;
+
+// Main Camera
+Camera* mainCamera = NULL;
 
 // Mouse input
 int mouse_x = 0;
@@ -17,6 +26,9 @@ bool mouse_captured = false;
 float camera_yaw = 0.0f;
 float camera_pitch = 0.0f;
 float mouse_sensitivity = 0.1f;
+// Camera Orientation Globals
+quaternion camera_orientation = quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+bool use_camera_quaternion = false;
 
 // OpenGL rendering state
 GLuint HeightMap = 0;
@@ -121,6 +133,9 @@ int initializeOpenGL(void)
 
     // Initialize projection matrix
     perspectiveProjectionMatrix = mat4::identity();
+    
+    // Initialize Main Camera
+    mainCamera = createCamera(vec3(0.0f, 0.0f, 100.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 
     fprintf(gpFile, "initializeOpenGL() completed successfully\n");
     return 0;
@@ -143,29 +158,82 @@ void resize(int width, int height)
 
 void display(void)
 {
-    // Calculate camera direction from yaw and pitch
-    float yaw_rad = camera_yaw * 3.14159265f / 180.0f;
-    float pitch_rad = camera_pitch * 3.14159265f / 180.0f;
+    if (!mainCamera) return;
+
+    // vec3 camera_pos;
+    // vec3 camera_target;
+    vec3 up_vector = vec3(0.0f, 1.0f, 0.0f);
+
+    switch (cameraMode)
+    {
+    case 0: // FPS Mode
+    {
+        // Calculate camera direction from yaw and pitch
+        float yaw_rad = camera_yaw * 3.14159265f / 180.0f;
+        float pitch_rad = camera_pitch * 3.14159265f / 180.0f;
+
+        vec3 direction;
+        direction[0] = cos(pitch_rad) * sin(yaw_rad);
+        direction[1] = sin(pitch_rad);
+        direction[2] = cos(pitch_rad) * cos(yaw_rad);
+
+        // Set up camera position and target
+        camera_target = camera_pos + direction;
+        up_vector = vec3(0.0f, 1.0f, 0.0f);
+        break;
+    }
+    case 1: // Manual Mode
+    {
+        camera_target = camera_pos;
+        up_vector = camUp;
+        break;
+    }
+    case 2: // Orbit Mode
+    {
+        float yaw_rad = orbitYaw * 3.14159265f / 180.0f;
+        float pitch_rad = orbitPitch * 3.14159265f / 180.0f;
+
+        // Calculate position on sphere
+        float x = orbitRadius * cos(pitch_rad) * sin(yaw_rad);
+        float y = orbitRadius * sin(pitch_rad);
+        float z = orbitRadius * cos(pitch_rad) * cos(yaw_rad);
+
+        camera_pos = camCenter + vec3(x, y, z);
+        camera_target = camCenter;
+        up_vector = vec3(0.0f, 1.0f, 0.0f); // Usually keep up as Y for orbit
+        
+        break;
+    }
+    case 3: // Ship TPP Mode
+    {
+        shipCam(camera_offsets_for_ship_tpp[0], camera_offsets_for_ship_tpp[1], camera_offsets_for_ship_tpp[2]);
+        
+
+        break;
+    }
+    }
     
-    vec3 direction;
-    direction[0] = cos(pitch_rad) * sin(yaw_rad);
-    direction[1] = sin(pitch_rad);
-    direction[2] = cos(pitch_rad) * cos(yaw_rad);
+    // Update Main Camera
+    mainCamera->position = camera_pos;
+    mainCamera->target = camera_target;
+    mainCamera->up = up_vector;
     
-    // Set up camera position and target
-    vec3 camera_pos(eyex, camy, camz);
-    vec3 camera_target = camera_pos + direction;
+    // Pass quaternion state to camera
+    mainCamera->orientation = camera_orientation;
+    mainCamera->useQuaternion = use_camera_quaternion;
     
-    // Update view matrix
-    viewMatrix = vmath::lookat(camera_pos, camera_target, vec3(0.0f, 1.0f, 0.0f));
+    updateCamera(mainCamera);
+    
+    // Use view matrix from camera
+    viewMatrix = mainCamera->viewMatrix;
     
     // Clear buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the scene
     renderer(rotationAngle, HeightMap);
-    
-    // note: Platform-specific code should swap buffers after calling this function
+
+   
 }
 
 void update(void)
@@ -176,16 +244,29 @@ void update(void)
     {
         rotationAngle = 0.0f;
     }
+    shipUpdate();
 }
 
 void updateCameraFromMouse(int delta_x, int delta_y)
 {
-    camera_yaw += delta_x * mouse_sensitivity;
-    camera_pitch -= delta_y * mouse_sensitivity;
-    
-    // Clamp pitch to prevent camera flipping
-    if (camera_pitch > 89.0f) camera_pitch = 89.0f;
-    if (camera_pitch < -89.0f) camera_pitch = -89.0f;
+    if (cameraMode == 2) // Orbit Mode
+    {
+        orbitYaw += delta_x * mouse_sensitivity;
+        orbitPitch -= delta_y * mouse_sensitivity;
+        
+        // Clamp pitch to prevent flipping
+        if (orbitPitch > 89.0f) orbitPitch = 89.0f;
+        if (orbitPitch < -89.0f) orbitPitch = -89.0f;
+    }
+    else // FPS Mode (Default)
+    {
+        camera_yaw += delta_x * mouse_sensitivity;
+        camera_pitch -= delta_y * mouse_sensitivity;
+        
+        // Clamp pitch to prevent camera flipping
+        if (camera_pitch > 89.0f) camera_pitch = 89.0f;
+        if (camera_pitch < -89.0f) camera_pitch = -89.0f;
+    }
 }
 
 void toggleWireframe(void)

@@ -9,6 +9,10 @@ typedef struct Transform {
     vec3 rotation;
     vec3 scale;
     
+    // Quaternion orientation (optional, used if useQuaternion is true)
+    quaternion orientation;
+    bool useQuaternion;
+    
     // Cached matrices for performance
     mat4 localMatrix;
     bool isDirty;     // Flag to track if matrix needs recalculation
@@ -20,6 +24,10 @@ typedef struct Transform {
 Transform* createTransform(vec3 position = vec3(0.0f, 0.0f, 0.0f),
                           vec3 rotation = vec3(0.0f, 0.0f, 0.0f),
                           vec3 scale = vec3(1.0f, 1.0f, 1.0f));
+
+// Quaternion setters/getters
+void setRotation(Transform* transform, quaternion rotation);
+quaternion getRotationQ(const Transform* transform);
 
 void initTransform(Transform* transform);
 void freeTransform(Transform* transform);

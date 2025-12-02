@@ -1,0 +1,8 @@
+[x] Check the transformation functions
+[x] rotate the ship
+[x] make camera stick to ship
+[x] toggle stick to camera in ImGui
+
+
+[x] ship shooting mechanics
+[x] ship control

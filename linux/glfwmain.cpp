@@ -157,10 +157,77 @@ int main(void)
             ImGui::Begin("Debug Controls"); 
             ImGui::Text("Application Average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::Separator();
-            ImGui::Text("Camera Position");
-            ImGui::SliderFloat("Cam X", &eyex, -100.0f, 100.0f);
-            ImGui::SliderFloat("Cam Y", &camy, -100.0f, 100.0f);
-            ImGui::SliderFloat("Cam Z", &camz, -500.0f, 500.0f);
+            
+            // Camera Mode Selection
+            ImGui::Text("Camera Mode");
+            ImGui::RadioButton("FPS", &cameraMode, 0); ImGui::SameLine();
+            ImGui::RadioButton("Manual", &cameraMode, 1); ImGui::SameLine();
+            ImGui::RadioButton("Orbit", &cameraMode, 2); ImGui::SameLine();
+            ImGui::RadioButton("SHIP_TPP", &cameraMode, 3);
+            ImGui::Separator();
+
+            if (cameraMode == 0) // FPS Mode
+            {
+                ImGui::Text("FPS Camera Position");
+                ImGui::SliderFloat("Cam X", &camera_pos[0], -100.0f, 100.0f);
+                ImGui::SliderFloat("Cam Y", &camera_pos[1], -100.0f, 100.0f);
+                ImGui::SliderFloat("Cam Z", &camera_pos[2], -500.0f, 500.0f);
+            }
+            else if (cameraMode == 1) // Manual Mode
+            {
+                ImGui::Text("Manual Camera Control");
+                ImGui::Text("Eye Position");
+                ImGui::SliderFloat("Eye X", &camera_pos[0], -100.0f, 100.0f);
+                ImGui::SliderFloat("Eye Y", &camera_pos[1], -100.0f, 100.0f);
+                ImGui::SliderFloat("Eye Z", &camera_pos[2], -500.0f, 500.0f);
+                
+                ImGui::Separator();
+                ImGui::Text("Center Position");
+                ImGui::SliderFloat("Center X", &camCenter[0], -100.0f, 100.0f);
+                ImGui::SliderFloat("Center Y", &camCenter[1], -100.0f, 100.0f);
+                ImGui::SliderFloat("Center Z", &camCenter[2], -500.0f, 500.0f);
+
+                ImGui::Separator();
+                ImGui::Text("Up Vector");
+                bool upX = (camUp[0] > 0.5f);
+                bool upY = (camUp[1] > 0.5f);
+                bool upZ = (camUp[2] > 0.5f);
+                
+                if (ImGui::Checkbox("Up X", &upX)) camUp[0] = upX ? 1.0f : 0.0f;
+                if (ImGui::Checkbox("Up Y", &upY)) camUp[1] = upY ? 1.0f : 0.0f;
+                if (ImGui::Checkbox("Up Z", &upZ)) camUp[2] = upZ ? 1.0f : 0.0f;
+            }
+            else if (cameraMode == 2) // Orbit Mode
+            {
+                ImGui::Text("Orbit Camera Control");
+                ImGui::SliderFloat("Radius", &orbitRadius, 1.0f, 500.0f);
+                ImGui::SliderFloat("Center X", &camCenter[0], -100.0f, 100.0f);
+                ImGui::SliderFloat("Center Y", &camCenter[1], -100.0f, 100.0f);
+                ImGui::SliderFloat("Center Z", &camCenter[2], -500.0f, 500.0f);
+                
+                ImGui::Checkbox("Keyboard Control", &orbitKeyboardControl);
+                ImGui::Checkbox("Show Visuals", &showOrbitVisuals);
+                
+                if (!orbitKeyboardControl)
+                {
+                    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Right Click & Drag to Rotate");
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(0, 1, 0, 1), "Use Arrow Keys to Rotate");
+                }
+            }
+            else if (cameraMode == 3) // Ship TPP Mode
+            {
+                ImGui::Text("Ship TPP Camera Control");
+                ImGui::TextColored(ImVec4(1, 1, 0, 1), "Camera is now pegged to the ship");
+
+                ImGui::SliderFloat("Offset X", &camera_offsets_for_ship_tpp[0], -100.0f, 100.0f);
+                ImGui::SliderFloat("Offset Y", &camera_offsets_for_ship_tpp[1], -10.0f, 100.0f);
+                ImGui::SliderFloat("Offset Z", &camera_offsets_for_ship_tpp[2], -10.0f, 100.0f);
+                ImGui::SliderFloat("Lerp Smooth Factor", &smoothFactor, 0.0, 0.999999f);
+            }
+
             ImGui::Separator();
             if (ImGui::Button("Toggle Wireframe"))
             {
@@ -170,14 +237,35 @@ int main(void)
         }
 
         // Handle Keyboard Movement (Continuous polling)
-        if (mouse_captured)
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) handleShipInput('A', true);
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) handleShipInput('D', true);
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) handleShipInput('W', true);
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) handleShipInput('S', true);
+        if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) handleShipInput('H', true);
+        if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) handleShipInput('J', true);
+        if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) handleShipInput('K', true);
+        if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) handleShipInput('L', true);
+        
+        // Handle Keyboard Movement (Continuous polling)
+        if (cameraMode == 0 && mouse_captured) // FPS Mode
         {
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camz -= 1.0f;
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camz += 1.0f;
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) eyex -= 1.0f;
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) eyex += 1.0f;
-            if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camy -= 1.0f;
-            if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) camy += 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera_pos[2] -= 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera_pos[2] += 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera_pos[0] -= 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera_pos[0] += 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camera_pos[1] -= 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) camera_pos[1] += 1.0f;
+        }
+        else if (cameraMode == 2 && orbitKeyboardControl) // Orbit Mode with Keyboard
+        {
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) orbitYaw -= 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) orbitYaw += 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) orbitPitch += 1.0f;
+            if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) orbitPitch -= 1.0f;
+            
+            // Clamp pitch
+            if (orbitPitch > 89.0f) orbitPitch = 89.0f;
+            if (orbitPitch < -89.0f) orbitPitch = -89.0f;
         }
 
         // Render
@@ -247,14 +335,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         switch (key)
         {
-            case GLFW_KEY_ESCAPE:
+            case GLFW_KEY_CAPS_LOCK:
                 glfwSetWindowShouldClose(window, GLFW_TRUE);
                 break;
             case GLFW_KEY_F:
                 toggleFullScreen();
                 break;
             case GLFW_KEY_L:
-                toggleWireframe();  
+                //toggleWireframe();  
                 break;
             default:
                 break;

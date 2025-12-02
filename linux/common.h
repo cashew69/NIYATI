@@ -56,6 +56,13 @@ vec3 shipForward;
 vec3 shipUp;
 vec3 shipRight;
 
+// Camera variables
+vec3 camera_pos(0.0f, 10.0f, 100.0f);
+vec3 camera_target(0.0f, 0.0f, 0.0f);
+vec3 camera_offsets_for_ship_tpp(0.0f, 0.0f, 15.0f);
+extern quaternion camera_orientation;
+extern bool use_camera_quaternion;
+
 
 
 #include "engine/transform.cpp"
