@@ -129,13 +129,16 @@ int initializeOpenGL(void)
     glDepthFunc(GL_LEQUAL);
 
     // Set clear color
-    glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // transparent
 
+    
     // Initialize projection matrix
     perspectiveProjectionMatrix = mat4::identity();
     
     // Initialize Main Camera
     mainCamera = createCamera(vec3(0.0f, 0.0f, 100.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+    initPropulsion();
 
     fprintf(gpFile, "initializeOpenGL() completed successfully\n");
     return 0;

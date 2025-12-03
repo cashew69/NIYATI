@@ -13,6 +13,16 @@ float smoothFactor = 0.5f;
 // Initial Orientation: Identity (No rotation, pointing -Z in logical space)
 quaternion shipOrientation = quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 
+// Propulsion Globals
+Mesh* propulsionMeshes = NULL;
+int propulsionMeshCount = 0;
+ShaderProgram* propulsionShader = NULL;
+GLuint noiseTexture = 0;
+
+vec3 propulsionOffset = vec3(0.5f, 0.37f, 2.7f);
+vec3 propulsionScale = vec3(0.2f, 0.2f, 1.0f);
+vec3 propulsionRotation = vec3(0.0f, 0.0f, 0.0f);
+
 // rotate the MESH to align (Nose = -Z).
 mat4 getMeshCorrectionMatrix()
 {
@@ -23,6 +33,132 @@ mat4 getMeshCorrectionMatrix()
     mat4 fixRoll = rotate(90.0f, 0.0f, 0.0f, 1.0f);
 
     return fixRoll * fixYaw;
+}
+
+extern const char* attribNames[4];
+extern GLint attribIndices[4];
+
+quaternion eulerToQuaternion(float pitch, float yaw, float roll)
+{
+    float p = radians(pitch) * 0.5f;
+    float y = radians(yaw) * 0.5f;
+    float r = radians(roll) * 0.5f;
+
+    float sp = sin(p);
+    float cp = cos(p);
+    float sy = sin(y);
+    float cy = cos(y);
+    float sr = sin(r);
+    float cr = cos(r);
+
+    quaternion q;
+    q[0] = sr * cp * cy - cr * sp * sy; // x
+    q[1] = cr * sp * cy + sr * cp * sy; // y
+    q[2] = cr * cp * sy - sr * sp * cy; // z
+    q[3] = cr * cp * cy + sr * sp * sy; // w
+    return q;
+}
+
+void initPropulsion()
+{
+    // Load Model
+    if (!loadModel("user/models/propulsion.fbx", &propulsionMeshes, &propulsionMeshCount, 1.0f))
+    {
+        fprintf(gpFile, "Failed to load propulsion model\n");
+    }
+
+    // Load Texture
+    loadPNGTexture(&noiseTexture, const_cast<char*>("user/ship/Jet_Propulsion_with_texture/noiseTexture.png"), 0, 1);
+
+    // Create Shader
+    const char* propulsionShaderFiles[5] = {
+        "user/ship/propulsion_vs.glsl",
+        NULL,
+        NULL,
+        NULL,
+        "user/ship/Jet_Propulsion_with_texture/code.glsl"
+    };
+    
+    if (!buildShaderProgramFromFiles(propulsionShaderFiles, 5, 
+                &propulsionShader, attribNames, attribIndices, 4))
+    {
+        fprintf(gpFile, "Failed to build propulsion shader program\n");
+    }
+}
+
+void renderPropulsion()
+{
+    if (!propulsionMeshes || propulsionMeshCount < 1 || !propulsionShader) return;
+
+    
+    glUseProgram(propulsionShader->id);
+
+    // Uniforms
+    GLint loc;
+    loc = glGetUniformLocation(propulsionShader->id, "u_time");
+    if (loc != -1) glUniform1f(loc, (float)glfwGetTime());
+
+    loc = glGetUniformLocation(propulsionShader->id, "u_speed");
+    if (loc != -1) glUniform1f(loc, 1.0f); // Default speed
+
+    loc = glGetUniformLocation(propulsionShader->id, "u_textures[0]");
+    if (loc != -1) glUniform1i(loc, 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);
+
+    // Matrices
+    loc = glGetUniformLocation(propulsionShader->id, "uView");
+    if (loc != -1) glUniformMatrix4fv(loc, 1, GL_FALSE, viewMatrix);
+
+    loc = glGetUniformLocation(propulsionShader->id, "uProjection");
+    if (loc != -1) glUniformMatrix4fv(loc, 1, GL_FALSE, perspectiveProjectionMatrix);
+
+    // Render 2 engines
+    for (int i = 0; i < 2; i++)
+    {
+        if (propulsionMeshes[0].transform == NULL) {
+            propulsionMeshes[0].transform = createTransform();
+        }
+
+        vec3 finalOffset = propulsionOffset;
+        if (i == 1) finalOffset[0] = -finalOffset[0]; // Mirror X for second engine
+
+        mat4 shipRotMat = shipOrientation.asMatrix();
+        vec4 tempOffset = vec4(finalOffset, 1.0f) * shipRotMat.transpose();
+        vec3 worldOffset = vec3(tempOffset[0], tempOffset[1], tempOffset[2]);
+        
+        vec3 enginePos = shipPosition + worldOffset;
+
+        setPosition(propulsionMeshes[0].transform, enginePos);
+        
+        // Combine ship orientation with local rotation
+        quaternion localRot = eulerToQuaternion(propulsionRotation[0], propulsionRotation[1], propulsionRotation[2]);
+        setRotation(propulsionMeshes[0].transform, shipOrientation * localRot);
+        setScale(propulsionMeshes[0].transform, propulsionScale);
+
+        mat4 modelMatrix = getWorldMatrix(propulsionMeshes[0].transform);
+        
+        
+        loc = glGetUniformLocation(propulsionShader->id, "uModel");
+        if (loc != -1) glUniformMatrix4fv(loc, 1, GL_FALSE, modelMatrix);
+
+        glBindVertexArray(propulsionMeshes[0].vao);
+        glDrawElements(GL_TRIANGLES, propulsionMeshes[0].indexCount, GL_UNSIGNED_INT, NULL);
+        glBindVertexArray(0);
+    }
+    
+    glUseProgram(0);
+}
+
+void renderShipUI()
+{
+    ImGui::Begin("Ship Controls");
+    ImGui::Text("Propulsion Settings");
+    ImGui::DragFloat3("Offset", &propulsionOffset[0], 0.1f);
+    ImGui::DragFloat3("Scale", &propulsionScale[0], 0.1f);
+    ImGui::DragFloat3("Rotation", &propulsionRotation[0], 1.0f);
+    ImGui::End();
 }
 
 void renderShip()
@@ -50,6 +186,8 @@ void renderShip()
     glBindVertexArray(sceneMeshes[0].vao);
     glDrawElements(GL_TRIANGLES, sceneMeshes[0].indexCount, GL_UNSIGNED_INT, NULL);
     glBindVertexArray(0);
+
+    
 }
 
 void handleShipInput(int key, bool isKeyDown)

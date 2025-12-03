@@ -35,6 +35,7 @@ void renderUserMeshes(GLint HeightMap)
         setCommonUniformsForCurrentProgram(mainShaderProgram, perspectiveProjectionMatrix, viewMatrix, lightPos, lightColor, viewPos);
 
         renderShip();
+        
 
     }
 
@@ -46,6 +47,12 @@ void renderUserMeshes(GLint HeightMap)
 
     }
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE); // Additive blending for glow
+    glDepthMask(GL_FALSE);
+    renderPropulsion();
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
 
     glUseProgram(0);
 
