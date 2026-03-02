@@ -1,0 +1,4 @@
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles/window_glfw_linux.dir
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles/window_x11.dir
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles/edit_cache.dir
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles/rebuild_cache.dir

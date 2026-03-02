@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++ -DHAS_IMGUI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/editor/glfwmain.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/editor/glfwmain.cpp",
+  "output": "CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o"
+},
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++ -DHAS_IMGUI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui.cpp",
+  "output": "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o"
+},
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++ -DHAS_IMGUI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_draw.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_draw.cpp",
+  "output": "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o"
+},
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++ -DHAS_IMGUI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_tables.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_tables.cpp",
+  "output": "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o"
+},
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++ -DHAS_IMGUI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_widgets.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_widgets.cpp",
+  "output": "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o"
+},
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++ -DHAS_IMGUI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_glfw.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_glfw.cpp",
+  "output": "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o"
+},
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++ -DHAS_IMGUI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_opengl3.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_opengl3.cpp",
+  "output": "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o"
+},
+{
+  "directory": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build",
+  "command": "/usr/bin/c++  -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/. -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui -g -std=gnu++17 -o CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/linux/linmain.cpp",
+  "file": "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/linux/linmain.cpp",
+  "output": "CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o"
+}
+]

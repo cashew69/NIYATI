@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/window_x11.dir/link.d CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o -o window_x11  -lGL -lX11 -lGLEW -lassimp
