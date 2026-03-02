@@ -6,3 +6,31 @@
 
 [x] ship shooting mechanics
 [x] ship control
+
+==============================
+
+[] Smoke
+[] Pixelated Smoke Texture
+[] Billboarding
+[] Random locations
+[] Fog
+[] Falling Ash
+
+[] Heavy Clouds Texture.
+
+
+
+
+======
+
+I am restructuring the engine, 
+
+There will be 4 directories on top.
+["examples", "engine", "platforms", "templates"]
+
+example will hold projects. Projects will be created as per the templates directory.
+
+Engine is going to be cross platform. so in project main file, there will if-endif 
+blocks of C code for different platforms.
+
+I have also changed names of files, and there places, Make the changes accordingly.

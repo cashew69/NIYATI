@@ -1,1 +1,7 @@
-log.txt
+linux/log.txt
+linux/todo.list
+linux/build/
+linux/build-win/
+.cache
+.vscode/
+*.blend
