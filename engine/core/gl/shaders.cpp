@@ -61,7 +61,17 @@ void freeThyShaderProgram(ShaderProgram* program) {
 
 char* readShaderFile(const char* filename)
 {
-    FILE* file = fopen(filename, "r"); // https://man7.org/linux/man-pages/man3/fopen.3.html
+    FILE* file = fopen(filename, "r");
+
+    if (!file)
+    {
+        // Fallback: try one level up if we're running from a build folder
+        char fallbackPath[1024];
+        snprintf(fallbackPath, sizeof(fallbackPath), "../%s", filename);
+        file = fopen(fallbackPath, "r");
+        if (file) fprintf(gpFile, "Found shader file using fallback: %s\n", fallbackPath);
+    }
+
     if (!file)
     {
         fprintf(gpFile, "Failed to open shader file: %s (Error: %s)\n", filename, strerror(errno));

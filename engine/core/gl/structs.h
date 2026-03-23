@@ -1,5 +1,12 @@
+#pragma once
 // Forward declaration
 struct Transform;
+
+#ifndef Bool
+typedef int Bool;
+#define True 1
+#define False 0
+#endif
 
 // Model vertex data structure
 typedef struct {
@@ -37,6 +44,7 @@ typedef struct {
     Material material;
     struct Transform* transform;
     char* userFragmentCode;
+    char name[64];
 } Mesh;
 
 typedef struct {

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux
+CMAKE_SOURCE_DIR = /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build
+CMAKE_BINARY_DIR = /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/window_glfw_linux.dir/depend.make
@@ -73,102 +73,102 @@ CMakeFiles/window_glfw_linux.dir/codegen:
 .PHONY : CMakeFiles/window_glfw_linux.dir/codegen
 
 CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: CMakeFiles/window_glfw_linux.dir/flags.make
-CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/editor/glfwmain.cpp
+CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/glfwmain.cpp
 CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o -MF CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/editor/glfwmain.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o -MF CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/glfwmain.cpp
 
 CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/editor/glfwmain.cpp > CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/glfwmain.cpp > CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.i
 
 CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/editor/glfwmain.cpp -o CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/glfwmain.cpp -o CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.s
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o: CMakeFiles/window_glfw_linux.dir/flags.make
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui.cpp
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.cpp
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.cpp
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.i
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.s
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o: CMakeFiles/window_glfw_linux.dir/flags.make
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_draw.cpp
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_draw.cpp
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_draw.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_draw.cpp
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_draw.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_draw.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.i
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_draw.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_draw.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.s
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o: CMakeFiles/window_glfw_linux.dir/flags.make
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_tables.cpp
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_tables.cpp
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_tables.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_tables.cpp
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_tables.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_tables.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.i
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_tables.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_tables.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.s
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o: CMakeFiles/window_glfw_linux.dir/flags.make
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_widgets.cpp
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_widgets.cpp
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_widgets.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_widgets.cpp
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_widgets.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_widgets.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.i
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_widgets.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_widgets.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.s
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/window_glfw_linux.dir/flags.make
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_glfw.cpp
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.cpp
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_glfw.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.cpp
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_glfw.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.i
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_glfw.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.s
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/window_glfw_linux.dir/flags.make
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_opengl3.cpp
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.cpp
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_opengl3.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o -MF CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o -c /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.cpp
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_opengl3.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.cpp > CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.i
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/engine/dependancies/imgui/imgui_impl_opengl3.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.cpp -o CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.s
 
 # Object files for target window_glfw_linux
 window_glfw_linux_OBJECTS = \
@@ -193,7 +193,7 @@ window_glfw_linux: CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/im
 window_glfw_linux: CMakeFiles/window_glfw_linux.dir/build.make
 window_glfw_linux: CMakeFiles/window_glfw_linux.dir/compiler_depend.ts
 window_glfw_linux: CMakeFiles/window_glfw_linux.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable window_glfw_linux"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable window_glfw_linux"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/window_glfw_linux.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -205,6 +205,6 @@ CMakeFiles/window_glfw_linux.dir/clean:
 .PHONY : CMakeFiles/window_glfw_linux.dir/clean
 
 CMakeFiles/window_glfw_linux.dir/depend:
-	cd /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/build/CMakeFiles/window_glfw_linux.dir/DependInfo.cmake "--color=$(COLOR)" window_glfw_linux
+	cd /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/build/CMakeFiles/window_glfw_linux.dir/DependInfo.cmake "--color=$(COLOR)" window_glfw_linux
 .PHONY : CMakeFiles/window_glfw_linux.dir/depend
 

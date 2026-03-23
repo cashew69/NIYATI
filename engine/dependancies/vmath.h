@@ -500,6 +500,15 @@ public:
 
     }
 
+    inline Tquaternion& operator=(const Tquaternion& q)
+    {
+        a[0] = q.a[0];
+        a[1] = q.a[1];
+        a[2] = q.a[2];
+        a[3] = q.a[3];
+        return *this;
+    }
+
     inline Tquaternion(T _r)
         : r(_r),
           v(T(0))

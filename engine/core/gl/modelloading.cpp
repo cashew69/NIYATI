@@ -57,18 +57,6 @@ void setMaterialUniforms(ShaderProgram* program, Material* material) {
     bindTex(program, "uHasDiffuseTexture", "uDiffuseTexture", material->diffuseTexture, 0);
     bindTex(program, "uHasNormalTexture", "uNormalTexture", material->normalTexture, 1);
 
-    // PBR: Metallic/Roughness often packed in one texture (ORM: R=Occlusion, G=Roughness, B=Metallic)
-    // We bind it to both Metallic and Roughness slots in shader if they are separate,
-    // or if shader handles packed ORM, we bind it once.
-    // Our pbrFrag.glsl expects "uMetallicMap", "uRoughnessMap", "uAOMap".
-    // If we have a packed texture, we bind it to ALL of them and shader needs to channel select.
-    // Since pbrFrag currently just samples .r from each, we might need to update shader or bind different views.
-    // For now, let's bind the ORM texture to all 3 slots (2, 3, 4).
-    // The shader samples .r for metallic/roughness/ao.
-    // WAIT: glTF ORM is R=AO, G=Roughness, B=Metallic.
-    // My shader: uMetallicMap.r, uRoughnessMap.r, uAOMap.r.
-    // This mismatch needs fixing in SHADER.
-
     bindTex(program, "uHasMetallicMap", "uMetallicMap", material->metallicRoughnessTexture, 2);
     bindTex(program, "uHasRoughnessMap", "uRoughnessMap", material->metallicRoughnessTexture, 3);
     bindTex(program, "uHasAOMap", "uAOMap", material->metallicRoughnessTexture, 4);
@@ -177,7 +165,6 @@ GLuint loadEmbeddedTexture(const struct aiTexture* embeddedTex) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // For PBR textures, repeat is usually good, but clamp might be safer for single objects
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -253,7 +240,6 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
     }
     fprintf(gpFile, "--- End Material Debug ---\n");
 
-    // Diffuse / BaseColor - Try multiple fallbacks
     material->diffuseTexture = 0;
     if (aiGetMaterialTexture(aiMat, aiTextureType_DIFFUSE, 0, &texPath, NULL, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
         fprintf(gpFile, "Loading Diffuse (DIFFUSE): %s\n", texPath.data);
@@ -264,7 +250,6 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
     }
     fprintf(gpFile, "Diffuse texture ID: %u\n", material->diffuseTexture);
 
-    // Normal Map - Try multiple fallbacks
     material->normalTexture = 0;
     if (aiGetMaterialTexture(aiMat, aiTextureType_NORMALS, 0, &texPath, NULL, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
         fprintf(gpFile, "Loading Normal (NORMALS): %s\n", texPath.data);
@@ -315,9 +300,6 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
     }
     fprintf(gpFile, "AO texture ID: %u\n", material->aoTexture);
 
-    // --- BRUTE FORCE FALLBACK ---
-    // If we have embedded textures but material lookup failed, force assign them
-    // heavily dependent on specific GLB packing, but good for debug
 
     if (scene->mNumTextures > 0) {
         fprintf(gpFile, "DEBUG: Scene has %d embedded textures. Checking for missing assignments...\n", scene->mNumTextures);
@@ -331,32 +313,23 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
              return loadTextureGeneral(path, modelDirectory, scene);
         };
 
-        // DamagedHelmet Fallback Strategy:
-        // Usually: *0=BaseColor/Diffuse, *1=ORM (Occ/Rough/Metal), *2=Normal, *3=Emissive
-        // Currently log showed *1=Emissive, *0=Lightmap(AO)
 
-        // 1. Force Diffuse from *0 (likely BaseColor) if missing
+
         if (material->diffuseTexture == 0 && scene->mNumTextures > 0) {
             fprintf(gpFile, "FALLBACK: Force assigning *0 to Diffuse\n");
             material->diffuseTexture = loadByIndex(0);
         }
 
-        // 2. Force Normal from *2 (often Normal) if missing
         if (material->normalTexture == 0 && scene->mNumTextures > 2) {
              fprintf(gpFile, "FALLBACK: Force assigning *2 to Normal\n");
              material->normalTexture = loadByIndex(2);
         }
         else if (material->normalTexture == 0 && scene->mNumTextures > 1) {
-             // Maybe *1 is normal if no ORM/Emissive?
-             // But log said *1 is Emissive.
+
         }
 
-        // 3. Force ORM from *1 or *something else if missing
-        // Log said *1 was Emissive. *0 was AO.
-        // If *0 is AO, it might actually be ORM (R=AO).
         if (material->metallicRoughnessTexture == 0 && scene->mNumTextures > 0) {
              if (material->aoTexture != 0) {
-                 // Reuse AO texture as ORM if we found one (likely *0)
                  fprintf(gpFile, "FALLBACK: reusing AO texture as ORM\n");
                  material->metallicRoughnessTexture = material->aoTexture;
              } else {
@@ -466,6 +439,25 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
         aiProcess_JoinIdenticalVertices |
         aiProcess_CalcTangentSpace);
 
+#ifdef _WIN32
+    if (!scene) {
+        // Fallback: try one level up on Windows
+        char fallbackPath[1024];
+        snprintf(fallbackPath, sizeof(fallbackPath), "../%s", filename);
+        scene = aiImportFile(fallbackPath,
+            aiProcess_Triangulate |
+            aiProcess_GenNormals |
+            aiProcess_FlipUVs |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_CalcTangentSpace);
+        
+        if (scene) {
+            fprintf(gpFile, "Found model file using fallback: %s\n", fallbackPath);
+            filename = fallbackPath;
+        }
+    }
+#endif
+
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         fprintf(gpFile, "Error: Failed to load model %s: %s\n", filename, aiGetErrorString());
         return False;
@@ -561,6 +553,9 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
             vec3(0.0f, 0.0f, 0.0f),
             vec3(1.0f, 1.0f, 1.0f)
         );
+        
+        strncpy((*meshes)[i].name, aiMesh->mName.C_Str(), 63);
+        (*meshes)[i].name[63] = '\0';
 
         (*meshes)[i].userFragmentCode = NULL;
 

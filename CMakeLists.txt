@@ -1,15 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
 project(NIYATI)
 
-# Generate compile_commands.json for editors
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(
-    .
-    engine
-    engine/dependancies/imgui
+set(NIYATI_INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/core/gl
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/dependancies
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/dependancies/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/editor
+    ${CMAKE_CURRENT_SOURCE_DIR}/user
 )
 
 set(IMGUI_SOURCES
@@ -22,30 +26,28 @@ set(IMGUI_SOURCES
 )
 
 if(WIN32)
-    add_executable(window_win32 WIN32 platforms/windows/winmain.cpp)
+    add_executable(window_win32 platforms/windows/winmain.cpp ${IMGUI_SOURCES})
 
     target_include_directories(window_win32 PRIVATE
-        .
-        engine
-        ${CMAKE_CURRENT_SOURCE_DIR}/engine/dependancies/glew/include
-        "C:/Program Files/Assimp/include"
+        ${NIYATI_INCLUDES}
+        engine/dependancies/glew/include
+        engine/dependancies/assimp/include
     )
     target_link_directories(window_win32 PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/engine/dependancies/glew/lib/Release/x64
-        "C:/Program Files/Assimp/lib/x64"
+        ${CMAKE_CURRENT_SOURCE_DIR}/engine/dependancies/assimp/lib/x64
     )
     target_link_libraries(window_win32 opengl32 glew32 assimp-vc143-mt)
 
 else()
-    # GLFW editor window (with ImGui)
-    add_executable(window_glfw_linux
-        platforms/editor/glfwmain.cpp
-        ${IMGUI_SOURCES}
-    )
+    # Editor Build (GLFW + ImGui)
+    add_executable(window_glfw_linux platforms/editor/glfwmain.cpp ${IMGUI_SOURCES})
+    target_include_directories(window_glfw_linux PRIVATE ${NIYATI_INCLUDES})
     target_compile_definitions(window_glfw_linux PRIVATE HAS_IMGUI)
     target_link_libraries(window_glfw_linux GL GLEW glfw assimp)
 
-    # X11 window (no ImGui)
+    # Raw Linux Build (X11)
     add_executable(window_x11 platforms/linux/linmain.cpp)
+    target_include_directories(window_x11 PRIVATE ${NIYATI_INCLUDES})
     target_link_libraries(window_x11 GL X11 GLEW assimp)
 endif()

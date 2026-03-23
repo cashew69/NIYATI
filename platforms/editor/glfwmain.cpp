@@ -42,7 +42,7 @@ void ShutdownGUI() {
 // Default stub — project 03 overrides this by defining UpdateGUI() in gui.cpp
 // which is included before this point via platform_common.cpp → project.cpp → gui.cpp.
 // Projects 01 and 02 don't define UpdateGUI, so this stub is used instead.
-#ifndef PROJECT_03
+#if !defined(PROJECT_03) && !defined(PROJECT_04)
 void UpdateGUI() {
     NewFrameGUI();
     // No panels for simple projects
@@ -135,7 +135,7 @@ int main(void) {
   glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
   // Create Window
-  window = glfwCreateWindow(winwidth, winheight, "Nikhil Sathe's GLFW Window",
+  window = glfwCreateWindow(winwidth, winheight, "NIYATI ENGINE",
                             NULL, NULL);
   if (!window) {
     fprintf(gpFile, "glfwCreateWindow() failed\n");

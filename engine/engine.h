@@ -1,4 +1,4 @@
-
+#pragma once
 
 // Standard header files.
 #include <ctime>
@@ -22,6 +22,10 @@ using namespace vmath;
 #include "core/gl/structs.h"
 #include "transform.h"
 
+// Standard shader attribute slots — used by all projects for buildShaderProgram / createVAO_VBO
+extern const char* attribNames[4];
+extern GLint attribIndices[4];
+
 // ============================================================================
 // ENGINE GLOBALS
 // ============================================================================
@@ -31,6 +35,8 @@ ShaderProgram *mainShaderProgram = NULL;
 ShaderProgram *lineShaderProgram = NULL;
 ShaderProgram *tessellationShaderProgram = NULL;
 ShaderProgram *pbrShaderProgram = NULL;
+ShaderProgram *VolumeRenderingProgram = NULL;
+
 
 // Scene Meshes
 Mesh *sceneMeshes = NULL;
@@ -64,5 +70,7 @@ GLint colorTextureLocUniform;
 #include "core/gl/shaders.cpp"
 #include "core/gl/camera.cpp"
 #include "core/gl/modelloading.cpp"
-#include "effects/perlin/perlin.c"
+#include "effects/noise/perlin.c"
 #include "transform.cpp"
+#include "editor/model_controller.h"
+#include "editor/model_controller.cpp"

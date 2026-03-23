@@ -1,15 +1,217 @@
-Program started successfully...!!!
-HELLO WORLD !!!
-OPENGL INFORMATION
-******************
-OpenGL Vendor : AMD
-OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, ACO, DRM 3.64, 6.19.3-2-cachyos)
-OpenGL Version : 4.6 (Core Profile) Mesa 26.0.1-arch2.3
-GLSL Version : 4.60
-Total number of OpenGL Extensions : 240
-Failed to open shader file: engine/shaders/vertex_shader.glsl (Error: No such file or directory)
-Error: Failed to load shader file: engine/shaders/vertex_shader.glsl
-Failed to build main shader program
-initialize() FAILED
+Program Started Successfully
+
+OpenGL Vendor   : ATI Technologies Inc.
+OpenGL Renderer : AMD Radeon RX 9070 XT
+OpenGL Version  : 4.6.0 Compatibility Profile Context 26.3.1.260309
+GLSL Version    : 4.60
+HDR failed, loading cubemap faces from preset: Night Sky
+Found cubemap face using fallback: ../user/models/skybox/posx.jpg
+Loaded cubemap face 0: user/models/skybox/posx.jpg (2048x2048)
+Found cubemap face using fallback: ../user/models/skybox/negx.jpg
+Loaded cubemap face 1: user/models/skybox/negx.jpg (2048x2048)
+Found cubemap face using fallback: ../user/models/skybox/posy.jpg
+Loaded cubemap face 2: user/models/skybox/posy.jpg (2048x2048)
+Found cubemap face using fallback: ../user/models/skybox/negy.jpg
+Loaded cubemap face 3: user/models/skybox/negy.jpg (2048x2048)
+Found cubemap face using fallback: ../user/models/skybox/posz.jpg
+Loaded cubemap face 4: user/models/skybox/posz.jpg (2048x2048)
+Found cubemap face using fallback: ../user/models/skybox/negz.jpg
+Loaded cubemap face 5: user/models/skybox/negz.jpg (2048x2048)
+Found shader file using fallback: ../engine/shaders/PBR/cubemap.vert
+Successfully read shader file: engine/shaders/PBR/cubemap.vert
+Found shader file using fallback: ../engine/shaders/PBR/irradiance_convolution.frag
+Successfully read shader file: engine/shaders/PBR/irradiance_convolution.frag
+Shader Program Linked Successfully
+Found shader file using fallback: ../engine/shaders/PBR/cubemap.vert
+Successfully read shader file: engine/shaders/PBR/cubemap.vert
+Found shader file using fallback: ../engine/shaders/PBR/prefilter.frag
+Successfully read shader file: engine/shaders/PBR/prefilter.frag
+Shader Program Linked Successfully
+Found shader file using fallback: ../engine/shaders/PBR/brdf.vert
+Successfully read shader file: engine/shaders/PBR/brdf.vert
+Found shader file using fallback: ../engine/shaders/PBR/brdf.frag
+Successfully read shader file: engine/shaders/PBR/brdf.frag
+Shader Program Linked Successfully
+IBL maps generated. Irradiance=2, Prefilter=3, BRDF=4
+Skybox initialized with envCubemap=1
+Found shader file using fallback: ../engine/shaders/PBR/skybox.vert
+Successfully read shader file: engine/shaders/PBR/skybox.vert
+Found shader file using fallback: ../engine/shaders/PBR/skybox.frag
+Successfully read shader file: engine/shaders/PBR/skybox.frag
+Shader Program Linked Successfully
+Found shader file using fallback: ../engine/shaders/vert_test.glsl
+Successfully read shader file: engine/shaders/vert_test.glsl
+Found shader file using fallback: ../engine/shaders/frag_test.glsl
+Successfully read shader file: engine/shaders/frag_test.glsl
+Shader Program Linked Successfully
+Generated 44 trail cloud spheres in a 3x3 Grid:
+Found shader file using fallback: ../engine/shaders/particle.vert
+Successfully read shader file: engine/shaders/particle.vert
+Found shader file using fallback: ../engine/shaders/particle.frag
+Successfully read shader file: engine/shaders/particle.frag
+Shader Program Linked Successfully
+Found shader file using fallback: ../engine/shaders/particle3D.vert
+Successfully read shader file: engine/shaders/particle3D.vert
+Found shader file using fallback: ../engine/shaders/particle3D.frag
+Successfully read shader file: engine/shaders/particle3D.frag
+Shader Program Linked Successfully
+Found texture using fallback: ../engine/effects/sphere_normal_map.png
+Found model file using fallback: ../examples/04_clouds/f22blend.glb
+Loading model: ../examples/04_clouds/f22blend.glb
+Number of meshes: 6
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 7
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 9
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 11
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 13
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 15
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 17
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+Model loaded successfully: ../examples/04_clouds/f22blend.glb
+Successfully loaded F22 model with 6 meshes
+Found shader file using fallback: ../engine/shaders/vertex_shader.glsl
+Successfully read shader file: engine/shaders/vertex_shader.glsl
+Found shader file using fallback: ../engine/shaders/PBR/pbrFrag.glsl
+Successfully read shader file: engine/shaders/PBR/pbrFrag.glsl
+Shader Program Linked Successfully
+Found shader file using fallback: ../engine/shaders/lineVert.glsl
+Successfully read shader file: engine/shaders/lineVert.glsl
+Found shader file using fallback: ../engine/shaders/lineFrag.glsl
+Successfully read shader file: engine/shaders/lineFrag.glsl
+Shader Program Linked Successfully
+Found shader file using fallback: ../engine/shaders/vertex_shader.glsl
+Successfully read shader file: engine/shaders/vertex_shader.glsl
+Found shader file using fallback: ../engine/effects/terrain/main_tcs.glsl
+Successfully read shader file: engine/effects/terrain/main_tcs.glsl
+Found shader file using fallback: ../engine/effects/terrain/main_tes.glsl
+Successfully read shader file: engine/effects/terrain/main_tes.glsl
+Found shader file using fallback: ../engine/shaders/PBR/pbrFrag.glsl
+Successfully read shader file: engine/shaders/PBR/pbrFrag.glsl
+Shader Program Linked Successfully
+Generating terrain mesh 256x256...
+Found texture using fallback: ../user/models/moon_assets/aerial_beach_01_diff_1k.png
+  Loaded diffuse texture: 19
+Found texture using fallback: ../user/models/moon_assets/aerial_beach_01_nor_gl_1k.png
+  Loaded normal texture: 20
+Found texture using fallback: ../user/models/moon_assets/aerial_beach_01_arm_1k.png
+  Loaded ARM texture: 21
+Found texture using fallback: ../user/models/moon_assets/aerial_beach_01_disp_1k.png
+  Loaded displacement texture: 22
+Mesh created: 260100 indices
+Terrain mesh created: 65536 vertices, 65025 patches (260100 indices)
+Found model file using fallback: ../user/models/DamagedHelmet.glb
+Loading model: ../user/models/DamagedHelmet.glb
+Number of meshes: 1
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 4: *3
+  TextureType 6: *2
+  TextureType 12: *0
+  TextureType 15: *1
+  TextureType 16: *1
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 24
+Loading Normal (NORMALS): *2
+Loading embedded texture: *2
+Normal texture ID: 25
+Loading ORM (METALNESS): *1
+Loading embedded texture: *1
+ORM texture ID: 26
+Loading Emissive: *3
+Loading embedded texture: *3
+Emissive texture ID: 27
+AO texture ID: 0
+DEBUG: Scene has 4 embedded textures. Checking for missing assignments...
+Model loaded successfully: ../user/models/DamagedHelmet.glb
+Project 04 (Volumetric Clouds) initialized
+initializeOpenGL() completed
+Initialize() completed successfully
+First projectRender() call. Program ID: 15
+Found texture using fallback: ../engine/effects/sphere_normal_map.png
+Project 04 (Volumetric Clouds) cleaned up
 OpenGL resources cleaned up
-Program terminated successfully...!!!
+Program Terminated Successfully

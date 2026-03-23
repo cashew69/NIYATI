@@ -22,7 +22,7 @@ const char *attribNames[4]   = {"aPosition", "aNormal", "aColor", "aTexCoord"};
 GLint       attribIndices[4]  = {ATTRIB_POSITION, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_TEXCOORD};
 
 // Change this include to switch projects
-#include "examples/03_terrain_pbr/project.cpp"
+#include "examples/04_clouds/project.cpp"
 
 // Each project must define:
 //   void projectInit()

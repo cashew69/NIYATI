@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/linux/platforms/linux/linmain.cpp" "CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o" "gcc" "CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o.d"
+  "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/linmain.cpp" "CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o" "gcc" "CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o.d"
   "" "window_x11" "gcc" "CMakeFiles/window_x11.dir/link.d"
   )
 

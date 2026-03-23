@@ -4,6 +4,13 @@ GLuint loadGLTexture(const char* filename) {
     unsigned char* image = stbi_load(filename, &width, &height, &channels, STBI_rgb_alpha);
 
     if (!image) {
+        char fallbackPath[1024];
+        snprintf(fallbackPath, sizeof(fallbackPath), "../%s", filename);
+        image = stbi_load(fallbackPath, &width, &height, &channels, STBI_rgb_alpha);
+        if (image) fprintf(gpFile, "Found texture using fallback: %s\n", fallbackPath);
+    }
+
+    if (!image) {
         fprintf(gpFile, "Failed to load texture: %s\n", filename);
         return 0;
     }
@@ -34,6 +41,13 @@ bool loadPNGTexture(GLuint *texture, char *file, int repeat) // removed unused n
     // 1. Force STBI to always give us 4 channels (RGBA)
     //    We ignore 'fileChannels' for uploading because we are forcing conversion.
     image = stbi_load(file, &width, &height, &fileChannels, STBI_rgb_alpha);
+
+    if (!image) {
+        char fallbackPath[1024];
+        snprintf(fallbackPath, sizeof(fallbackPath), "../%s", file);
+        image = stbi_load(fallbackPath, &width, &height, &fileChannels, STBI_rgb_alpha);
+        if (image) fprintf(gpFile, "Found texture using fallback: %s\n", fallbackPath);
+    }
 
     if (image)
     {
@@ -75,4 +89,23 @@ bool loadPNGTexture(GLuint *texture, char *file, int repeat) // removed unused n
     }
 
     return bResult;
+}
+
+GLuint create3DTexture(int width, int height, int depth, unsigned char* pixels) {
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_3D, textureID);
+
+    // Note the extra 'depth' parameter and the 3D target
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, width, height, depth, 0, GL_RED, GL_UNSIGNED_BYTE, pixels);
+
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // 3D textures use S, T, and R (instead of just S and T)
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+
+    return textureID;
 }

@@ -19,10 +19,10 @@ float   camera_pitch        = 0.0f;
 float   mouse_sensitivity   = 0.1f;
 
 // Pull in subsystems — ORDER MATTERS: pbr.cpp defines bindIBL(), used by terrain.cpp
-#include "user/pbr.cpp"
-#include "user/terrain/terrain.h"
-#include "user/terrain/terrain.cpp"
-#include "user/skybox.cpp"
+#include "engine/utils/pbr.cpp"
+#include "engine/effects/terrain/terrain.h"
+#include "engine/effects/terrain/terrain.cpp"
+#include "engine/utils/skybox.cpp"
 #include "user/userrendercalls.cpp"
 
 // ============================================================================
@@ -67,8 +67,8 @@ void projectInit()
     // Used for terrain
     // ===== Tessellation Shader Program =====
     const char *tessShaderFiles[5] = {
-        "engine/shaders/vertex_shader.glsl", "user/terrain/main_tcs.glsl",
-        "user/terrain/main_tes.glsl", NULL,
+        "engine/shaders/vertex_shader.glsl", "engine/effects/terrain/main_tcs.glsl",
+        "engine/effects/terrain/main_tes.glsl", NULL,
         "engine/shaders/PBR/pbrFrag.glsl"
     };
     if (!buildShaderProgramFromFiles(tessShaderFiles, 5,

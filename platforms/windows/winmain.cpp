@@ -18,6 +18,8 @@
 
 // Global function declarations
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+void updateCameraFromMouse(int delta_x, int delta_y); // Project 03 provides this
+
 
 // Global variable declarations - Windows specific
 
@@ -55,6 +57,31 @@ void print_fps() {
     last_time = current_time;
   }
 }
+
+
+// Platform Abstraction Implementations
+float platformGetTime(void) {
+    static LARGE_INTEGER frequency;
+    static BOOL frequencyAvailable = QueryPerformanceFrequency(&frequency);
+    if (!frequencyAvailable) return 0.0f;
+
+    LARGE_INTEGER currentTime;
+    QueryPerformanceCounter(&currentTime);
+    return (float)currentTime.QuadPart / (float)frequency.QuadPart;
+}
+
+void platformGetFramebufferSize(int* width, int* height) {
+    RECT rect;
+    if (GetClientRect(ghwnd, &rect)) {
+        *width = rect.right - rect.left;
+        *height = rect.bottom - rect.top;
+    } else {
+        *width = WIN_WIDTH;
+        *height = WIN_HEIGHT;
+    }
+}
+
+
 
 // Entry-Point Function
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -159,24 +186,59 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
   // Local function declaration
   void toggleFullScreen(void);
   void uninitialize(void);
+  // void toggleWireframe(void);
 
   // Code
   switch (iMsg) {
   case WM_CREATE:
     ZeroMemory((void *)&wpPrev, sizeof(WINDOWPLACEMENT));
     wpPrev.length = sizeof(WINDOWPLACEMENT);
+#ifdef PROJECT_03
+    // Capture mouse for project 03
+    mouse_captured = true;
+    ShowCursor(FALSE);
+#endif
     break;
 
   case WM_SETFOCUS:
     gbActiveWindow = TRUE;
+#ifdef PROJECT_03
+    if (mouse_captured) ShowCursor(FALSE);
+#endif
     break;
 
   case WM_KILLFOCUS:
     gbActiveWindow = FALSE;
+#ifdef PROJECT_03
+    ShowCursor(TRUE);
+#endif
     break;
 
   case WM_ERASEBKGND:
     return (0);
+
+  case WM_MOUSEMOVE:
+#ifdef PROJECT_03
+    if (mouse_captured && gbActiveWindow) {
+      static int lastX = -1, lastY = -1;
+      int xPos = LOWORD(lParam);
+      int yPos = HIWORD(lParam);
+
+      if (lastX != -1 && lastY != -1) {
+        updateCameraFromMouse(xPos - lastX, yPos - lastY);
+      }
+
+      // Snap back to center
+      RECT rect;
+      GetClientRect(hwnd, &rect);
+      POINT pt = {(rect.right - rect.left) / 2, (rect.bottom - rect.top) / 2};
+      ClientToScreen(hwnd, &pt);
+      SetCursorPos(pt.x, pt.y);
+      lastX = (rect.right - rect.left) / 2;
+      lastY = (rect.bottom - rect.top) / 2;
+    }
+#endif
+    break;
 
   case WM_SIZE:
     resize(LOWORD(lParam), HIWORD(lParam));
@@ -201,27 +263,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
       break;
     case 'w':
     case 'W':
-      camz -= 1.0f;
+      camera_pos[2] -= 1.0f;
       break;
     case 's':
     case 'S':
-      camz += 1.0f;
+      camera_pos[2] += 1.0f;
       break;
     case 'a':
     case 'A':
-      eyex -= 1.0f;
+      camera_pos[0] -= 1.0f;
       break;
     case 'd':
     case 'D':
-      eyex += 1.0f;
+      camera_pos[0] += 1.0f;
       break;
     case 'q':
     case 'Q':
-      camy -= 1.0f;
+      camera_pos[1] -= 1.0f;
       break;
     case 'e':
     case 'E':
-      camy += 1.0f;
+      camera_pos[1] += 1.0f;
       break;
     case 'c':
     case 'C':
@@ -281,6 +343,8 @@ void toggleFullScreen(void) {
     ShowCursor(TRUE);
   }
 }
+
+
 
 int initialize(void) {
   // Variable declarations

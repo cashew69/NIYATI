@@ -2,6 +2,15 @@ linux/log.txt
 linux/todo.list
 linux/build/
 linux/build-win/
+examples/04-clouds/
 .cache
 .vscode/
 *.blend
+.zed
+.cache
+.clangd
+log.txt
+inputhandler.c
+tree.txt
+build/
+window_glfw_linux

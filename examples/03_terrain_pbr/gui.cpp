@@ -7,8 +7,8 @@
 #include "engine/dependancies/imgui/imgui.h"
 #include "engine/dependancies/imgui/imgui_impl_glfw.h"
 #include "engine/dependancies/imgui/imgui_impl_opengl3.h"
-#include "user/terrain/terrain.h"
-#include "engine/effects/perlin/perlin.h"
+#include "engine/effects/terrain/terrain.h"
+#include "engine/effects/noise/perlin.h"
 
 // Forward declarations — these are defined later in the translation unit
 void toggleWireframe(void);
