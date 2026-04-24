@@ -1,8 +1,8 @@
 Program started successfully...!!!
 HELLO WORLD !!!
 OpenGL Vendor   : AMD
-OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, ACO, DRM 3.64, 6.19.8-1-cachyos)
-OpenGL Version  : 4.6 (Core Profile) Mesa 26.0.2-arch2.3
+OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, ACO, DRM 3.64, 6.19.11-1-cachyos)
+OpenGL Version  : 4.6 (Core Profile) Mesa 26.0.4-arch2.2
 GLSL Version    : 4.60
 HDR failed, loading cubemap faces from preset: Night Sky
 Loaded cubemap face 0: user/models/skybox/posx.jpg (2048x2048)
@@ -28,7 +28,7 @@ Shader Program Linked Successfully
 Successfully read shader file: engine/shaders/vert_test.glsl
 Successfully read shader file: engine/shaders/frag_test.glsl
 Shader Program Linked Successfully
-Generated 43 trail cloud spheres in a 3x3 Grid:
+Generated 54 trail cloud spheres in a 3x3 Grid:
 Successfully read shader file: engine/shaders/particle.vert
 Successfully read shader file: engine/shaders/particle.frag
 Shader Program Linked Successfully
@@ -136,8 +136,8 @@ Successfully read shader file: engine/shaders/lineVert.glsl
 Successfully read shader file: engine/shaders/lineFrag.glsl
 Shader Program Linked Successfully
 Successfully read shader file: engine/shaders/vertex_shader.glsl
-Successfully read shader file: user/terrain/main_tcs.glsl
-Successfully read shader file: user/terrain/main_tes.glsl
+Successfully read shader file: engine/effects/terrain/main_tcs.glsl
+Successfully read shader file: engine/effects/terrain/main_tes.glsl
 Successfully read shader file: engine/shaders/PBR/pbrFrag.glsl
 Shader Program Linked Successfully
 Generating terrain mesh 256x256...
@@ -176,14 +176,16 @@ Project 04 (Volumetric Clouds) initialized
 initializeOpenGL() completed
 initialize() SUCCEEDED
 First projectRender() call. Program ID: 15
-Loaded cubemap face 0: user/models/Standard-Cube-Map/px.png (4096x4096)
-Loaded cubemap face 1: user/models/Standard-Cube-Map/nx.png (4096x4096)
-Loaded cubemap face 2: user/models/Standard-Cube-Map/py.png (4096x4096)
-Loaded cubemap face 3: user/models/Standard-Cube-Map/ny.png (4096x4096)
-Loaded cubemap face 4: user/models/Standard-Cube-Map/pz.png (4096x4096)
-Loaded cubemap face 5: user/models/Standard-Cube-Map/nz.png (4096x4096)
-Reloaded skybox preset: Standard Daylight
-IBL maps generated. Irradiance=2, Prefilter=3, BRDF=4
+Loading model: engine/effects/icosphere_particle.obj
+Number of meshes: 1
+--- Material Texture Debug ---
+--- End Material Debug ---
+Diffuse texture ID: 0
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+Model loaded successfully: engine/effects/icosphere_particle.obj
 Project 04 (Volumetric Clouds) cleaned up
 OpenGL resources cleaned up
 Program terminated successfully...!!!

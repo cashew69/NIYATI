@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\Win-LinSync\MyProjects\Fun\NIYATI\build-win\CMakeFiles\4fca73a1994b7ac31f02478015733068\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{F692C82A-FB09-36EB-BFB2-6571E8A703AD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -18,7 +18,8 @@ float   camera_yaw          = 0.0f;
 float   camera_pitch        = 0.0f;
 float   mouse_sensitivity   = 0.1f;
 
-// Pull in subsystems — ORDER MATTERS: pbr.cpp defines bindIBL(), used by terrain.cpp
+// Pull in subsystems — ORDER MATTERS: primitives first, then PBR/terrain
+#include "engine/utils/primitives.cpp"
 #include "engine/utils/pbr.cpp"
 #include "engine/effects/terrain/terrain.h"
 #include "engine/effects/terrain/terrain.cpp"

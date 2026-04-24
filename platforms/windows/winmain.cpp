@@ -18,7 +18,13 @@
 
 // Global function declarations
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void updateCameraFromMouse(int delta_x, int delta_y); // Project 03 provides this
+#if !defined(PROJECT_03) && !defined(PROJECT_04)
+void updateCameraFromMouse(int delta_x, int delta_y) {}
+void toggleWireframe(void) {}
+#else
+void updateCameraFromMouse(int delta_x, int delta_y);
+void toggleWireframe(void);
+#endif
 
 
 // Global variable declarations - Windows specific
@@ -39,20 +45,27 @@ WINDOWPLACEMENT wpPrev;
 HDC ghdc = NULL;
 HGLRC ghrc = NULL;
 
+// Mouse Tracking
+static int lastX = -1, lastY = -1;
+
+void SetMouseVisibility(bool visible) {
+  static bool isVisible = true;
+  if (isVisible == visible) return;
+  ShowCursor(visible ? TRUE : FALSE);
+  isVisible = visible;
+}
+
 // Platform-specific FPS tracking
 void print_fps() {
-  static double last_time = 0.0;
+  static float last_time = 0.0f;
   static int frame_count = 0;
 
-  struct timespec ts;
-  timespec_get(&ts, TIME_UTC);
-  double current_time = ts.tv_sec + ts.tv_nsec / 1000000000.0;
-
+  float current_time = platformGetTime();
   frame_count++;
 
-  double elapsed = current_time - last_time;
-  if (elapsed >= 1.0) {
-    // printf("FPS: %.2f\n", fps);  // Uncomment if you want console output
+  float elapsed = current_time - last_time;
+  if (elapsed >= 1.0f) {
+    // printf("FPS: %.2f\n", frame_count / elapsed);
     frame_count = 0;
     last_time = current_time;
   }
@@ -166,6 +179,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
           bDone = TRUE;
         }
 
+        // Continuous Keyboard Movement (GLFW-style)
+        if (mouse_captured) {
+          if (GetAsyncKeyState('W') & 0x8000) camera_pos[2] -= 1.0f;
+          if (GetAsyncKeyState('S') & 0x8000) camera_pos[2] += 1.0f;
+          if (GetAsyncKeyState('A') & 0x8000) camera_pos[0] -= 1.0f;
+          if (GetAsyncKeyState('D') & 0x8000) camera_pos[0] += 1.0f;
+          if (GetAsyncKeyState('Q') & 0x8000) camera_pos[1] -= 1.0f;
+          if (GetAsyncKeyState('E') & 0x8000) camera_pos[1] += 1.0f;
+        }
+
         // Render
         display();
         SwapBuffers(ghdc);
@@ -193,34 +216,43 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
   case WM_CREATE:
     ZeroMemory((void *)&wpPrev, sizeof(WINDOWPLACEMENT));
     wpPrev.length = sizeof(WINDOWPLACEMENT);
-#ifdef PROJECT_03
-    // Capture mouse for project 03
+#if defined(PROJECT_03) || defined(PROJECT_04)
+    // Capture mouse for project 03 & 04
     mouse_captured = true;
-    ShowCursor(FALSE);
+    SetMouseVisibility(false);
 #endif
     break;
 
   case WM_SETFOCUS:
     gbActiveWindow = TRUE;
-#ifdef PROJECT_03
-    if (mouse_captured) ShowCursor(FALSE);
+#if defined(PROJECT_03) || defined(PROJECT_04)
+    if (mouse_captured) SetMouseVisibility(false);
 #endif
     break;
 
   case WM_KILLFOCUS:
     gbActiveWindow = FALSE;
-#ifdef PROJECT_03
-    ShowCursor(TRUE);
+#if defined(PROJECT_03) || defined(PROJECT_04)
+    SetMouseVisibility(true);
 #endif
     break;
 
   case WM_ERASEBKGND:
     return (0);
 
+  case WM_RBUTTONDOWN:
+    mouse_captured = !mouse_captured;
+    if (mouse_captured) {
+      SetMouseVisibility(false);
+      lastX = -1; lastY = -1; // Reset tracking
+    } else {
+      SetMouseVisibility(true);
+    }
+    break;
+
   case WM_MOUSEMOVE:
-#ifdef PROJECT_03
+#if defined(PROJECT_03) || defined(PROJECT_04)
     if (mouse_captured && gbActiveWindow) {
-      static int lastX = -1, lastY = -1;
       int xPos = LOWORD(lParam);
       int yPos = HIWORD(lParam);
 
@@ -247,6 +279,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
   case WM_KEYDOWN:
     switch (wParam) {
     case VK_ESCAPE:
+    case VK_CAPITAL:
       gbEscapeKeyIsPressed = TRUE;
       break;
     default:
@@ -261,34 +294,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
       toggleFullScreen();
       gbFullScreen = !gbFullScreen;
       break;
-    case 'w':
-    case 'W':
-      camera_pos[2] -= 1.0f;
-      break;
-    case 's':
-    case 'S':
-      camera_pos[2] += 1.0f;
-      break;
-    case 'a':
-    case 'A':
-      camera_pos[0] -= 1.0f;
-      break;
-    case 'd':
-    case 'D':
-      camera_pos[0] += 1.0f;
-      break;
-    case 'q':
-    case 'Q':
-      camera_pos[1] -= 1.0f;
-      break;
-    case 'e':
-    case 'E':
-      camera_pos[1] += 1.0f;
-      break;
     case 'c':
     case 'C':
       mouse_captured = !mouse_captured;
-      fprintf(gpFile, "Mouse %s\n", mouse_captured ? "captured" : "released");
+      if (mouse_captured) SetMouseVisibility(false);
+      else SetMouseVisibility(true);
       break;
     case 'l':
     case 'L':
@@ -333,14 +343,14 @@ void toggleFullScreen(void) {
                      SWP_NOZORDER | SWP_FRAMECHANGED);
       }
     }
-    ShowCursor(FALSE);
+    if (mouse_captured) SetMouseVisibility(false);
   } else {
     SetWindowPlacement(ghwnd, &wpPrev);
     SetWindowLong(ghwnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
     SetWindowPos(ghwnd, HWND_TOP, 0, 0, 0, 0,
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER |
                      SWP_FRAMECHANGED);
-    ShowCursor(TRUE);
+    if (!mouse_captured) SetMouseVisibility(true);
   }
 }
 

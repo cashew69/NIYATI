@@ -44,7 +44,7 @@ Successfully read shader file: engine/shaders/vert_test.glsl
 Found shader file using fallback: ../engine/shaders/frag_test.glsl
 Successfully read shader file: engine/shaders/frag_test.glsl
 Shader Program Linked Successfully
-Generated 44 trail cloud spheres in a 3x3 Grid:
+Generated 52 trail cloud spheres in a 3x3 Grid:
 Found shader file using fallback: ../engine/shaders/particle.vert
 Successfully read shader file: engine/shaders/particle.vert
 Found shader file using fallback: ../engine/shaders/particle.frag

@@ -1,16 +1,10 @@
 
-#define PROJECT_03  // already set in project.cpp; here for standalone safety
-
-// gui.cpp — Project 03 ImGui panels.
-// Included from examples/03_terrain_pbr/project.cpp after all subsystem headers.
+#define PROJECT_03
 
 #include "engine/dependancies/imgui/imgui.h"
-#include "engine/dependancies/imgui/imgui_impl_glfw.h"
-#include "engine/dependancies/imgui/imgui_impl_opengl3.h"
 #include "engine/effects/terrain/terrain.h"
 #include "engine/effects/noise/perlin.h"
 
-// Forward declarations — these are defined later in the translation unit
 void toggleWireframe(void);
 void NewFrameGUI();
 

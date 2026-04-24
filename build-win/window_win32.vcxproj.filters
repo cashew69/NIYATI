@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\Win-LinSync\MyProjects\Fun\NIYATI\platforms\windows\winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\Win-LinSync\MyProjects\Fun\NIYATI\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F8615D63-3B70-3B88-985C-2321AA725497}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

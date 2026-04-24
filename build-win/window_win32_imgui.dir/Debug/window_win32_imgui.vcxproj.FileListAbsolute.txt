@@ -1,0 +1,2 @@
+E:\Win-LinSync\MyProjects\Fun\NIYATI\build-win\window_win32_imgui.dir\Debug\window_w.6665B893.Up2Date
+E:\Win-LinSync\MyProjects\Fun\NIYATI\build-win\glew32.dll

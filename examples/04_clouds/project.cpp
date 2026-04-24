@@ -228,13 +228,13 @@ void projectRender()
     renderSkybox(viewMatrix, perspectiveProjectionMatrix);
 
     // Render Clouds
-    renderClouds();
+    //renderClouds();
 
     glUseProgram(0);
 
     // Render Terrain
     if (terrainMesh && tessellationShaderProgram && HeightMap) {
-        renderTerrain(HeightMap);
+        //renderTerrain(HeightMap);
     }
 
     // Render Smoke Particles
