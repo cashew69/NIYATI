@@ -22,7 +22,8 @@ const char *attribNames[4]   = {"aPosition", "aNormal", "aColor", "aTexCoord"};
 GLint       attribIndices[4]  = {ATTRIB_POSITION, ATTRIB_NORMAL, ATTRIB_COLOR, ATTRIB_TEXCOORD};
 
 // Change this include to switch projects
-#include "examples/04_clouds/project.cpp"
+#include "templates/project_template/project.cpp"
+
 
 // Each project must define:
 //   void projectInit()
@@ -37,10 +38,10 @@ GLint       attribIndices[4]  = {ATTRIB_POSITION, ATTRIB_NORMAL, ATTRIB_COLOR, A
 // ============================================================================
 
 void printGLInfo(void) {
-    fprintf(gpFile, "OpenGL Vendor   : %s\n", glGetString(GL_VENDOR));
-    fprintf(gpFile, "OpenGL Renderer : %s\n", glGetString(GL_RENDERER));
-    fprintf(gpFile, "OpenGL Version  : %s\n", glGetString(GL_VERSION));
-    fprintf(gpFile, "GLSL Version    : %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    LOG_I("OpenGL Vendor   : %s", glGetString(GL_VENDOR));
+    LOG_I("OpenGL Renderer : %s", glGetString(GL_RENDERER));
+    LOG_I("OpenGL Version  : %s", glGetString(GL_VERSION));
+    LOG_I("GLSL Version    : %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 }
 
 int initializeOpenGL(void) {
@@ -55,7 +56,7 @@ int initializeOpenGL(void) {
 
     projectInit();  // each project sets up its own camera, shaders, meshes
 
-    fprintf(gpFile, "initializeOpenGL() completed\n");
+    LOG_I("initializeOpenGL() completed");
     return 0;
 }
 
@@ -77,5 +78,6 @@ void update(void) {
 
 void cleanupOpenGL(void) {
     projectCleanup();
-    fprintf(gpFile, "OpenGL resources cleaned up\n");
+    LOG_I("OpenGL resources cleaned up");
 }
+

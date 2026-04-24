@@ -1,5 +1,7 @@
 #pragma once
 #include "engine/core/gl/structs.h"
+#include "engine/dependancies/imgui/imgui.h"
+
 
 // Structure to track objects we can edit in the GUI
 struct EditableObject {

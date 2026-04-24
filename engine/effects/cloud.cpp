@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include "engine/core/logger.h"
+
 
 // Cloud sphere data (Max 256 spheres: xyz = position, w = radius)
 static float cloudSpheres[256 * 4]; 
@@ -36,7 +38,8 @@ extern ShaderProgram *VolumeRenderingProgram;
 extern mat4 viewMatrix;
 extern mat4 perspectiveProjectionMatrix;
 extern Camera *mainCamera;
-extern FILE *gpFile;
+// extern FILE *gpFile; // Now using logger.h
+
 
 // From noise.c
 extern float threeDNoise(float x, float y, float z);
@@ -98,8 +101,9 @@ void generateCloudSpheres()
         }
     }
 
-    if (gpFile) fprintf(gpFile, "Generated %d trail cloud spheres in a %dx%d Grid:\n", numCloudSpheres, gridX, gridZ);
+    LOG_I("Generated %d trail cloud spheres in a %dx%d Grid.", numCloudSpheres, gridX, gridZ);
 }
+
 
 void generateCloudTexture()
 {
@@ -114,24 +118,25 @@ void generateCloudTexture()
     // The scale determines the "zoom" level of the noise
     float scale = 0.05f;
 
+    LOG_I("Generating 3D Noise Texture for Clouds (%dx%dx%d)...", texWidth, texHeight, texDepth);
     for (int z = 0; z < texDepth; ++z) {
+        // Log progress every 32 slices
+        if (z % 32 == 0 && z > 0) LOG_I("  ...generated %d/%d slices", z, texDepth);
+
         for (int y = 0; y < texHeight; ++y) {
             for (int x = 0; x < texWidth; ++x) {
-
                 // Sample the noise function from noise.c
                 float density = threeDNoise(x * scale, y * scale, z * scale);
-
-                // Clamp between 0.0 and 1.0, then convert to 0-255
                 if (density < 0.0f) density = 0.0f;
                 if (density > 1.0f) density = 1.0f;
                 unsigned char byteVal = (unsigned char)(density * 255.0f);
-
-                // Calculate the 1D index for the 3D coordinate
                 int index = (z * texWidth * texHeight) + (y * texWidth) + x;
                 noisePixels[index] = byteVal;
             }
         }
     }
+    LOG_I("3D Noise generation complete.");
+
 
     // Delete old texture if it exists to prevent memory leaks
     if (cloudTexture) glDeleteTextures(1, &cloudTexture);

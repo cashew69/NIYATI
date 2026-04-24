@@ -10,7 +10,10 @@
 #include "dependancies/vmath.h"
 #include <time.h>
 using namespace vmath;
+#include <GL/glew.h>
+#include <GL/gl.h>
 #include "platform.h"
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "dependancies/stb_image.h"
@@ -38,6 +41,8 @@ ShaderProgram *pbrShaderProgram = NULL;
 ShaderProgram *VolumeRenderingProgram = NULL;
 
 
+#include "core/logger.h"
+
 // Scene Meshes
 Mesh *sceneMeshes = NULL;
 int meshCount = 0;
@@ -52,7 +57,6 @@ mat4 viewMatrix;
 
 // File I/O
 char gszLogFileName[] = "log.txt";
-FILE *gpFile = NULL;
 
 // Global Uniform Variables
 GLint projLocUniform;
@@ -73,4 +77,11 @@ GLint colorTextureLocUniform;
 #include "effects/noise/perlin.c"
 #include "transform.cpp"
 #include "editor/model_controller.h"
-#include "editor/model_controller.cpp"
+#include "utils/editor_utils.h"
+#include "utils/camera_utils/camera_base.h"
+#include "utils/camera_utils/wasdqexc.cpp"
+#include "utils/camera_utils/mouseboard.cpp"
+#include "utils/camera_utils/strategic_camera.cpp"
+#include "utils/camera_utils/camera_manager.cpp"
+
+

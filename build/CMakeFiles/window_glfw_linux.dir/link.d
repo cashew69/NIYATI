@@ -9,6 +9,7 @@ window_glfw_linux: \
   CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o \
   CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o \
   CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o \
+  CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libGL.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libGLEW.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libglfw.so \
@@ -74,6 +75,8 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o:
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o:
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o:
+
+CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libGL.so:
 

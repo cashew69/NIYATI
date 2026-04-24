@@ -6,26 +6,20 @@
 #pragma comment(lib, "opengl32.lib")
 
 #include "../../engine/engine.h"
+#include "logger.h"
 #include "../../platform_common.cpp"
+
 
 #ifdef HAS_IMGUI
 #include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_opengl3.h"
-
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-void NewFrameGUI(void) {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-}
-
-void RenderGUI(void) {
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
+// Shared ImGui Setup Functions (defined in engine/editor/imgui_setup.cpp)
+extern void InitGUI(void* window_handle);
+extern void NewFrameGUI();
+extern void RenderGUI();
+extern void ShutdownGUI();
+extern GLuint viewportFBO;
 #endif
+
 
 #if !defined(PROJECT_03) && !defined(PROJECT_04)
 void UpdateGUI() {
@@ -111,13 +105,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     TCHAR szAppName[] = TEXT("NIYATI Engine");
     BOOL bDone = FALSE;
 
-    gpFile = fopen(gszLogFileName, "w");
-    if (gpFile == NULL) {
-        MessageBox(NULL, TEXT("LOG FILE CREATION FAILED"), TEXT("ERROR"), MB_OK);
-        exit(0);
-    }
+    gpFile = NULL; // compatibility
+    Logger_Init(gszLogFileName);
 
     wndclass.cbSize = sizeof(WNDCLASSEX);
+
     wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wndclass.cbClsExtra = 0;
     wndclass.cbWndExtra = 0;
@@ -163,24 +155,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
         } else {
             if (gbActiveWindow == TRUE) {
                 if (gbEscapeKeyIsPressed) bDone = TRUE;
-
-                // Continuous Keyboard Movement (GLFW-style)
-                if (mouse_captured) {
-                    if (GetAsyncKeyState('W') & 0x8000) camera_pos[2] -= 1.0f;
-                    if (GetAsyncKeyState('S') & 0x8000) camera_pos[2] += 1.0f;
-                    if (GetAsyncKeyState('A') & 0x8000) camera_pos[0] -= 1.0f;
-                    if (GetAsyncKeyState('D') & 0x8000) camera_pos[0] += 1.0f;
-                    if (GetAsyncKeyState('Q') & 0x8000) camera_pos[1] -= 1.0f;
-                    if (GetAsyncKeyState('E') & 0x8000) camera_pos[1] += 1.0f;
-                }
-
 #ifdef HAS_IMGUI
                 UpdateGUI();
 #endif
+                glBindFramebuffer(GL_FRAMEBUFFER, viewportFBO);
                 display();
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #ifdef HAS_IMGUI
                 RenderGUI();
 #endif
+
                 SwapBuffers(ghdc);
                 update();
                 print_fps();
@@ -196,9 +180,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
     void uninitialize(void);
 
 #ifdef HAS_IMGUI
+    extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     if (ImGui_ImplWin32_WndProcHandler(hwnd, iMsg, wParam, lParam))
         return true;
 #endif
+
 
     switch (iMsg) {
     case WM_CREATE:
@@ -258,10 +244,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
         break;
     case WM_CHAR:
         switch (wParam) {
+        case 'W': case 'w': if (mouse_captured) camera_pos[2] -= 1.0f; break;
+        case 'S': case 's': if (mouse_captured) camera_pos[2] += 1.0f; break;
+        case 'A': case 'a': if (mouse_captured) camera_pos[0] -= 1.0f; break;
+        case 'D': case 'd': if (mouse_captured) camera_pos[0] += 1.0f; break;
+        case 'Q': case 'q': if (mouse_captured) camera_pos[1] -= 1.0f; break;
+        case 'E': case 'e': if (mouse_captured) camera_pos[1] += 1.0f; break;
         case 'F': case 'f':
             toggleFullScreen();
             gbFullScreen = !gbFullScreen;
             break;
+
         case 'c': case 'C':
             mouse_captured = !mouse_captured;
             if (mouse_captured) SetMouseVisibility(false);
@@ -339,14 +332,9 @@ int initialize(void) {
     if (initializeOpenGL() != 0) return -7;
 
 #ifdef HAS_IMGUI
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    ImGui::StyleColorsDark();
-    ImGui_ImplWin32_Init(ghwnd);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    InitGUI((void*)ghwnd);
 #endif
+
 
     resize(WIN_WIDTH, WIN_HEIGHT);
     return (0);
@@ -361,18 +349,15 @@ void uninitialize(void) {
     cleanupOpenGL();
 
 #ifdef HAS_IMGUI
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
+    ShutdownGUI();
 #endif
+
 
     if (wglGetCurrentContext() == ghrc) wglMakeCurrent(NULL, NULL);
     if (ghrc) { wglDeleteContext(ghrc); ghrc = NULL; }
     if (ghdc) { ReleaseDC(ghwnd, ghdc); ghdc = NULL; }
     if (ghwnd) { DestroyWindow(ghwnd); ghwnd = NULL; }
 
-    if (gpFile) {
-        fclose(gpFile);
-        gpFile = NULL;
-    }
+    Logger_Cleanup();
 }
+

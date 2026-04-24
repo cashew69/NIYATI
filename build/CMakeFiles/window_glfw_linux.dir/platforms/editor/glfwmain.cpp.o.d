@@ -179,6 +179,7 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: \
  /usr/include/assimp/metadata.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/structs.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/texture.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/shaders.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp \
@@ -188,31 +189,20 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.cpp \
- /usr/include/c++/15.2.1/vector \
- /usr/include/c++/15.2.1/bits/stl_uninitialized.h \
- /usr/include/c++/15.2.1/bits/stl_vector.h \
- /usr/include/c++/15.2.1/bits/stl_bvector.h \
- /usr/include/c++/15.2.1/bits/vector.tcc \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imconfig.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/wasdqexc.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/strategic_camera.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platform_common.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/04_clouds/project.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/pbr.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/particleEmission.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/cloud.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/../engine/effects/noise/perlin.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/../engine/effects/noise/noise.c \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/../engine/dependancies/stb_image_write.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.h
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/templates/project_template/project.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.h

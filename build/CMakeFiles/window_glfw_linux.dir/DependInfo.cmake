@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.cpp" "CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o" "gcc" "CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o.d"
   "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.cpp" "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o" "gcc" "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o.d"
   "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_draw.cpp" "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o" "gcc" "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o.d"
   "/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.cpp" "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o" "gcc" "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o.d"

@@ -21,7 +21,9 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o
  /usr/include/bits/wchar.h /usr/include/bits/stdint-intn.h \
  /usr/include/bits/stdint-uintn.h /usr/include/bits/stdint-least.h \
  /usr/include/GL/gl.h /usr/include/GL/glext.h \
- /usr/include/KHR/khrplatform.h /usr/include/GLFW/glfw3native.h \
+ /usr/include/KHR/khrplatform.h /usr/include/X11/Xatom.h \
+ /usr/include/dlfcn.h /usr/include/bits/dlfcn.h \
+ /usr/include/bits/dl_find_object.h /usr/include/GLFW/glfw3native.h \
  /usr/include/X11/Xlib.h /usr/include/sys/types.h \
  /usr/include/bits/types/clock_t.h /usr/include/bits/types/clockid_t.h \
  /usr/include/bits/types/time_t.h /usr/include/bits/types/timer_t.h \

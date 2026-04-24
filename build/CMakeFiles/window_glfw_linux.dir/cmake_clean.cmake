@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/window_glfw_linux.dir/link.d"
+  "CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o"
+  "CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o.d"
   "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o"
   "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o.d"
   "CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o"

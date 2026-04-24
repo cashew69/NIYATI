@@ -18,8 +18,17 @@ set(NIYATI_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/dependancies
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/dependancies/imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/editor
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/utils/camera_utils
     ${CMAKE_CURRENT_SOURCE_DIR}/user
 )
+
+set(CORE_SOURCES
+    engine/core/logger.cpp
+)
+
+
+
 
 # 1. Core ImGui files and OpenGL renderer (shared across ImGui builds)
 set(IMGUI_CORE_SOURCES
@@ -30,11 +39,14 @@ set(IMGUI_CORE_SOURCES
     engine/dependancies/imgui/imgui_impl_opengl3.cpp
 )
 
+
+
 if(WIN32)
     # ---------------------------------------------------------
     # WIN32 BUILD (NO IMGUI)
     # ---------------------------------------------------------
-    add_executable(window_win32 WIN32 platforms/windows/winmain.cpp)
+    add_executable(window_win32 WIN32 platforms/windows/winmain.cpp ${CORE_SOURCES})
+
 
     target_include_directories(window_win32 PRIVATE
         ${NIYATI_INCLUDES}
@@ -58,7 +70,8 @@ if(WIN32)
         engine/dependancies/imgui/imgui_impl_win32.cpp
     )
 
-    add_executable(window_win32_imgui WIN32 platforms/windows/winmain-imgui.cpp ${IMGUI_WIN32_SOURCES})
+    add_executable(window_win32_imgui WIN32 platforms/windows/winmain-imgui.cpp ${IMGUI_WIN32_SOURCES} ${CORE_SOURCES})
+
 
     target_include_directories(window_win32_imgui PRIVATE
         ${NIYATI_INCLUDES}
@@ -87,13 +100,14 @@ else()
     )
 
     # Editor Build (GLFW + ImGui)
-    add_executable(window_glfw_linux platforms/editor/glfwmain.cpp ${IMGUI_GLFW_SOURCES})
+    add_executable(window_glfw_linux platforms/editor/glfwmain.cpp ${IMGUI_GLFW_SOURCES} ${CORE_SOURCES})
     target_include_directories(window_glfw_linux PRIVATE ${NIYATI_INCLUDES})
     target_compile_definitions(window_glfw_linux PRIVATE HAS_IMGUI)
     target_link_libraries(window_glfw_linux GL GLEW glfw assimp)
 
     # Raw Linux Build (X11)
-    add_executable(window_x11 platforms/linux/linmain.cpp)
+    add_executable(window_x11 platforms/linux/linmain.cpp ${CORE_SOURCES})
+
     target_include_directories(window_x11 PRIVATE ${NIYATI_INCLUDES})
     target_link_libraries(window_x11 GL X11 GLEW assimp)
 endif()

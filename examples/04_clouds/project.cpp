@@ -99,8 +99,9 @@ void projectInit()
     g_powerCurve = 3.0f;
     g_turbulence = 0.5f;
 
-    // Initialize Skybox and IBL
+    LOG_I("Project 04: Volumetric Cloud Rendering Initialization...");
     initSkybox(NULL);
+
 
     // Setup Camera
     camera_pos = vec3(0.0f, 5.0f, cameraDist);
@@ -116,15 +117,18 @@ void projectInit()
         "engine/shaders/frag_test.glsl"   // Index 4: Fragment
     };
 
+    LOG_I("Building Volumetric Shader Program...");
     if (!buildShaderProgramFromFiles(ShaderFiles, 5,
                                      &VolumeRenderingProgram, attribNames,
                                      attribIndices, 4)) {
-        fprintf(gpFile, "Failed to build volumerendering shader program\n");
+        LOG_E("Failed to build volumerendering shader program");
     } else {
         VolumeRenderingProgram->name = "VolumeRendering";
     }
 
+    LOG_I("Initializing Clouds (generating spheres and textures)...");
     initClouds();
+
 
     // Initialize Smoke Particle Emitter
     smokeEmitter = createParticleEmitter(1000);
@@ -143,11 +147,13 @@ void projectInit()
     
     // Load F22 Model
     const char* f22Path = "examples/04_clouds/f22blend.glb";
+    LOG_I("Loading F22 Raptor Model: %s", f22Path);
     if (!loadModel(f22Path, &f22Meshes, &f22MeshCount, 1.0f)) {
-        fprintf(gpFile, "Failed to load F22 model: %s\n", f22Path);
+        LOG_W("Failed to load F22 model: %s", f22Path);
     } else {
-        fprintf(gpFile, "Successfully loaded F22 model with %d meshes\n", f22MeshCount);
+        LOG_I("Successfully loaded F22 model with %d meshes", f22MeshCount);
     }
+
 
     // Build F22 Shader (PBR)
     const char *Models_ShaderFiles[5] = {
@@ -156,8 +162,9 @@ void projectInit()
         "engine/shaders/PBR/pbrFrag.glsl"
     };
     if (!buildShaderProgramFromFiles(Models_ShaderFiles, 5, &Models_Shader, attribNames, attribIndices, 4)) {
-        fprintf(gpFile, "Failed to build F22 PBR shader\n");
+        LOG_E("Failed to build F22 PBR shader");
     }
+
 
     // Initialize Model Controller & Register F22
     ModelController_Init();
@@ -169,18 +176,23 @@ void projectInit()
         "engine/effects/terrain/main_tes.glsl", NULL,
         "engine/shaders/PBR/pbrFrag.glsl"
     };
+    LOG_I("Building Terrain Tessellation Shader...");
     if (!buildShaderProgramFromFiles(tessShaderFiles, 5, &tessellationShaderProgram, attribNames, attribIndices, 4)) {
-        fprintf(gpFile, "Failed to build tessellation shader program\n");
+        LOG_E("Failed to build tessellation shader program");
     } else {
         tessellationShaderProgram->name = "Tessellation";
     }
 
+
+    LOG_I("Generating Terrain Mesh and HeightMap...");
     terrainMesh = createTerrainMesh();
     HeightMap = createHeightMapTexture(512, 512, 0.01f, 1.0f);
 
     // Load DamagedHelmet model
     const char* helmetPath = "user/models/DamagedHelmet.glb";
+    LOG_I("Loading DamagedHelmet Model: %s", helmetPath);
     if (loadModel(helmetPath, &helmetMeshes, &helmetMeshCount, 1.0f)) {
+
         ModelController_Register("Damaged Helmet", helmetMeshes, helmetMeshCount, &helmetPos, &helmetRot, &helmetScale);
     }
 
@@ -189,14 +201,16 @@ void projectInit()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    LOG_I("Finalizing OpenGL State (Blending, Culling)...");
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT); // Hide the outside walls, draw the inside walls
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    fprintf(gpFile, "Project 04 (Volumetric Clouds) initialized\n");
+    LOG_I("Project 04 (Volumetric Clouds) Initialization Complete.");
 }
+
 
 void projectRender()
 {

@@ -11,46 +11,30 @@
 // ImGui
 
 #include "engine/engine.h"
-#include "platform_common.cpp"   // also pulls in the active project (which may define UpdateGUI)
+#include "logger.h"
+#include "platform_common.cpp"
+
 
 #include "engine/dependancies/imgui/imgui.h"
-#include "engine/dependancies/imgui/imgui_impl_glfw.h"
-#include "engine/dependancies/imgui/imgui_impl_opengl3.h"
 
-void InitGUI(GLFWwindow* win) {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(win, true);
-    ImGui_ImplOpenGL3_Init("#version 460");
-}
-void NewFrameGUI() {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
-void RenderGUI() {
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-void ShutdownGUI() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-}
+// Shared ImGui Setup implementation
+#include "engine/editor/imgui_setup.cpp"
+
+
 
 // Default stub — project 03 overrides this by defining UpdateGUI() in gui.cpp
 // which is included before this point via platform_common.cpp → project.cpp → gui.cpp.
-// Projects 01 and 02 don't define UpdateGUI, so this stub is used instead.
-#if !defined(PROJECT_03) && !defined(PROJECT_04)
+#if !defined(PROJECT_TEMPLATE)
+
 void UpdateGUI() {
     NewFrameGUI();
     // No panels for simple projects
 }
 // Projects 01/02 don't use mouse look or wireframe — empty stubs so platform compiles
-void updateCameraFromMouse(int, int) {}
 void toggleWireframe(void)           {}
 #endif
+
+
 
 // Macros
 #define winwidth 800
@@ -110,22 +94,15 @@ int main(void) {
   void uninitialize(void);
 
   // File Create
-  gpFile = fopen(gszLogFileName, "w");
-  if (gpFile == NULL) {
-    printf("Log file creation failed...!!!\n");
-    exit(0);
-  } else {
-    setvbuf(gpFile, NULL, _IONBF, 0);
-    fprintf(gpFile, "Program started successfully...!!!\n");
-    fprintf(gpFile, "HELLO WORLD !!!\n");
-  }
+  Logger_Init(gszLogFileName);
 
   glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
   // Initialize GLFW
   if (!glfwInit()) {
-    fprintf(gpFile, "glfwInit() failed\n");
+    LOG_E("glfwInit() failed");
     return -1;
   }
+
 
   // Set Window Hints (Context Version 4.6 Core)
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -138,10 +115,11 @@ int main(void) {
   window = glfwCreateWindow(winwidth, winheight, "NIYATI ENGINE",
                             NULL, NULL);
   if (!window) {
-    fprintf(gpFile, "glfwCreateWindow() failed\n");
+    LOG_E("glfwCreateWindow() failed");
     glfwTerminate();
     return -1;
   }
+
 
   // Make Context Current
   glfwMakeContextCurrent(window);
@@ -149,11 +127,12 @@ int main(void) {
   // Initialize GLEW
   GLenum glew_error = glewInit();
   if (glew_error != GLEW_OK) {
-    fprintf(gpFile, "glewInit() failed: %s\n", glewGetErrorString(glew_error));
+    LOG_E("glewInit() failed: %s", glewGetErrorString(glew_error));
     glfwDestroyWindow(window);
     glfwTerminate();
     return -1;
   }
+
 
   // Setup Callbacks
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -172,14 +151,15 @@ int main(void) {
   // Initialize User Data
   int iResult = initialize();
   if (iResult != 0) {
-    fprintf(gpFile, "initialize() FAILED\n");
+    LOG_E("initialize() FAILED");
     uninitialize();
     exit(EXIT_FAILURE);
   } else {
-    fprintf(gpFile, "initialize() SUCCEEDED\n");
+  LOG_I("initialize() SUCCEEDED");
   }
 
-  // GAMELOOP
+  float lastFrameTime = (float)glfwGetTime();
+
   while (!glfwWindowShouldClose(window)) {
     // Poll Events
     glfwPollEvents();
@@ -187,23 +167,23 @@ int main(void) {
     // Update and Render GUI
     UpdateGUI();
 
-    // Handle Keyboard Movement (Continuous polling)
+    // Calculate Delta Time
+    float currentFrameTime = (float)glfwGetTime();
+    float deltaTime = currentFrameTime - lastFrameTime;
+    lastFrameTime = currentFrameTime;
 
-    // WASD camera movement
-    if (mouse_captured) {
-      if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera_pos[2] -= 1.0f;
-      if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera_pos[2] += 1.0f;
-      if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera_pos[0] -= 1.0f;
-      if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera_pos[0] += 1.0f;
-      if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) camera_pos[1] -= 1.0f;
-      if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) camera_pos[1] += 1.0f;
-    }
+    // Handle Camera Input (from engine/utils/camera_utils)
+    HandleCameraInput(window, deltaTime);
+
 
     // Render
+    glBindFramebuffer(GL_FRAMEBUFFER, viewportFBO);
     display();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // Render ImGui
     RenderGUI();
+
 
     glfwSwapBuffers(window); // Platform-specific buffer swap
 
@@ -296,14 +276,13 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     first_mouse = false;
   }
 
-  double delta_x = xpos - last_mouse_x;
-  double delta_y = ypos - last_mouse_y;
+  mouse_x = (int)(xpos - last_mouse_x);
+  mouse_y = (int)(ypos - last_mouse_y);
 
   last_mouse_x = xpos;
   last_mouse_y = ypos;
-
-  updateCameraFromMouse((int)delta_x, (int)delta_y);
 }
+
 
 void uninitialize(void) {
   // Cleanup ImGui
@@ -312,16 +291,12 @@ void uninitialize(void) {
   cleanupOpenGL();
 
   // Cleanup GLFW
+  Logger_Cleanup();
+
   if (window) {
     glfwDestroyWindow(window);
     window = NULL;
   }
 
   glfwTerminate();
-
-  if (gpFile) {
-    fprintf(gpFile, "Program terminated successfully...!!!");
-    fclose(gpFile);
-    gpFile = NULL;
-  }
 }

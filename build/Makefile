@@ -142,6 +142,33 @@ window_x11/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/window_x11.dir/build.make CMakeFiles/window_x11.dir/build
 .PHONY : window_x11/fast
 
+engine/core/logger.o: engine/core/logger.cpp.o
+.PHONY : engine/core/logger.o
+
+# target to build an object file
+engine/core/logger.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/window_glfw_linux.dir/build.make CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/window_x11.dir/build.make CMakeFiles/window_x11.dir/engine/core/logger.cpp.o
+.PHONY : engine/core/logger.cpp.o
+
+engine/core/logger.i: engine/core/logger.cpp.i
+.PHONY : engine/core/logger.i
+
+# target to preprocess a source file
+engine/core/logger.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/window_glfw_linux.dir/build.make CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/window_x11.dir/build.make CMakeFiles/window_x11.dir/engine/core/logger.cpp.i
+.PHONY : engine/core/logger.cpp.i
+
+engine/core/logger.s: engine/core/logger.cpp.s
+.PHONY : engine/core/logger.s
+
+# target to generate assembly for a file
+engine/core/logger.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/window_glfw_linux.dir/build.make CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/window_x11.dir/build.make CMakeFiles/window_x11.dir/engine/core/logger.cpp.s
+.PHONY : engine/core/logger.cpp.s
+
 engine/dependancies/imgui/imgui.o: engine/dependancies/imgui/imgui.cpp.o
 .PHONY : engine/dependancies/imgui/imgui.o
 
@@ -344,6 +371,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... window_glfw_linux"
 	@echo "... window_x11"
+	@echo "... engine/core/logger.o"
+	@echo "... engine/core/logger.i"
+	@echo "... engine/core/logger.s"
 	@echo "... engine/dependancies/imgui/imgui.o"
 	@echo "... engine/dependancies/imgui/imgui.i"
 	@echo "... engine/dependancies/imgui/imgui.s"

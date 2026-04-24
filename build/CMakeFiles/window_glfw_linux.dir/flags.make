@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DHAS_IMGUI
 
-CXX_INCLUDES = -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user
+CXX_INCLUDES = -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils -I/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user
 
 CXX_FLAGS = -g -std=gnu++17
 

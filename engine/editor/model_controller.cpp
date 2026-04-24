@@ -1,11 +1,7 @@
-#include "engine/engine.h"
 #include "model_controller.h"
-#include <vector>
-#include <string>
 
-#ifdef HAS_IMGUI
-#include "engine/dependancies/imgui/imgui.h"
-#endif
+
+
 
 // Shader for our highlight/boundary
 static ShaderProgram* outlineShader = NULL;
