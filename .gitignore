@@ -1,7 +1,7 @@
-linux/log.txt
-linux/todo.list
-linux/build/
-linux/build-win/
+log.txt
+todo.list
+build/
+build-win/
 examples/04-clouds/
 .cache
 .vscode/
@@ -12,5 +12,6 @@ examples/04-clouds/
 log.txt
 inputhandler.c
 tree.txt
-build/
 window_glfw_linux
+todo.list
+tree.txt
