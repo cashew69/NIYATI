@@ -1,13 +1,146 @@
-[19:20:51] [INFO] Logger initialized. Outputting to log.txt
-[19:20:51] [INFO] OpenGL Vendor   : AMD
-[19:20:51] [INFO] OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, ACO, DRM 3.64, 6.19.11-1-cachyos)
-[19:20:51] [INFO] OpenGL Version  : 4.6 (Core Profile) Mesa 26.0.4-arch2.2
-[19:20:51] [INFO] GLSL Version    : 4.60
-[19:20:51] [INFO] Project Initializing...
-Successfully read shader file: engine/shaders/lineVert.glsl
-Successfully read shader file: engine/shaders/lineFrag.glsl
+Program started successfully...!!!
+HELLO WORLD !!!
+glXChooseFBConfig returned 10 configs
+[20:04:42] [INFO] OpenGL Vendor   : AMD
+[20:04:42] [INFO] OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, ACO, DRM 3.64, 7.0.2-2-cachyos)
+[20:04:42] [INFO] OpenGL Version  : 4.6 (Core Profile) Mesa 26.0.6-arch2.2
+[20:04:42] [INFO] GLSL Version    : 4.60
+Successfully read shader file: engine/shaders/vertex_shader.glsl
+Successfully read shader file: engine/shaders/main_fs[lambart].glsl
 Shader Program Linked Successfully
-[19:20:51] [INFO] initializeOpenGL() completed
-[19:20:51] [INFO] initialize() SUCCEEDED
-[19:20:52] [INFO] OpenGL resources cleaned up
-[19:20:52] [INFO] Logger shutting down.
+Successfully read shader file: engine/shaders/instance.vert
+Successfully read shader file: engine/shaders/PBR/pbrFrag.glsl
+Shader Program Linked Successfully
+Successfully read shader file: engine/shaders/vertex_shader.glsl
+Successfully read shader file: engine/shaders/PBR/pbrFrag.glsl
+Shader Program Linked Successfully
+Successfully read shader file: engine/shaders/vertex_shader.glsl
+Successfully read shader file: engine/effects/terrain/main_tcs.glsl
+Successfully read shader file: engine/effects/terrain/main_tes.glsl
+Successfully read shader file: engine/shaders/PBR/pbrFrag.glsl
+Shader Program Linked Successfully
+Successfully read shader file: engine/shaders/icon.vert
+Successfully read shader file: engine/shaders/icon.frag
+Shader Program Linked Successfully
+[20:04:42] [INFO] Project Initializing...
+Loaded cubemap face 0: user/models/skybox/posx.jpg (2048x2048)
+Loaded cubemap face 1: user/models/skybox/negx.jpg (2048x2048)
+Loaded cubemap face 2: user/models/skybox/posy.jpg (2048x2048)
+Loaded cubemap face 3: user/models/skybox/negy.jpg (2048x2048)
+Loaded cubemap face 4: user/models/skybox/posz.jpg (2048x2048)
+Loaded cubemap face 5: user/models/skybox/negz.jpg (2048x2048)
+Reloaded skybox preset: Night Sky
+Successfully read shader file: engine/shaders/PBR/cubemap.vert
+Successfully read shader file: engine/shaders/PBR/irradiance_convolution.frag
+Shader Program Linked Successfully
+Successfully read shader file: engine/shaders/PBR/cubemap.vert
+Successfully read shader file: engine/shaders/PBR/prefilter.frag
+Shader Program Linked Successfully
+Successfully read shader file: engine/shaders/PBR/brdf.vert
+Successfully read shader file: engine/shaders/PBR/brdf.frag
+Shader Program Linked Successfully
+IBL maps generated. Irradiance=2, Prefilter=3, BRDF=4
+[20:04:42] [INFO] Generating terrain mesh 256x256...
+[20:04:42] [INFO] Terrain textures loaded: diffuse=6 normal=7 ARM=8 disp=9
+Mesh created: 260100 indices
+[20:04:42] [INFO] Terrain mesh created: 65536 vertices, 65025 patches (260100 indices)
+Loading model: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/04_clouds/f22blend.glb
+Number of meshes: 6
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 10
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 12
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 14
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 16
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 18
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+--- Material Texture Debug ---
+  TextureType 1: *0
+  TextureType 12: *0
+--- End Material Debug ---
+Loading Diffuse (DIFFUSE): *0
+Loading embedded texture: *0
+Diffuse texture ID: 20
+Normal texture ID: 0
+ORM texture ID: 0
+Emissive texture ID: 0
+AO texture ID: 0
+DEBUG: Scene has 1 embedded textures. Checking for missing assignments...
+FALLBACK: Force assigning *0 to ORM
+DEBUG: Force loading embedded texture 0 (*0)
+Loading embedded texture: *0
+Model loaded successfully: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/04_clouds/f22blend.glb
+[20:04:44] [INFO] initializeOpenGL() completed
+initialize() SUCCEEDED
+Successfully read shader file: engine/shaders/PBR/skybox.vert
+Successfully read shader file: engine/shaders/PBR/skybox.frag
+Shader Program Linked Successfully
+[20:04:56] [INFO] OpenGL resources cleaned up
+Program terminated successfully...!!!

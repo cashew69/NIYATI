@@ -6,13 +6,14 @@
 #include <X11/XKBlib.h> // for Keyboard related.
 
 
-// OpenGL related header files. 
+// OpenGL related header files.
 #include <GL/glew.h>  // GLEW must be first
 #include <GL/gl.h>    // OpenGL
 #include <GL/glx.h>
 
 #include "../../engine/engine.h"
 #include "../../platform_common.cpp"
+#include "platform.h"
 
 // Stubs for projects that don't define camera/wireframe (01, 02).
 // Project 03 defines PROJECT_03 and provides the real functions.
@@ -37,6 +38,8 @@ void platformGetFramebufferSize(int* width, int* height) {
   *height = g_windowHeight;
 }
 
+
+
 // Macros
 #define winwidth 800
 #define winheight 600
@@ -45,6 +48,20 @@ void platformGetFramebufferSize(int* width, int* height) {
 Display *gpDisplay = NULL;
 XVisualInfo *visualInfo = NULL;
 Window window;
+
+void platformSetSwapInterval(int interval) {
+    typedef void (*glXSwapIntervalEXTProc)(Display* dpy, GLXDrawable drawable, int interval);
+    static glXSwapIntervalEXTProc glXSwapIntervalEXT = (glXSwapIntervalEXTProc)glXGetProcAddressARB((const GLubyte*)"glXSwapIntervalEXT");
+    if (glXSwapIntervalEXT) {
+        glXSwapIntervalEXT(gpDisplay, window, interval);
+    } else {
+        typedef int (*glXSwapIntervalSGIProc)(int interval);
+        static glXSwapIntervalSGIProc glXSwapIntervalSGI = (glXSwapIntervalSGIProc)glXGetProcAddressARB((const GLubyte*)"glXSwapIntervalSGI");
+        if (glXSwapIntervalSGI) {
+            glXSwapIntervalSGI(interval);
+        }
+    }
+}
 Colormap colormap;
 bool bFullscreen = false;
 Bool bActiveWindow = False;
@@ -61,18 +78,18 @@ void print_fps() {
     static double last_time = 0.0;
     static int frame_count = 0;
     static double fps = 0.0;
-    
+
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     double current_time = ts.tv_sec + ts.tv_nsec / 1000000000.0;
-    
+
     frame_count++;
-    
+
     double elapsed = current_time - last_time;
     if (elapsed >= 1.0) {
         fps = frame_count / elapsed;
-        printf("FPS: %.2f\n", fps);
-        
+        printf("FPS: %.2f, g_Time: %.2f\n", fps, g_Time);
+
         frame_count = 0;
         last_time = current_time;
     }
@@ -99,17 +116,17 @@ int main(void)
     XVisualInfo *pXVisualInfo;
     int iNumFBConfigs = 0;
 
-    int frameBufferAttributes[] = 
+    int frameBufferAttributes[] =
     {
         GLX_X_RENDERABLE, True,
         GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
         GLX_RENDER_TYPE, GLX_RGBA_BIT,
         GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
         GLX_DOUBLEBUFFER, True,
-        GLX_RED_SIZE, 8, 
-        GLX_GREEN_SIZE, 8, 
-        GLX_BLUE_SIZE, 8, 
-        GLX_ALPHA_SIZE, 8, 
+        GLX_RED_SIZE, 8,
+        GLX_GREEN_SIZE, 8,
+        GLX_BLUE_SIZE, 8,
+        GLX_ALPHA_SIZE, 8,
         GLX_DEPTH_SIZE, 24,
         GLX_STENCIL_SIZE, 8,
         None
@@ -141,7 +158,7 @@ int main(void)
     }
 
     int defaultScreen = XDefaultScreen(gpDisplay);
-    defaultDepth = XDefaultDepth(gpDisplay, defaultScreen); 
+    defaultDepth = XDefaultDepth(gpDisplay, defaultScreen);
 
     // Choose best framebuffer config
     pGLXFBConfig = glXChooseFBConfig(gpDisplay, defaultScreen, frameBufferAttributes, &iNumFBConfigs);
@@ -187,7 +204,7 @@ int main(void)
     windowAttributes.border_pixel = 0;
     windowAttributes.background_pixmap = 0;
     windowAttributes.background_pixel = XBlackPixel(gpDisplay, visualInfo->screen);
-    windowAttributes.event_mask = KeyPressMask | ButtonPressMask | PointerMotionMask | 
+    windowAttributes.event_mask = KeyPressMask | ButtonPressMask | PointerMotionMask |
                                    FocusChangeMask | StructureNotifyMask | ExposureMask;
     Window root = XRootWindow(gpDisplay, visualInfo->screen);
     windowAttributes.colormap = XCreateColormap(gpDisplay, root, visualInfo->visual, AllocNone);
@@ -198,7 +215,7 @@ int main(void)
             gpDisplay, root,
             0, 0, winwidth, winheight, 2,
             visualInfo->depth, InputOutput, visualInfo->visual,
-            CWBorderPixel | CWBackPixel | CWEventMask | CWColormap, 
+            CWBorderPixel | CWBackPixel | CWEventMask | CWColormap,
             &windowAttributes);
 
     if (!window)
@@ -208,7 +225,7 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    windowManagerDeleteAtom = XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True); 
+    windowManagerDeleteAtom = XInternAtom(gpDisplay, "WM_DELETE_WINDOW", True);
     XSetWMProtocols(gpDisplay, window, &windowManagerDeleteAtom, 1);
     XStoreName(gpDisplay, window, "Nikhil Sathe's XWINDOW");
     XMapWindow(gpDisplay, window);
@@ -258,9 +275,9 @@ int main(void)
                     {
                         int delta_x = event.xmotion.x - mouse_x;
                         int delta_y = event.xmotion.y - mouse_y;
-                        
+
                         updateCameraFromMouse(delta_x, delta_y);
-                        
+
                         mouse_x = event.xmotion.x;
                         mouse_y = event.xmotion.y;
                     }
@@ -322,7 +339,7 @@ int main(void)
         {
             display();
             glXSwapBuffers(gpDisplay, window);
-            
+
             update();
             print_fps();
         }
@@ -351,13 +368,13 @@ int initialize(void)
         };
         glxContext = glXCreateContextAttribsARB(gpDisplay, glxFBConfig, 0, True, attribs);
     }
-    
+
     if (!glxContext)
     {
         fprintf(gpFile, "Failed to create GLX context\n");
         return -1;
     }
-    
+
     glXMakeCurrent(gpDisplay, window, glxContext);
 
     // Initialize GLEW
@@ -374,6 +391,9 @@ int initialize(void)
     {
         return result;
     }
+
+    // Set initial VSync state
+    platformSetSwapInterval(g_VSyncEnabled ? 1 : 0);
 
     // Warmup resize
     resize(winwidth, winheight);

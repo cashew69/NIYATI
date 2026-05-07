@@ -178,15 +178,30 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: \
  /usr/include/assimp/material.inl /usr/include/assimp/anim.h \
  /usr/include/assimp/metadata.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/structs.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/texture.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/shaders.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h \
+ /usr/include/c++/15.2.1/vector \
+ /usr/include/c++/15.2.1/bits/stl_uninitialized.h \
+ /usr/include/c++/15.2.1/bits/stl_vector.h \
+ /usr/include/c++/15.2.1/bits/stl_bvector.h \
+ /usr/include/c++/15.2.1/bits/vector.tcc \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/pbr.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/modelloading.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.c \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/../engine/effects/noise/perlin.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/../engine/effects/noise/noise.c \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/../engine/dependancies/stb_image_write.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.h \
@@ -194,15 +209,106 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/wasdqexc.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/strategic_camera.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platform_common.cpp \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/templates/project_template/project.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/custom_camera.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/attrdesc.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/attrdesc.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/entity_defs.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/boundingbox.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/boundingbox.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/BVH.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/BVH.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph_readwrite.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/instance/instance.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/instance/instance.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/terrain_node.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox_node.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/editor_root.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/engine_loop.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/scenemanager_layout.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imfilebrowser.h \
+ /usr/include/c++/15.2.1/array /usr/include/c++/15.2.1/compare \
+ /usr/include/c++/15.2.1/filesystem /usr/include/c++/15.2.1/bits/fs_fwd.h \
+ /usr/include/c++/15.2.1/system_error \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h \
+ /usr/include/c++/15.2.1/stdexcept /usr/include/c++/15.2.1/exception \
+ /usr/include/c++/15.2.1/bits/exception_ptr.h \
+ /usr/include/c++/15.2.1/bits/cxxabi_init_exception.h \
+ /usr/include/c++/15.2.1/typeinfo \
+ /usr/include/c++/15.2.1/bits/nested_exception.h \
+ /usr/include/c++/15.2.1/bits/chrono.h /usr/include/c++/15.2.1/ratio \
+ /usr/include/c++/15.2.1/bits/parse_numbers.h \
+ /usr/include/c++/15.2.1/bits/fs_path.h /usr/include/c++/15.2.1/locale \
+ /usr/include/c++/15.2.1/bits/locale_classes.h \
+ /usr/include/c++/15.2.1/ext/atomicity.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h \
+ /usr/include/pthread.h /usr/include/sched.h /usr/include/bits/sched.h \
+ /usr/include/linux/sched/types.h /usr/include/linux/types.h \
+ /usr/include/asm/types.h /usr/include/asm-generic/types.h \
+ /usr/include/asm-generic/int-ll64.h /usr/include/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h /usr/include/asm/posix_types.h \
+ /usr/include/asm/posix_types_64.h /usr/include/asm-generic/posix_types.h \
+ /usr/include/bits/types/struct_sched_param.h /usr/include/bits/cpu-set.h \
+ /usr/include/bits/setjmp.h \
+ /usr/include/bits/types/struct___jmp_buf_tag.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+ /usr/include/sys/single_threaded.h \
+ /usr/include/c++/15.2.1/bits/locale_classes.tcc \
+ /usr/include/c++/15.2.1/bits/locale_facets.h \
+ /usr/include/c++/15.2.1/cwctype /usr/include/wctype.h \
+ /usr/include/bits/wctype-wchar.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
+ /usr/include/c++/15.2.1/bits/ios_base.h \
+ /usr/include/c++/15.2.1/streambuf \
+ /usr/include/c++/15.2.1/bits/streambuf.tcc \
+ /usr/include/c++/15.2.1/bits/streambuf_iterator.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+ /usr/include/c++/15.2.1/bits/locale_facets.tcc \
+ /usr/include/c++/15.2.1/bits/locale_facets_nonio.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/time_members.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/15.2.1/bits/codecvt.h \
+ /usr/include/c++/15.2.1/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/15.2.1/bits/locale_conv.h \
+ /usr/include/c++/15.2.1/iomanip \
+ /usr/include/c++/15.2.1/bits/quoted_string.h \
+ /usr/include/c++/15.2.1/sstream /usr/include/c++/15.2.1/istream \
+ /usr/include/c++/15.2.1/ios /usr/include/c++/15.2.1/bits/basic_ios.h \
+ /usr/include/c++/15.2.1/bits/basic_ios.tcc \
+ /usr/include/c++/15.2.1/ostream /usr/include/c++/15.2.1/bits/ostream.h \
+ /usr/include/c++/15.2.1/bits/ostream.tcc \
+ /usr/include/c++/15.2.1/bits/istream.tcc \
+ /usr/include/c++/15.2.1/bits/sstream.tcc /usr/include/c++/15.2.1/codecvt \
+ /usr/include/c++/15.2.1/ext/concurrence.h \
+ /usr/include/c++/15.2.1/bits/shared_ptr.h \
+ /usr/include/c++/15.2.1/bits/shared_ptr_base.h \
+ /usr/include/c++/15.2.1/bits/allocated_ptr.h \
+ /usr/include/c++/15.2.1/bits/unique_ptr.h \
+ /usr/include/c++/15.2.1/bits/fs_dir.h \
+ /usr/include/c++/15.2.1/bits/fs_ops.h /usr/include/c++/15.2.1/set \
+ /usr/include/c++/15.2.1/bits/stl_tree.h \
+ /usr/include/c++/15.2.1/bits/stl_set.h \
+ /usr/include/c++/15.2.1/bits/stl_multiset.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/attributemanager_layout.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/terrain_attribute_layout.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/skybox_attribute_layout.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/utilbar_layout.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.h

@@ -1,6 +1,7 @@
 #include "engine/platform.h"
 #include "engine/dependancies/vmath.h"
 #include "engine/core/gl/structs.h"
+#include "engine/utils/camera_utils/camera_base.h"
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -37,7 +38,6 @@ vec3  cloudBoxScale(20.0f, 10.0f, 20.0f);
 extern ShaderProgram *VolumeRenderingProgram;
 extern mat4 viewMatrix;
 extern mat4 perspectiveProjectionMatrix;
-extern Camera *mainCamera;
 // extern FILE *gpFile; // Now using logger.h
 
 
@@ -251,8 +251,9 @@ void renderClouds()
     glUniformMatrix4fv(glGetUniformLocation(VolumeRenderingProgram->id, "uProjection"), 1, GL_FALSE, perspectiveProjectionMatrix);
 
     // Set other uniforms
-    if (mainCamera) {
-        glUniform3fv(glGetUniformLocation(VolumeRenderingProgram->id, "uCameraPos"), 1, mainCamera->position);
+    {
+        vec3 camPos = GetActiveCameraPosition();
+        glUniform3fv(glGetUniformLocation(VolumeRenderingProgram->id, "uCameraPos"), 1, camPos);
     }
     glUniform1f(glGetUniformLocation(VolumeRenderingProgram->id, "uTime"), platformGetTime());
     glUniform2f(resLoc, 1920.0f, 1080.0f);

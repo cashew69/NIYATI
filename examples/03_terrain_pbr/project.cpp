@@ -24,7 +24,7 @@ float   mouse_sensitivity   = 0.1f;
 #include "engine/effects/terrain/terrain.h"
 #include "engine/effects/terrain/terrain.cpp"
 #include "engine/utils/skybox.cpp"
-#include "user/userrendercalls.cpp"
+//#include "user/userrendercalls.cpp"
 
 // ============================================================================
 // Project 03 Camera System (multi-mode: FPS / Manual / Orbit)
@@ -80,7 +80,7 @@ void projectInit()
         tessellationShaderProgram->name = "Tessellation";
     }
 
-    
+
 
     // ===== PBR Shader Program =====
     const char *pbrShaderFiles[5] = {
@@ -149,7 +149,7 @@ void projectRender()
     updateCamera(mainCamera);
     viewMatrix = mainCamera->viewMatrix;
 
-    renderTerrain(HeightMap);
+    renderTerrain(HeightMap, mat4::identity());
     renderUserMeshes(HeightMap);
 }
 

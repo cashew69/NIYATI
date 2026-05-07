@@ -3,7 +3,7 @@
 cd "$(dirname "$0")/../.."
 
 # Switch active project in platform_common.cpp
-sed -i 's|^#include ".*project.cpp"|#include "templates/project_template/project.cpp"|' platform_common.cpp
+sed -i 's|^#include ".*project.cpp"|#include "examples/06-Demo/project.cpp"|' platform_common.cpp
 
 # Build
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug

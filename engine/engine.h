@@ -29,27 +29,41 @@ using namespace vmath;
 extern const char* attribNames[4];
 extern GLint attribIndices[4];
 
+enum SceneSelectedType {
+    SEL_NONE = 0,
+    SEL_CUSTOM_CAM = 1,
+    SEL_MODEL = 3,
+    SEL_LIGHT = 4,
+    SEL_REF_OBJ = 5,
+    SEL_SCENENODE = 6
+};
+
+enum SceneSelectedType g_SceneSelectedType;
+int g_SceneSelectedIndex;
+
 // ============================================================================
 // ENGINE GLOBALS
 // ============================================================================
 
 // Shader Programs
-ShaderProgram *mainShaderProgram = NULL;
+ShaderProgram *lambertShaderProgram = NULL;
 ShaderProgram *lineShaderProgram = NULL;
 ShaderProgram *tessellationShaderProgram = NULL;
 ShaderProgram *pbrShaderProgram = NULL;
 ShaderProgram *VolumeRenderingProgram = NULL;
+ShaderProgram *instancedProgram = NULL;
+ShaderProgram *iconShaderProgram = NULL;
 
 
 #include "core/logger.h"
 
-// Scene Meshes
-Mesh *sceneMeshes = NULL;
-int meshCount = 0;
-Mesh *helmetMeshes = NULL;
-int helmetMeshCount = 0;
-Mesh *terrainMesh = NULL;
-Mesh *planeMesh = NULL;
+// Scene Content
+Model *sceneModels = NULL;
+int sceneModelCount = 0;
+
+
+SceneNode* g_SceneRoot = NULL;
+SceneNode* g_SelectedSceneNode = NULL;
 
 // Matrices
 mat4 perspectiveProjectionMatrix;
@@ -67,21 +81,46 @@ GLint lightColorLocUniform;
 GLint viewPosLocUniform;
 GLint colorTextureLocUniform;
 
+// Common Rendering Globals (used by Terrain, PBR, etc.)
+vec3 lightPos = vec3(0.0f, 500.0f, 0.0f);
+vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
+vec3 lightDir = vec3(0.0f, -1.0f, 0.0f);
+int lightType = 1; // Default to Point
+float lightRadius = 100.0f;
+float lightInnerCutoff = 0.9f;
+float lightOuterCutoff = 0.8f;
+float lightIntensity = 500.0f;
+bool useIBL = false;
+float iblIntensity = 1.0f;
+bool g_wireframeMode = false;
+
 // ============================================================================
 // ENGINE CORE IMPLEMENTATIONS
 // ============================================================================
 #include "core/gl/texture.cpp"
 #include "core/gl/shaders.cpp"
+#include "utils/primitives.cpp"
+#include "utils/pbr.cpp"
 #include "core/gl/camera.cpp"
 #include "core/gl/modelloading.cpp"
 #include "effects/noise/perlin.c"
+#include "effects/terrain/terrain.cpp"
 #include "transform.cpp"
 #include "editor/model_controller.h"
 #include "utils/editor_utils.h"
 #include "utils/camera_utils/camera_base.h"
-#include "utils/camera_utils/wasdqexc.cpp"
 #include "utils/camera_utils/mouseboard.cpp"
-#include "utils/camera_utils/strategic_camera.cpp"
+#include "utils/camera_utils/custom_camera.cpp"
 #include "utils/camera_utils/camera_manager.cpp"
-
-
+#include "utils/attrdesc.cpp"
+#include "utils/entity_defs.cpp"
+#include "utils/boundingbox.cpp"
+#include "utils/culling.cpp"
+#include "utils/BVH.cpp"
+#include "utils/scenegraph.cpp"
+#include "utils/scenegraph_readwrite.cpp"
+#include "utils/shadermanager.cpp"
+#include "effects/instance/instance.cpp"
+#include "utils/terrain_node.cpp"
+#include "utils/skybox.cpp"
+#include "utils/skybox_node.cpp"

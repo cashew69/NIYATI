@@ -1,9 +1,12 @@
 #include "userrenderimports.h"
 
-// Global PBR Settings
-vec3 lightPos = vec3(0.0f, 10.0f, 10.0f);
-vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
-float lightIntensity = 1.0f;
+// Global PBR Settings (now in engine.h)
+extern vec3 lightPos;
+extern vec3 lightColor;
+extern float lightIntensity;
+extern bool useIBL;
+extern float iblIntensity;
+
 vec3 viewPos = vec3(0.0f, 0.0f, 10.0f);
 
 // Model Transform
@@ -11,25 +14,20 @@ vec3 modelPosition(0.0f, 0.0f, 0.0f);
 vec3 modelRotation(90.0f, 0.0f, 0.0f);
 vec3 modelScale(3.0f, 3.0f, 3.0f);
 
-// Debug Texture Toggles
-bool debugDisableDiffuse = false;
-bool debugDisableNormal = false;
-bool debugDisableMetallic = false;
-bool debugDisableRoughness = false;
-bool debugDisableAO = false;
-bool debugDisableEmissive = false;
+// PBR Debug Settings (now in modelloading.cpp)
+extern bool debugDisableDiffuse;
+extern bool debugDisableNormal;
+extern bool debugDisableMetallic;
+extern bool debugDisableRoughness;
+extern bool debugDisableAO;
+extern bool debugDisableEmissive;
 
-// Debug Parameter Overrides
-bool debugOverrideRoughness = false;
-bool debugOverrideMetallic = false;
-float debugRoughness = 0.5f;
-float debugMetallic = 0.0f;
-float debugAOStrength = 1.0f;
-float debugEmissiveIntensity = 5.0f;
-
-// IBL Settings
-bool useIBL = true;
-float iblIntensity = 1.0f;
+extern bool debugOverrideRoughness;
+extern bool debugOverrideMetallic;
+extern float debugRoughness;
+extern float debugMetallic;
+extern float debugAOStrength;
+extern float debugEmissiveIntensity;
 
 void setCommonUniformsForCurrentProgram(ShaderProgram* program, const mat4 &proj, const mat4 &view, 
         vec3 lightPos, vec3 lightColor, vec3 viewPos)
@@ -51,48 +49,7 @@ void setCommonUniformsForCurrentProgram(ShaderProgram* program, const mat4 &proj
     if (loc != -1) glUniform3fv(loc, 1, viewPos);
 }
 
-void setDebugUniforms(ShaderProgram* program)
-{
-    GLint loc;
-    
-    // Texture disable toggles
-    loc = glGetUniformLocation(program->id, "uDebugDisableDiffuseTex");
-    if (loc != -1) glUniform1i(loc, debugDisableDiffuse);
-    
-    loc = glGetUniformLocation(program->id, "uDebugDisableNormalTex");
-    if (loc != -1) glUniform1i(loc, debugDisableNormal);
-    
-    loc = glGetUniformLocation(program->id, "uDebugDisableMetallicTex");
-    if (loc != -1) glUniform1i(loc, debugDisableMetallic);
-    
-    loc = glGetUniformLocation(program->id, "uDebugDisableRoughnessTex");
-    if (loc != -1) glUniform1i(loc, debugDisableRoughness);
-    
-    loc = glGetUniformLocation(program->id, "uDebugDisableAOTex");
-    if (loc != -1) glUniform1i(loc, debugDisableAO);
-    
-    loc = glGetUniformLocation(program->id, "uDebugDisableEmissiveTex");
-    if (loc != -1) glUniform1i(loc, debugDisableEmissive);
-    
-    // Parameter overrides
-    loc = glGetUniformLocation(program->id, "uDebugOverrideRoughness");
-    if (loc != -1) glUniform1i(loc, debugOverrideRoughness);
-    
-    loc = glGetUniformLocation(program->id, "uDebugOverrideMetallic");
-    if (loc != -1) glUniform1i(loc, debugOverrideMetallic);
-    
-    loc = glGetUniformLocation(program->id, "uDebugRoughness");
-    if (loc != -1) glUniform1f(loc, debugRoughness);
-    
-    loc = glGetUniformLocation(program->id, "uDebugMetallic");
-    if (loc != -1) glUniform1f(loc, debugMetallic);
-    
-    loc = glGetUniformLocation(program->id, "uDebugAOStrength");
-    if (loc != -1) glUniform1f(loc, debugAOStrength);
-    
-    loc = glGetUniformLocation(program->id, "uDebugEmissiveIntensity");
-    if (loc != -1) glUniform1f(loc, debugEmissiveIntensity);
-}
+extern void setDebugUniforms(ShaderProgram* program);
 
 void renderUserMeshes(GLint HeightMap)
 {

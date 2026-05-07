@@ -1262,6 +1262,9 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o: 
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xtestintrin.h
 
 CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/glfwmain.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/stb_image_write.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/noise.c \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/modelloading.cpp \
@@ -1270,36 +1273,73 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/texture.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imconfig.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imfilebrowser.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/stb_image.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/attributemanager_layout.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/scenemanager_layout.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/skybox_attribute_layout.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/terrain_attribute_layout.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/utilbar_layout.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/instance/instance.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/instance/instance.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.c \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/engine.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/BVH.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/BVH.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/attrdesc.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/attrdesc.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/boundingbox.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/boundingbox.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/custom_camera.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp \
-  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/strategic_camera.cpp \
-  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/wasdqexc.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
-  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platform_common.cpp \
-  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/templates/project_template/project.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/entity_defs.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/pbr.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph_readwrite.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox_node.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/terrain_node.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/editor_root.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/engine_loop.cpp \
   /usr/include/GL/gl.h \
   /usr/include/GL/glew.h \
   /usr/include/GL/glu.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
+  /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/int-ll64.h \
+  /usr/include/asm-generic/posix_types.h \
+  /usr/include/asm-generic/types.h \
+  /usr/include/asm/bitsperlong.h \
   /usr/include/asm/errno.h \
+  /usr/include/asm/posix_types.h \
+  /usr/include/asm/posix_types_64.h \
+  /usr/include/asm/types.h \
   /usr/include/assert.h \
   /usr/include/assimp/Compiler/poppack1.h \
   /usr/include/assimp/Compiler/pushpack1.h \
@@ -1334,6 +1374,7 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/assimp/vector3.inl \
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
+  /usr/include/bits/cpu-set.h \
   /usr/include/bits/endian.h \
   /usr/include/bits/endianness.h \
   /usr/include/bits/errno.h \
@@ -1358,7 +1399,9 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/bits/pthread_stack_min-dynamic.h \
   /usr/include/bits/pthreadtypes-arch.h \
   /usr/include/bits/pthreadtypes.h \
+  /usr/include/bits/sched.h \
   /usr/include/bits/select.h \
+  /usr/include/bits/setjmp.h \
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
@@ -1387,7 +1430,9 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/bits/types/mbstate_t.h \
   /usr/include/bits/types/sigset_t.h \
   /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/types/struct___jmp_buf_tag.h \
   /usr/include/bits/types/struct_itimerspec.h \
+  /usr/include/bits/types/struct_sched_param.h \
   /usr/include/bits/types/struct_timespec.h \
   /usr/include/bits/types/struct_timeval.h \
   /usr/include/bits/types/struct_tm.h \
@@ -1400,68 +1445,110 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wchar.h \
+  /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
   /usr/include/c++/15.2.1/algorithm \
+  /usr/include/c++/15.2.1/array \
   /usr/include/c++/15.2.1/backward/binders.h \
   /usr/include/c++/15.2.1/bit \
   /usr/include/c++/15.2.1/bits/algorithmfwd.h \
   /usr/include/c++/15.2.1/bits/alloc_traits.h \
+  /usr/include/c++/15.2.1/bits/allocated_ptr.h \
   /usr/include/c++/15.2.1/bits/allocator.h \
+  /usr/include/c++/15.2.1/bits/basic_ios.h \
+  /usr/include/c++/15.2.1/bits/basic_ios.tcc \
   /usr/include/c++/15.2.1/bits/basic_string.h \
   /usr/include/c++/15.2.1/bits/basic_string.tcc \
   /usr/include/c++/15.2.1/bits/char_traits.h \
   /usr/include/c++/15.2.1/bits/charconv.h \
+  /usr/include/c++/15.2.1/bits/chrono.h \
+  /usr/include/c++/15.2.1/bits/codecvt.h \
   /usr/include/c++/15.2.1/bits/concept_check.h \
   /usr/include/c++/15.2.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.2.1/bits/cxxabi_forced.h \
+  /usr/include/c++/15.2.1/bits/cxxabi_init_exception.h \
   /usr/include/c++/15.2.1/bits/enable_special_members.h \
   /usr/include/c++/15.2.1/bits/erase_if.h \
   /usr/include/c++/15.2.1/bits/exception.h \
   /usr/include/c++/15.2.1/bits/exception_defines.h \
+  /usr/include/c++/15.2.1/bits/exception_ptr.h \
+  /usr/include/c++/15.2.1/bits/fs_dir.h \
+  /usr/include/c++/15.2.1/bits/fs_fwd.h \
+  /usr/include/c++/15.2.1/bits/fs_ops.h \
+  /usr/include/c++/15.2.1/bits/fs_path.h \
   /usr/include/c++/15.2.1/bits/functexcept.h \
   /usr/include/c++/15.2.1/bits/functional_hash.h \
   /usr/include/c++/15.2.1/bits/hash_bytes.h \
   /usr/include/c++/15.2.1/bits/hashtable.h \
   /usr/include/c++/15.2.1/bits/hashtable_policy.h \
   /usr/include/c++/15.2.1/bits/invoke.h \
+  /usr/include/c++/15.2.1/bits/ios_base.h \
+  /usr/include/c++/15.2.1/bits/istream.tcc \
+  /usr/include/c++/15.2.1/bits/locale_classes.h \
+  /usr/include/c++/15.2.1/bits/locale_classes.tcc \
+  /usr/include/c++/15.2.1/bits/locale_conv.h \
+  /usr/include/c++/15.2.1/bits/locale_facets.h \
+  /usr/include/c++/15.2.1/bits/locale_facets.tcc \
+  /usr/include/c++/15.2.1/bits/locale_facets_nonio.h \
+  /usr/include/c++/15.2.1/bits/locale_facets_nonio.tcc \
   /usr/include/c++/15.2.1/bits/localefwd.h \
   /usr/include/c++/15.2.1/bits/memory_resource.h \
   /usr/include/c++/15.2.1/bits/memoryfwd.h \
   /usr/include/c++/15.2.1/bits/move.h \
+  /usr/include/c++/15.2.1/bits/nested_exception.h \
   /usr/include/c++/15.2.1/bits/new_allocator.h \
   /usr/include/c++/15.2.1/bits/node_handle.h \
+  /usr/include/c++/15.2.1/bits/ostream.h \
+  /usr/include/c++/15.2.1/bits/ostream.tcc \
   /usr/include/c++/15.2.1/bits/ostream_insert.h \
+  /usr/include/c++/15.2.1/bits/parse_numbers.h \
   /usr/include/c++/15.2.1/bits/postypes.h \
   /usr/include/c++/15.2.1/bits/predefined_ops.h \
   /usr/include/c++/15.2.1/bits/ptr_traits.h \
+  /usr/include/c++/15.2.1/bits/quoted_string.h \
   /usr/include/c++/15.2.1/bits/range_access.h \
   /usr/include/c++/15.2.1/bits/refwrap.h \
   /usr/include/c++/15.2.1/bits/requires_hosted.h \
+  /usr/include/c++/15.2.1/bits/shared_ptr.h \
+  /usr/include/c++/15.2.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.2.1/bits/specfun.h \
+  /usr/include/c++/15.2.1/bits/sstream.tcc \
   /usr/include/c++/15.2.1/bits/std_abs.h \
   /usr/include/c++/15.2.1/bits/stl_algo.h \
   /usr/include/c++/15.2.1/bits/stl_algobase.h \
+  /usr/include/c++/15.2.1/bits/stl_bvector.h \
   /usr/include/c++/15.2.1/bits/stl_construct.h \
   /usr/include/c++/15.2.1/bits/stl_function.h \
   /usr/include/c++/15.2.1/bits/stl_heap.h \
   /usr/include/c++/15.2.1/bits/stl_iterator.h \
   /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.2.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/15.2.1/bits/stl_multiset.h \
   /usr/include/c++/15.2.1/bits/stl_pair.h \
+  /usr/include/c++/15.2.1/bits/stl_set.h \
   /usr/include/c++/15.2.1/bits/stl_tempbuf.h \
+  /usr/include/c++/15.2.1/bits/stl_tree.h \
+  /usr/include/c++/15.2.1/bits/stl_uninitialized.h \
+  /usr/include/c++/15.2.1/bits/stl_vector.h \
+  /usr/include/c++/15.2.1/bits/streambuf.tcc \
+  /usr/include/c++/15.2.1/bits/streambuf_iterator.h \
   /usr/include/c++/15.2.1/bits/string_view.tcc \
   /usr/include/c++/15.2.1/bits/stringfwd.h \
   /usr/include/c++/15.2.1/bits/uniform_int_dist.h \
+  /usr/include/c++/15.2.1/bits/unique_ptr.h \
   /usr/include/c++/15.2.1/bits/unordered_set.h \
   /usr/include/c++/15.2.1/bits/uses_allocator.h \
   /usr/include/c++/15.2.1/bits/uses_allocator_args.h \
   /usr/include/c++/15.2.1/bits/utility.h \
+  /usr/include/c++/15.2.1/bits/vector.tcc \
   /usr/include/c++/15.2.1/bits/version.h \
   /usr/include/c++/15.2.1/cctype \
   /usr/include/c++/15.2.1/cerrno \
   /usr/include/c++/15.2.1/clocale \
   /usr/include/c++/15.2.1/cmath \
+  /usr/include/c++/15.2.1/codecvt \
+  /usr/include/c++/15.2.1/compare \
   /usr/include/c++/15.2.1/concepts \
   /usr/include/c++/15.2.1/cstddef \
   /usr/include/c++/15.2.1/cstdint \
@@ -1470,24 +1557,40 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/c++/15.2.1/cstring \
   /usr/include/c++/15.2.1/ctime \
   /usr/include/c++/15.2.1/cwchar \
+  /usr/include/c++/15.2.1/cwctype \
   /usr/include/c++/15.2.1/debug/assertions.h \
   /usr/include/c++/15.2.1/debug/debug.h \
+  /usr/include/c++/15.2.1/exception \
   /usr/include/c++/15.2.1/ext/aligned_buffer.h \
   /usr/include/c++/15.2.1/ext/alloc_traits.h \
+  /usr/include/c++/15.2.1/ext/atomicity.h \
+  /usr/include/c++/15.2.1/ext/concurrence.h \
   /usr/include/c++/15.2.1/ext/numeric_traits.h \
   /usr/include/c++/15.2.1/ext/string_conversions.h \
   /usr/include/c++/15.2.1/ext/type_traits.h \
+  /usr/include/c++/15.2.1/filesystem \
   /usr/include/c++/15.2.1/initializer_list \
+  /usr/include/c++/15.2.1/iomanip \
+  /usr/include/c++/15.2.1/ios \
   /usr/include/c++/15.2.1/iosfwd \
+  /usr/include/c++/15.2.1/istream \
   /usr/include/c++/15.2.1/limits \
+  /usr/include/c++/15.2.1/locale \
   /usr/include/c++/15.2.1/math.h \
   /usr/include/c++/15.2.1/new \
+  /usr/include/c++/15.2.1/ostream \
   /usr/include/c++/15.2.1/pstl/execution_defs.h \
   /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h \
   /usr/include/c++/15.2.1/pstl/pstl_config.h \
+  /usr/include/c++/15.2.1/ratio \
+  /usr/include/c++/15.2.1/set \
+  /usr/include/c++/15.2.1/sstream \
+  /usr/include/c++/15.2.1/stdexcept \
   /usr/include/c++/15.2.1/stdlib.h \
+  /usr/include/c++/15.2.1/streambuf \
   /usr/include/c++/15.2.1/string \
   /usr/include/c++/15.2.1/string_view \
+  /usr/include/c++/15.2.1/system_error \
   /usr/include/c++/15.2.1/tr1/bessel_function.tcc \
   /usr/include/c++/15.2.1/tr1/beta_function.tcc \
   /usr/include/c++/15.2.1/tr1/ell_integral.tcc \
@@ -1502,12 +1605,22 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/c++/15.2.1/tr1/special_function_util.h \
   /usr/include/c++/15.2.1/tuple \
   /usr/include/c++/15.2.1/type_traits \
+  /usr/include/c++/15.2.1/typeinfo \
   /usr/include/c++/15.2.1/unordered_set \
+  /usr/include/c++/15.2.1/vector \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
   /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
   /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/messages_members.h \
   /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/time_members.h \
   /usr/include/ctype.h \
   /usr/include/endian.h \
   /usr/include/errno.h \
@@ -1515,12 +1628,19 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/features.h \
   /usr/include/gnu/stubs-64.h \
   /usr/include/gnu/stubs.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
+  /usr/include/linux/posix_types.h \
+  /usr/include/linux/sched/types.h \
+  /usr/include/linux/stddef.h \
+  /usr/include/linux/types.h \
   /usr/include/locale.h \
   /usr/include/math.h \
   /usr/include/memory.h \
+  /usr/include/pthread.h \
+  /usr/include/sched.h \
   /usr/include/stdc-predef.h \
   /usr/include/stdint.h \
   /usr/include/stdio.h \
@@ -1529,9 +1649,11 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
   /usr/include/sys/select.h \
+  /usr/include/sys/single_threaded.h \
   /usr/include/sys/types.h \
   /usr/include/time.h \
   /usr/include/wchar.h \
+  /usr/include/wctype.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/emmintrin.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/limits.h \
@@ -1589,990 +1711,1232 @@ window_glfw_linux: /usr/lib/Scrt1.o \
 
 CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_widgets.cpp.o:
 
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o:
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o:
 
-CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o:
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o:
+
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o:
 
 /usr/lib32/libz.so.1:
 
 /usr/lib32/libxcb.so.1:
 
-/usr/lib32/libXdmcp.so.6:
+/usr/lib32/libXau.so.6:
+
+/usr/lib32/libX11.so.6:
 
 /usr/lib32/libGLdispatch.so.0:
 
 /usr/lib32/libGLX.so.0:
 
-/usr/lib/libmvec.so.1:
-
-/usr/lib/libc_nonshared.a:
-
-/usr/lib/libc.so.6:
-
-/usr/lib/libXdmcp.so.6:
-
-/usr/lib/libGLX.so.0:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
-
-/usr/lib/libm.so:
-
-/usr/lib/libgcc_s.so.1:
-
-/usr/lib/libassimp.so:
-
-/usr/lib/crti.o:
-
-/usr/lib/Scrt1.o:
-
-/usr/lib/libstdc++.so:
-
-/usr/include/locale.h:
-
-/usr/include/ctype.h:
-
-/usr/include/c++/15.2.1/string_view:
-
-/usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h:
-
-/usr/include/c++/15.2.1/pstl/execution_defs.h:
-
-/usr/include/c++/15.2.1/new:
-
-/usr/include/c++/15.2.1/ext/string_conversions.h:
-
-/usr/include/c++/15.2.1/ext/aligned_buffer.h:
-
-/usr/include/c++/15.2.1/cstdio:
-
-/usr/include/c++/15.2.1/cstdint:
-
-/usr/lib/libgcc_s.so:
-
-/usr/include/c++/15.2.1/cstddef:
-
-/usr/include/c++/15.2.1/bits/stl_heap.h:
-
-/usr/include/c++/15.2.1/bits/stl_function.h:
-
-/usr/include/c++/15.2.1/bits/stl_algo.h:
-
-/usr/include/c++/15.2.1/bits/refwrap.h:
-
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h:
-
-/usr/include/c++/15.2.1/bits/range_access.h:
-
-/usr/include/c++/15.2.1/bits/new_allocator.h:
-
-/usr/include/c++/15.2.1/bits/memoryfwd.h:
-
-/usr/include/c++/15.2.1/bits/memory_resource.h:
-
-/usr/include/c++/15.2.1/bits/localefwd.h:
-
-/usr/lib/crtn.o:
-
-/usr/include/c++/15.2.1/bits/functional_hash.h:
-
-/usr/lib/libXau.so.6:
-
-/usr/include/c++/15.2.1/bits/erase_if.h:
-
-/usr/include/c++/15.2.1/bits/cxxabi_forced.h:
-
-/usr/include/c++/15.2.1/bits/char_traits.h:
-
-/usr/include/c++/15.2.1/bits/node_handle.h:
-
-/usr/include/c++/15.2.1/bits/basic_string.tcc:
-
-/usr/include/c++/15.2.1/bits/uses_allocator_args.h:
-
-/usr/include/c++/15.2.1/bits/basic_string.h:
-
-/usr/include/c++/15.2.1/cctype:
-
-/usr/include/c++/15.2.1/backward/binders.h:
-
-/usr/include/c++/15.2.1/algorithm:
-
-/usr/include/bits/types/wint_t.h:
-
-/usr/include/bits/types/error_t.h:
-
-/usr/include/bits/errno.h:
-
-/usr/include/c++/15.2.1/bits/stringfwd.h:
-
-/usr/include/c++/15.2.1/bits/enable_special_members.h:
-
-/usr/include/assimp/texture.h:
-
-/usr/lib32/libX11.so.6:
-
-/usr/include/assimp/scene.h:
-
-/usr/include/assimp/quaternion.inl:
-
-/usr/include/assimp/quaternion.h:
-
-/usr/include/assimp/postprocess.h:
-
-/usr/include/assimp/metadata.h:
-
-/usr/include/assimp/matrix4x4.inl:
-
-/usr/include/assimp/matrix4x4.h:
-
-/usr/include/assimp/matrix3x3.inl:
-
-/usr/lib/libGL.so:
-
-/usr/include/assimp/matrix3x3.h:
-
-/usr/include/assimp/material.inl:
-
-/usr/include/assimp/light.h:
-
-/usr/include/assimp/defs.h:
-
-/usr/include/assimp/color4.inl:
-
-/usr/include/assimp/aabb.h:
-
-/usr/include/assimp/MathFunctions.h:
-
-/usr/include/asm-generic/errno.h:
-
-/usr/include/asm-generic/errno-base.h:
-
-/usr/include/GL/glu.h:
-
-/usr/include/c++/15.2.1/bits/hashtable_policy.h:
-
-/usr/include/GL/glew.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/templates/project_template/project.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platform_common.cpp:
-
-/usr/include/c++/15.2.1/cstring:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/wasdqexc.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/strategic_camera.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h:
-
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_glfw.cpp.o:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/engine.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h:
-
-/usr/lib/libX11.so.6:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.c:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h:
-
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/stb_image.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/shaders.cpp:
-
-/usr/include/assimp/types.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/modelloading.cpp:
-
-/usr/include/assimp/Compiler/poppack1.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp:
-
-/usr/include/c++/15.2.1/bits/algorithmfwd.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imstb_textedit.h:
-
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_impl_opengl3.cpp.o:
-
-/usr/include/assimp/color4.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_widgets.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_tables.cpp:
-
-/usr/include/c++/15.2.1/bits/hashtable.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.h:
-
-/usr/include/assimp/mesh.h:
-
-/usr/include/dlfcn.h:
-
-/usr/include/X11/keysymdef.h:
-
-/usr/include/X11/keysym.h:
-
-/usr/include/X11/extensions/Xrender.h:
-
-/usr/include/X11/extensions/Xrandr.h:
-
-/usr/include/X11/Xutil.h:
-
-/usr/include/X11/Xlib.h:
-
-/usr/include/X11/Xfuncproto.h:
+/usr/lib/libxcb.so.1:
 
 /usr/lib/libm.so.6:
 
-/usr/include/X11/X.h:
+/usr/lib/libc_nonshared.a:
 
-/usr/include/KHR/khrplatform.h:
+/usr/lib/libXdmcp.so.6:
 
-/usr/include/GLFW/glfw3.h:
-
-/usr/include/GL/gl.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/glfwmain.cpp:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_draw.cpp:
-
-/usr/include/c++/15.2.1/bits/allocator.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xtestintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsavesintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsaveintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsavecintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xmmintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o:
-
-/usr/include/assimp/vector2.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/wbnoinvdintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/vaesintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/usermsrintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/uintrintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/tsxldtrkintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/tmmintrin.h:
-
-CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/tbmintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/smmintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sha512intrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sgxintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/serializeintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/rtmintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/rdseedintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/raointintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/prfchwintrin.h:
-
-/usr/include/assimp/importerdesc.h:
-
-/usr/include/c++/15.2.1/bits/std_abs.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/x86gprintrin.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_internal.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imstb_rectpack.h:
-
-/usr/include/c++/15.2.1/bits/ptr_traits.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxvnniint8intrin.h:
-
-/usr/include/bits/siginfo-consts.h:
-
-/usr/include/c++/15.2.1/bits/concept_check.h:
-
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o:
-
-/usr/include/c++/15.2.1/bits/exception_defines.h:
-
-/usr/include/bits/waitflags.h:
-
-/usr/include/c++/15.2.1/bits/stl_pair.h:
-
-/usr/include/bits/dlfcn.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cmpccxaddintrin.h:
-
-/usr/include/c++/15.2.1/bits/postypes.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/popcntintrin.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.h:
-
-/usr/include/bits/types/sigset_t.h:
-
-/usr/include/bits/types/siginfo_t.h:
-
-/usr/include/bits/types/sigevent_t.h:
-
-/usr/include/c++/15.2.1/bits/string_view.tcc:
-
-/usr/include/assimp/vector3.h:
-
-/usr/include/bits/typesizes.h:
-
-/usr/include/c++/15.2.1/debug/debug.h:
-
-/usr/include/c++/15.2.1/type_traits:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/lwpintrin.h:
-
-/usr/include/bits/types/idtype_t.h:
-
-/usr/include/bits/mathcalls-macros.h:
-
-/usr/include/c++/15.2.1/bits/stl_construct.h:
-
-/usr/include/c++/15.2.1/limits:
-
-/usr/include/bits/struct_mutex.h:
-
-/usr/include/bits/stdint-least.h:
-
-/usr/include/linux/close_range.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512cdintrin.h:
-
-/usr/include/assimp/anim.h:
-
-/usr/include/bits/sigstksz.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmi2intrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fp16vlintrin.h:
-
-/usr/include/bits/types/stack_t.h:
-
-/usr/include/bits/sigevent-consts.h:
-
-/usr/include/c++/15.2.1/bits/stl_algobase.h:
-
-/usr/include/bits/signum-arch.h:
-
-/usr/include/bits/types/mbstate_t.h:
-
-/usr/include/bits/signal_ext.h:
-
-/usr/lib/libGLdispatch.so.0:
-
-/usr/include/bits/sigcontext.h:
-
-/usr/include/bits/select.h:
-
-/usr/include/X11/Xosdefs.h:
-
-/usr/include/c++/15.2.1/bits/specfun.h:
-
-/usr/include/bits/sigaction.h:
-
-/usr/include/bits/pthread_stack_min-dynamic.h:
-
-/usr/include/GL/glext.h:
-
-/usr/include/c++/15.2.1/pstl/pstl_config.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bf16intrin.h:
-
-/usr/include/c++/15.2.1/bits/exception.h:
-
-/usr/include/bits/math-vector.h:
-
-/usr/include/bits/uio_lim.h:
-
-/usr/include/bits/mathcalls.h:
-
-/usr/include/bits/locale.h:
-
-/usr/include/assimp/vector3.inl:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2copyintrin.h:
-
-/usr/include/assimp/material.h:
-
-/usr/include/bits/types/sigval_t.h:
-
-/usr/include/c++/15.2.1/initializer_list:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2bf16intrin.h:
-
-/usr/include/bits/libm-simd-decl-stubs.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxintrin.h:
-
-/usr/include/wchar.h:
-
-/usr/include/bits/posix1_lim.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/enqcmdintrin.h:
-
-/usr/include/GLFW/glfw3native.h:
-
-/usr/include/bits/fp-fast.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imstb_truetype.h:
-
-/usr/include/bits/flt-eval-method.h:
-
-/usr/include/bits/byteswap.h:
-
-/usr/include/c++/15.2.1/tr1/special_function_util.h:
-
-/usr/include/c++/15.2.1/bits/hash_bytes.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cldemoteintrin.h:
-
-/usr/include/asm/errno.h:
-
-/usr/include/bits/stdint-uintn.h:
-
-/usr/include/c++/15.2.1/cstdlib:
-
-/usr/include/bits/types/cookie_io_functions_t.h:
-
-/usr/lib/libz.so.1:
-
-/usr/include/bits/uintn-identity.h:
-
-/usr/include/c++/15.2.1/stdlib.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/fxsrintrin.h:
-
-/usr/include/bits/stdlib-float.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/waitpkgintrin.h:
-
-/usr/include/bits/time64.h:
-
-/usr/include/sys/wait.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmivlintrin.h:
-
-/usr/include/assimp/config.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.cpp:
-
-/usr/include/bits/types/__locale_t.h:
-
-/usr/include/c++/15.2.1/bits/uses_allocator.h:
-
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/clwbintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/adxintrin.h:
-
-/usr/include/c++/15.2.1/ext/alloc_traits.h:
-
-/usr/include/bits/unistd_ext.h:
-
-/usr/include/bits/types/__fpos64_t.h:
-
-/usr/lib32/libXau.so.6:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vp2intersectintrin.h:
-
-/usr/include/c++/15.2.1/ctime:
-
-/usr/include/bits/timex.h:
-
-/usr/include/bits/posix_opt.h:
-
-/usr/include/bits/atomic_wide_counter.h:
-
-/usr/include/bits/pthreadtypes-arch.h:
-
-/usr/include/gnu/stubs.h:
-
-CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o:
-
-/usr/include/sys/cdefs.h:
-
-/usr/include/assimp/cimport.h:
-
-/usr/include/bits/types/locale_t.h:
-
-/usr/include/string.h:
-
-/usr/include/c++/15.2.1/bits/charconv.h:
-
-/usr/include/bits/mathcalls-helper-functions.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bf16vlintrin.h:
-
-/usr/include/bits/time.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/texture.cpp:
-
-/usr/include/X11/Xdefs.h:
-
-/usr/include/bits/stdio_lim.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.cpp:
-
-/usr/include/bits/types/__mbstate_t.h:
-
-/usr/include/c++/15.2.1/bits/ostream_insert.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxtileintrin.h:
-
-/usr/include/gnu/stubs-64.h:
-
-/usr/include/bits/types/__sigval_t.h:
-
-/usr/include/X11/extensions/randr.h:
-
-/usr/include/c++/15.2.1/bits/version.h:
-
-/usr/include/bits/timesize.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/clflushoptintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/ia32intrin.h:
-
-/usr/include/memory.h:
-
-/usr/include/c++/15.2.1/bits/functexcept.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.cpp:
-
-/usr/include/c++/15.2.1/bits/requires_hosted.h:
-
-/usr/include/bits/ss_flags.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/pconfigintrin.h:
-
-/usr/include/c++/15.2.1/bits/predefined_ops.h:
-
-/usr/include/bits/types/struct_itimerspec.h:
-
-/usr/include/bits/struct_rwlock.h:
-
-/usr/include/bits/endianness.h:
-
-/usr/include/bits/types/__FILE.h:
-
-/usr/include/features.h:
-
-/usr/include/bits/xopen_lim.h:
-
-/usr/include/c++/15.2.1/tr1/ell_integral.tcc:
-
-/usr/include/bits/stdint-intn.h:
-
-/usr/include/bits/types/clockid_t.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512bf16intrin.h:
-
-/usr/include/bits/types/struct_tm.h:
-
-/usr/include/errno.h:
-
-/usr/include/c++/15.2.1/tuple:
-
-/usr/include/bits/getopt_posix.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h:
-
-/usr/include/c++/15.2.1/cwchar:
-
-/usr/include/c++/15.2.1/bits/uniform_int_dist.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/wmmintrin.h:
-
-/usr/include/bits/siginfo-arch.h:
-
-/usr/include/bits/dl_find_object.h:
-
-/usr/include/c++/15.2.1/bits/move.h:
-
-/usr/include/bits/types.h:
-
-/usr/include/c++/15.2.1/bit:
-
-/usr/include/bits/siginfo-consts-arch.h:
-
-/usr/include/c++/15.2.1/bits/unordered_set.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.h:
-
-/usr/include/bits/sigstack.h:
-
-/usr/include/c++/15.2.1/iosfwd:
-
-/usr/include/bits/types/struct_timeval.h:
-
-/usr/include/bits/floatn-common.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/limits.h:
-
-/usr/include/X11/extensions/render.h:
-
-/usr/include/bits/waitstatus.h:
-
-/usr/include/bits/wchar.h:
-
-/usr/include/c++/15.2.1/bits/cpp_type_traits.h:
-
-/usr/include/bits/long-double.h:
-
-/usr/include/c++/15.2.1/unordered_set:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/prfchiintrin.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.cpp:
-
-/usr/include/bits/floatn.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sm4intrin.h:
-
-/usr/include/bits/types/struct_FILE.h:
-
-/usr/include/bits/environments.h:
-
-/usr/include/c++/15.2.1/bits/stl_iterator.h:
-
-/usr/include/bits/libc-header-start.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vpopcntdqvlintrin.h:
-
-/usr/include/bits/local_lim.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3_loader.h:
-
-/usr/include/bits/getopt_core.h:
-
-/usr/include/c++/15.2.1/ext/numeric_traits.h:
-
-/usr/include/bits/confname.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx2intrin.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imconfig.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxneconvertintrin.h:
-
-/usr/include/bits/types/struct_timespec.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxtransposeintrin.h:
-
-/usr/include/bits/types/time_t.h:
-
-/usr/include/features-time64.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mm_malloc.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.cpp:
-
-/usr/include/bits/signum-generic.h:
-
-/usr/include/bits/iscanonical.h:
-
-/usr/include/bits/posix2_lim.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxmovrsintrin.h:
-
-/usr/include/bits/mathcalls-narrow.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/fmaintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/vpclmulqdqintrin.h:
-
-/usr/include/bits/wordsize.h:
-
-/usr/include/stdio.h:
-
-/usr/include/time.h:
-
-/usr/include/unistd.h:
+/usr/lib/libXau.so.6:
 
 /usr/lib/ld-linux-x86-64.so.2:
 
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o:
 
-/usr/include/bits/sigthread.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
 
-/usr/include/alloca.h:
+/usr/lib/libstdc++.so:
 
-/usr/include/assert.h:
+/usr/lib/libgcc_s.so.1:
 
-/usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h:
+/usr/lib/libgcc_s.so:
 
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.h:
-
-/usr/include/c++/15.2.1/bits/stl_iterator_base_types.h:
-
-/usr/include/c++/15.2.1/concepts:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2mediaintrin.h:
-
-/usr/include/c++/15.2.1/debug/assertions.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp:
-
-/usr/include/c++/15.2.1/ext/type_traits.h:
-
-/usr/include/c++/15.2.1/tr1/exp_integral.tcc:
-
-/usr/include/c++/15.2.1/tr1/gamma.tcc:
-
-/usr/include/bits/types/struct_sigstack.h:
-
-/usr/include/c++/15.2.1/tr1/legendre_function.tcc:
-
-/usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc:
-
-/usr/lib/libxcb.so.1:
-
-/usr/include/bits/endian.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/bmiintrin.h:
-
-/usr/include/bits/types/timer_t.h:
-
-/usr/include/c++/15.2.1/tr1/poly_hermite.tcc:
-
-/usr/include/X11/Xatom.h:
-
-/usr/include/bits/types/sig_atomic_t.h:
-
-/usr/include/bits/types/__fpos_t.h:
-
-/usr/include/c++/15.2.1/tr1/riemann_zeta.tcc:
-
-/usr/include/bits/types/__sigset_t.h:
-
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
-
-/usr/include/c++/15.2.1/string:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fp16intrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/movdirintrin.h:
-
-/usr/include/limits.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/structs.h:
-
-/usr/include/linux/limits.h:
-
-/usr/include/c++/15.2.1/cmath:
-
-/usr/include/endian.h:
-
-/usr/include/stdint.h:
-
-/usr/include/c++/15.2.1/tr1/poly_laguerre.tcc:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.h:
-
-/usr/include/strings.h:
-
-/usr/include/signal.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sm3intrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/shaintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxvnniintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/keylockerintrin.h:
-
-/usr/include/stdlib.h:
-
-/usr/include/sys/select.h:
-
-/usr/include/sys/types.h:
-
-/usr/include/bits/fp-logb.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vnniintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxavx512intrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vlbwintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsaveoptintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxbf16intrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vnnivlintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxcomplexintrin.h:
-
-/usr/include/bits/thread-shared-types.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2minmaxintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxfp16intrin.h:
+/usr/lib/libassimp.so:
 
 /usr/lib/libGLEW.so:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/f16cintrin.h:
+/usr/lib/libGL.so:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxfp8intrin.h:
+/usr/lib/Scrt1.o:
 
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h:
+/usr/include/sched.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxint8intrin.h:
+/usr/include/pthread.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512convertintrin.h:
+/usr/include/memory.h:
 
-/usr/include/c++/15.2.1/tr1/bessel_function.tcc:
+/usr/include/locale.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512mediaintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mwaitintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512minmaxintrin.h:
-
-/usr/include/c++/15.2.1/clocale:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxifmaintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512satcvtintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2convertintrin.h:
-
-/usr/include/assimp/camera.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2satcvtintrin.h:
-
-/usr/include/bits/types/FILE.h:
-
-/usr/include/c++/15.2.1/bits/utility.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bitalgintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bitalgvlintrin.h:
-
-/usr/lib/libglfw.so:
-
-/usr/lib/libc.so:
-
-/usr/include/c++/15.2.1/tr1/beta_function.tcc:
-
-/usr/include/bits/pthreadtypes.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bwintrin.h:
+/usr/include/linux/posix_types.h:
 
 /usr/include/linux/errno.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512dqintrin.h:
+/usr/include/libintl.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fintrin.h:
+/usr/include/errno.h:
 
-/usr/include/c++/15.2.1/bits/invoke.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/time_members.h:
 
-/usr/include/math.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512ifmaintrin.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmi2vlintrin.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmiintrin.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vldqintrin.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h:
 
-/usr/include/c++/15.2.1/math.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/pmmintrin.h:
+/usr/include/c++/15.2.1/vector:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vlintrin.h:
-
-/usr/include/c++/15.2.1/bits/stl_tempbuf.h:
-
-/usr/include/sys/ucontext.h:
-
-/usr/include/stdc-predef.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vp2intersectvlintrin.h:
-
-/usr/include/c++/15.2.1/tr1/hypergeometric.tcc:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vpopcntdqintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxvnniint16intrin.h:
-
-/usr/include/assimp/vector2.inl:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cetintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/bmi2intrin.h:
-
-/usr/include/assimp/Compiler/pushpack1.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512ifmavlintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/clzerointrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/emmintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/immintrin.h:
-
-/usr/include/c++/15.2.1/cerrno:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxtf32intrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/gfniintrin.h:
-
-/usr/include/c++/15.2.1/bits/alloc_traits.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/hresetintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/lzcntintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mmintrin.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/movrsintrin.h:
+/usr/include/c++/15.2.1/tuple:
 
 /usr/include/bits/types/clock_t.h:
 
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/movrsintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mmintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/lzcntintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/hresetintrin.h:
+
+/usr/include/c++/15.2.1/bits/alloc_traits.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/gfniintrin.h:
+
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxtf32intrin.h:
+
+/usr/include/c++/15.2.1/cerrno:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/immintrin.h:
+
+/usr/include/bits/types/struct_sched_param.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/emmintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/clzerointrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512ifmavlintrin.h:
+
+/usr/include/assimp/Compiler/pushpack1.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/bmi2intrin.h:
+
+/usr/include/c++/15.2.1/unordered_set:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cetintrin.h:
+
+/usr/include/assimp/vector2.inl:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxvnniint16intrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vpopcntdqintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vp2intersectvlintrin.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/include/sys/ucontext.h:
+
+/usr/include/c++/15.2.1/bits/stl_tempbuf.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vlintrin.h:
+
+/usr/include/c++/15.2.1/compare:
+
+/usr/include/c++/15.2.1/cwctype:
+
+/usr/include/c++/15.2.1/math.h:
+
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mwaitxintrin.h:
+
+/usr/include/math.h:
+
+/usr/include/c++/15.2.1/streambuf:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512dqintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bwintrin.h:
+
+/usr/include/bits/pthreadtypes.h:
+
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o:
+
+/usr/include/c++/15.2.1/tr1/beta_function.tcc:
+
+/usr/include/c++/15.2.1/bits/utility.h:
+
+/usr/include/bits/types/FILE.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2satcvtintrin.h:
+
+/usr/include/wctype.h:
+
+/usr/include/assimp/camera.h:
+
+/usr/include/c++/15.2.1/bits/stl_multiset.h:
+
+/usr/lib32/libXdmcp.so.6:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512satcvtintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/pbr.cpp:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mwaitintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h:
+
+/usr/include/asm-generic/int-ll64.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512mediaintrin.h:
+
+/usr/include/c++/15.2.1/tr1/bessel_function.tcc:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxint8intrin.h:
+
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxfp8intrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/f16cintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxfp16intrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2minmaxintrin.h:
+
+/usr/include/c++/15.2.1/ios:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxcomplexintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vldqintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vnnivlintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsaveoptintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vlbwintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxavx512intrin.h:
+
+/usr/lib/libmvec.so.1:
+
+/usr/include/linux/stddef.h:
+
+/usr/include/bits/fp-logb.h:
+
+/usr/include/sys/types.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/keylockerintrin.h:
+
+/usr/include/asm/posix_types_64.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/shaintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sm3intrin.h:
+
+/usr/include/strings.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.h:
+
+/usr/include/endian.h:
+
+/usr/lib/crtn.o:
+
+/usr/include/linux/limits.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/structs.h:
+
+/usr/include/limits.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fp16intrin.h:
+
+/usr/include/bits/types/__sigset_t.h:
+
+/usr/include/c++/15.2.1/tr1/riemann_zeta.tcc:
+
+/usr/include/bits/types/sig_atomic_t.h:
+
+/usr/include/linux/sched/types.h:
+
+/usr/include/X11/Xatom.h:
+
+/usr/include/c++/15.2.1/tr1/poly_hermite.tcc:
+
+/usr/include/bits/types/timer_t.h:
+
+/usr/include/bits/endian.h:
+
+/usr/include/c++/15.2.1/tr1/poly_laguerre.tcc:
+
+/usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc:
+
+/usr/include/c++/15.2.1/tr1/legendre_function.tcc:
+
+/usr/include/c++/15.2.1/tr1/gamma.tcc:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512convertintrin.h:
+
+/usr/include/c++/15.2.1/tr1/exp_integral.tcc:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
+
+/usr/include/c++/15.2.1/string:
+
+/usr/include/c++/15.2.1/debug/assertions.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2mediaintrin.h:
+
+/usr/lib/libz.so.1:
+
+/usr/include/c++/15.2.1/bits/shared_ptr_base.h:
+
+/usr/include/c++/15.2.1/concepts:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.h:
+
+/usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h:
+
+/usr/include/c++/15.2.1/bits/locale_classes.h:
+
+/usr/include/bits/sigthread.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.h:
+
+/usr/include/unistd.h:
+
+/usr/include/time.h:
+
+/usr/include/stdio.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/lib/libm.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxmovrsintrin.h:
+
+/usr/include/bits/posix2_lim.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.h:
+
+/usr/include/bits/signum-generic.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h:
+
+/usr/include/features-time64.h:
+
+/usr/include/c++/15.2.1/bits/quoted_string.h:
+
+/usr/include/bits/types/time_t.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxtransposeintrin.h:
+
+/usr/include/c++/15.2.1/tr1/hypergeometric.tcc:
+
+/usr/include/bits/types/struct_timespec.h:
+
+/usr/include/c++/15.2.1/ext/type_traits.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxneconvertintrin.h:
+
+/usr/include/bits/confname.h:
+
+/usr/include/bits/getopt_core.h:
+
+/usr/include/bits/local_lim.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vpopcntdqvlintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmi2vlintrin.h:
+
+/usr/include/bits/libc-header-start.h:
+
+/usr/include/c++/15.2.1/bits/stl_iterator.h:
+
+/usr/include/bits/environments.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512ifmaintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sm4intrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.h:
+
+/usr/include/c++/15.2.1/filesystem:
+
+/usr/include/bits/floatn.h:
+
+/usr/include/wchar.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/logger.cpp:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/prfchiintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bitalgvlintrin.h:
+
+/usr/include/bits/long-double.h:
+
+/usr/include/c++/15.2.1/bits/cpp_type_traits.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/include/bits/waitstatus.h:
+
+/usr/include/X11/extensions/render.h:
+
+/usr/include/bits/types/struct___jmp_buf_tag.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/limits.h:
+
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h:
+
+/usr/include/bits/floatn-common.h:
+
+/usr/include/c++/15.2.1/ratio:
+
+/usr/include/c++/15.2.1/iosfwd:
+
+/usr/include/bits/sigstack.h:
+
+/usr/include/c++/15.2.1/bits/unordered_set.h:
+
+/usr/include/c++/15.2.1/bit:
+
+/usr/include/asm/bitsperlong.h:
+
+/usr/include/c++/15.2.1/bits/basic_ios.h:
+
+/usr/include/c++/15.2.1/bits/locale_facets.tcc:
+
+/usr/include/bits/types.h:
+
+/usr/include/c++/15.2.1/bits/move.h:
+
+/usr/include/bits/dl_find_object.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/wmmintrin.h:
+
+/usr/include/c++/15.2.1/bits/uniform_int_dist.h:
+
+/usr/include/c++/15.2.1/cwchar:
+
+/usr/include/bits/getopt_posix.h:
+
+/usr/include/bits/types/struct_tm.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512bf16intrin.h:
+
+/usr/include/bits/types/clockid_t.h:
+
+/usr/include/c++/15.2.1/tr1/ell_integral.tcc:
+
+/usr/include/c++/15.2.1/ext/numeric_traits.h:
+
+/usr/include/bits/xopen_lim.h:
+
+/usr/include/features.h:
+
+/usr/include/bits/types/__FILE.h:
+
+/usr/include/bits/sched.h:
+
+/usr/include/bits/struct_rwlock.h:
+
+/usr/include/bits/types/struct_itimerspec.h:
+
+/usr/include/c++/15.2.1/bits/predefined_ops.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/pconfigintrin.h:
+
+/usr/include/bits/ss_flags.h:
+
+/usr/include/c++/15.2.1/bits/functexcept.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/ia32intrin.h:
+
+/usr/include/c++/15.2.1/bits/invoke.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/clflushoptintrin.h:
+
+/usr/include/bits/timesize.h:
+
+/usr/include/c++/15.2.1/bits/version.h:
+
+/usr/include/X11/extensions/randr.h:
+
+/usr/include/bits/types/__sigval_t.h:
+
+/usr/include/gnu/stubs-64.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxtileintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx2intrin.h:
+
+/usr/include/bits/types/__mbstate_t.h:
+
+/usr/include/c++/15.2.1/bits/stl_iterator_base_types.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.cpp:
+
+/usr/include/bits/stdio_lim.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/texture.cpp:
+
+/usr/include/c++/15.2.1/bits/fs_dir.h:
+
+/usr/include/asm/posix_types.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bf16vlintrin.h:
+
+/usr/include/bits/mathcalls-helper-functions.h:
+
+/usr/include/c++/15.2.1/bits/charconv.h:
+
+/usr/include/string.h:
+
+/usr/include/bits/types/locale_t.h:
+
+/usr/include/assimp/cimport.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/gnu/stubs.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.cpp:
+
+/usr/include/bits/pthreadtypes-arch.h:
+
+/usr/include/bits/posix_opt.h:
+
+/usr/include/bits/timex.h:
+
+/usr/include/c++/15.2.1/ctime:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vp2intersectintrin.h:
+
+/usr/include/bits/types/__fpos64_t.h:
+
+/usr/include/bits/unistd_ext.h:
+
+/usr/include/c++/15.2.1/ext/alloc_traits.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/adxintrin.h:
+
+/usr/include/bits/siginfo-consts-arch.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/clwbintrin.h:
+
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h:
+
+/usr/include/c++/15.2.1/bits/uses_allocator.h:
+
+/usr/include/bits/types/__locale_t.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/utilbar_layout.cpp:
+
+/usr/include/assimp/config.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bitalgintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmivlintrin.h:
+
+/usr/include/bits/types/struct_FILE.h:
+
+/usr/include/sys/wait.h:
+
+/usr/include/bits/time64.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/waitpkgintrin.h:
+
+/usr/include/bits/stdlib-float.h:
+
+CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o:
+
+/usr/include/c++/15.2.1/stdlib.h:
+
+/usr/include/bits/types/cookie_io_functions_t.h:
+
+/usr/include/bits/stdint-uintn.h:
+
+/usr/include/asm/errno.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cldemoteintrin.h:
+
+/usr/include/c++/15.2.1/bits/hash_bytes.h:
+
+/usr/include/bits/byteswap.h:
+
+/usr/include/bits/flt-eval-method.h:
+
+/usr/lib/libc.so.6:
+
+/usr/include/bits/fp-fast.h:
+
+/usr/include/GLFW/glfw3native.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxintrin.h:
+
+/usr/include/c++/15.2.1/bits/requires_hosted.h:
+
+/usr/include/bits/libm-simd-decl-stubs.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2bf16intrin.h:
+
+/usr/include/c++/15.2.1/initializer_list:
+
+/usr/include/bits/types/sigval_t.h:
+
+/usr/include/assimp/material.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2copyintrin.h:
+
+/usr/include/assimp/vector3.inl:
+
+/usr/include/bits/mathcalls.h:
+
+/usr/include/bits/uio_lim.h:
+
+/usr/include/bits/math-vector.h:
+
+/usr/include/c++/15.2.1/bits/exception.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512bf16intrin.h:
+
+/usr/include/c++/15.2.1/pstl/pstl_config.h:
+
+/usr/include/GL/glext.h:
+
+/usr/include/bits/pthread_stack_min-dynamic.h:
+
+/usr/include/bits/sigaction.h:
+
+/usr/include/c++/15.2.1/bits/vector.tcc:
+
+/usr/include/c++/15.2.1/typeinfo:
+
+/usr/include/c++/15.2.1/bits/specfun.h:
+
+/usr/include/X11/Xosdefs.h:
+
+/usr/include/bits/select.h:
+
+/usr/include/c++/15.2.1/bits/locale_facets_nonio.tcc:
+
+/usr/include/bits/sigcontext.h:
+
+/usr/include/bits/uintn-identity.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/custom_camera.cpp:
+
+/usr/include/bits/types/mbstate_t.h:
+
+/usr/lib/crti.o:
+
+/usr/include/bits/signum-arch.h:
+
+/usr/include/c++/15.2.1/bits/stl_algobase.h:
+
+/usr/include/bits/sigevent-consts.h:
+
+/usr/include/bits/types/stack_t.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fp16vlintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmi2intrin.h:
+
+/usr/include/c++/15.2.1/sstream:
+
+/usr/include/alloca.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.cpp:
+
+/usr/include/bits/sigstksz.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2convertintrin.h:
+
+/usr/include/assimp/anim.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512cdintrin.h:
+
+/usr/include/linux/close_range.h:
+
+/usr/include/bits/struct_mutex.h:
+
+/usr/include/c++/15.2.1/bits/istream.tcc:
+
+/usr/include/c++/15.2.1/bits/stl_construct.h:
+
+/usr/include/bits/mathcalls-macros.h:
+
+/usr/include/bits/types/idtype_t.h:
+
+/usr/include/bits/endianness.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/lwpintrin.h:
+
+/usr/include/c++/15.2.1/type_traits:
+
+/usr/include/c++/15.2.1/debug/debug.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/include/c++/15.2.1/string_view:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmiintrin.h:
+
+/usr/include/assimp/vector3.h:
+
+/usr/include/bits/types/__fpos_t.h:
+
+/usr/include/c++/15.2.1/bits/string_view.tcc:
+
+/usr/include/c++/15.2.1/bits/ostream_insert.h:
+
+/usr/include/bits/types/sigevent_t.h:
+
+/usr/include/bits/types/siginfo_t.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h:
+
+/usr/include/bits/types/sigset_t.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/popcntintrin.h:
+
+/usr/include/c++/15.2.1/bits/postypes.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cmpccxaddintrin.h:
+
+/usr/include/bits/dlfcn.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/attrdesc.h:
+
+/usr/include/bits/cpu-set.h:
+
+/usr/include/c++/15.2.1/bits/streambuf.tcc:
+
+/usr/include/c++/15.2.1/bits/stl_pair.h:
+
+/usr/include/bits/waitflags.h:
+
+/usr/include/ctype.h:
+
+/usr/include/c++/15.2.1/bits/ptr_traits.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imstb_rectpack.h:
+
+/usr/include/c++/15.2.1/system_error:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_internal.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/x86gprintrin.h:
+
+/usr/include/c++/15.2.1/tr1/special_function_util.h:
+
+/usr/include/c++/15.2.1/bits/std_abs.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.h:
+
+/usr/include/assimp/importerdesc.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/prfchwintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/raointintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/rdseedintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sgxintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/sha512intrin.h:
+
+/usr/include/bits/locale.h:
+
+/usr/include/c++/15.2.1/iomanip:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/amxbf16intrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/smmintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/instance/instance.cpp:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/tbmintrin.h:
+
+/usr/include/c++/15.2.1/bits/codecvt.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/tmmintrin.h:
+
+/usr/include/X11/Xdefs.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/tsxldtrkintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imconfig.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/uintrintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/usermsrintrin.h:
+
+/usr/include/c++/15.2.1/bits/concept_check.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/wbnoinvdintrin.h:
+
+/usr/include/assimp/vector2.h:
+
+/usr/include/stdint.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xmmintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsavecintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xtestintrin.h:
+
+/usr/include/c++/15.2.1/ext/atomicity.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsavesintrin.h:
+
+/usr/include/c++/15.2.1/bits/allocator.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph_readwrite.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_draw.cpp:
+
+/usr/include/c++/15.2.1/limits:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/glfwmain.cpp:
+
+/usr/include/GL/gl.h:
+
+/usr/include/GLFW/glfw3.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xsaveintrin.h:
+
+/usr/include/KHR/khrplatform.h:
+
+/usr/include/X11/X.h:
+
+/usr/include/c++/15.2.1/cstdlib:
+
+/usr/include/X11/Xfuncproto.h:
+
+/usr/include/X11/Xlib.h:
+
+/usr/include/X11/Xutil.h:
+
+/usr/include/X11/extensions/Xrender.h:
+
+/usr/include/c++/15.2.1/bits/allocated_ptr.h:
+
+/usr/include/X11/keysym.h:
+
+/usr/include/X11/keysymdef.h:
+
+/usr/include/assimp/mesh.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.h:
+
+/usr/include/c++/15.2.1/bits/fs_fwd.h:
+
+/usr/include/c++/15.2.1/bits/hashtable.h:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h:
 
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_tables.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/terrain_attribute_layout.cpp:
+
+/usr/include/stdlib.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_widgets.cpp:
+
+/usr/include/assimp/color4.h:
+
+/usr/include/c++/15.2.1/array:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/stb_image_write.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h:
+
+/usr/include/c++/15.2.1/stdexcept:
+
+/usr/include/bits/stdint-least.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp:
+
+/usr/include/assimp/Compiler/poppack1.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_glfw.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/modelloading.cpp:
+
+/usr/lib/libglfw.so:
+
+/usr/include/assimp/types.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/shaders.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imfilebrowser.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/stb_image.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/fxsrintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h:
+
+/usr/include/bits/posix1_lim.h:
+
+/usr/include/X11/extensions/Xrandr.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3_loader.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/scenemanager_layout.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/skybox_attribute_layout.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/instance/instance.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.c:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imstb_textedit.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/BVH.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxvnniintrin.h:
+
+/usr/include/assert.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/engine.h:
+
+/usr/include/c++/15.2.1/bits/exception_defines.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h:
+
+/usr/include/bits/iscanonical.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.h:
+
+/usr/include/c++/15.2.1/set:
+
+/usr/include/c++/15.2.1/istream:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/BVH.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/attrdesc.cpp:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/movdirintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/boundingbox.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp:
+
+/usr/include/bits/thread-shared-types.h:
+
+/usr/include/assimp/matrix3x3.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/entity_defs.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/primitives.h:
+
+CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.h:
+
+/usr/include/c++/15.2.1/ext/aligned_buffer.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vnniintrin.h:
+
+/usr/include/c++/15.2.1/locale:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/fmaintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox_node.cpp:
+
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
+
+/usr/include/c++/15.2.1/bits/ostream.tcc:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/rtmintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/terrain_node.cpp:
+
+/usr/include/c++/15.2.1/bits/refwrap.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/editor_root.cpp:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/vaesintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/engine_loop.cpp:
+
+/usr/include/c++/15.2.1/clocale:
+
+/usr/include/GL/glew.h:
+
+/usr/include/c++/15.2.1/bits/hashtable_policy.h:
+
+/usr/include/GL/glu.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/vpclmulqdqintrin.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mm_malloc.h:
+
+/usr/include/asm-generic/bitsperlong.h:
+
+/usr/include/c++/15.2.1/bits/stl_heap.h:
+
+/usr/include/dlfcn.h:
+
+/usr/include/c++/15.2.1/exception:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/sys/single_threaded.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/bits/time.h:
+
+/usr/include/c++/15.2.1/bits/stl_vector.h:
+
+/usr/include/asm-generic/posix_types.h:
+
+/usr/include/asm/types.h:
+
+/usr/include/assimp/MathFunctions.h:
+
+/usr/include/assimp/aabb.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/serializeintrin.h:
+
+/usr/include/assimp/color4.inl:
+
+/usr/include/assimp/defs.h:
+
+/usr/include/assimp/light.h:
+
+/usr/include/assimp/material.inl:
+
+/usr/include/assimp/matrix3x3.inl:
+
+/usr/include/assimp/matrix4x4.h:
+
+/usr/include/assimp/matrix4x4.inl:
+
+/usr/include/bits/signal_ext.h:
+
+/usr/include/assimp/metadata.h:
+
+/usr/include/assimp/postprocess.h:
+
+/usr/include/assimp/quaternion.h:
+
+/usr/include/c++/15.2.1/ostream:
+
+/usr/include/assimp/quaternion.inl:
+
+/usr/include/assimp/scene.h:
+
+/usr/include/assimp/texture.h:
+
+/usr/include/signal.h:
+
+/usr/include/bits/atomic_wide_counter.h:
+
+/usr/include/c++/15.2.1/bits/enable_special_members.h:
+
+/usr/include/c++/15.2.1/cmath:
+
+/usr/include/c++/15.2.1/bits/stringfwd.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/bits/setjmp.h:
+
+/usr/include/bits/types/error_t.h:
+
+/usr/include/bits/types/wint_t.h:
+
+/usr/include/bits/stdint-intn.h:
+
+/usr/include/bits/wctype-wchar.h:
+
+/usr/include/c++/15.2.1/algorithm:
+
+/usr/lib/libGLdispatch.so.0:
+
+/usr/include/c++/15.2.1/backward/binders.h:
+
+/usr/include/c++/15.2.1/bits/basic_ios.tcc:
+
+/usr/lib/libc.so:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imstb_truetype.h:
+
+/usr/include/asm-generic/types.h:
+
+/usr/include/c++/15.2.1/bits/basic_string.h:
+
+/usr/include/c++/15.2.1/bits/uses_allocator_args.h:
+
+/usr/include/c++/15.2.1/bits/basic_string.tcc:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxifmaintrin.h:
+
+/usr/include/bits/types/struct_timeval.h:
+
+/usr/include/c++/15.2.1/bits/node_handle.h:
+
+/usr/include/c++/15.2.1/bits/char_traits.h:
+
+/usr/include/c++/15.2.1/bits/cxxabi_forced.h:
+
+/usr/include/c++/15.2.1/cctype:
+
+/usr/include/c++/15.2.1/ext/concurrence.h:
+
+/usr/include/bits/types/struct_sigstack.h:
+
+/usr/include/c++/15.2.1/bits/cxxabi_init_exception.h:
+
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/messages_members.h:
+
+/usr/include/bits/mathcalls-narrow.h:
+
+/usr/include/c++/15.2.1/bits/erase_if.h:
+
+/usr/lib/libGLX.so.0:
+
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/pkuintrin.h:
+
+/usr/include/c++/15.2.1/bits/exception_ptr.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/noise.c:
+
+/usr/include/c++/15.2.1/bits/fs_ops.h:
+
+/usr/include/c++/15.2.1/bits/functional_hash.h:
+
+/usr/include/c++/15.2.1/bits/ios_base.h:
+
+/usr/include/c++/15.2.1/bits/locale_classes.tcc:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/pmmintrin.h:
+
+/usr/include/c++/15.2.1/bits/locale_conv.h:
+
+/usr/include/c++/15.2.1/bits/locale_facets.h:
+
+/usr/include/c++/15.2.1/bits/locale_facets_nonio.h:
+
+CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/bmiintrin.h:
+
+/usr/include/c++/15.2.1/bits/localefwd.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/enqcmdintrin.h:
+
+/usr/include/c++/15.2.1/bits/memory_resource.h:
+
+/usr/include/c++/15.2.1/bits/algorithmfwd.h:
+
+/usr/include/c++/15.2.1/bits/memoryfwd.h:
+
+/usr/include/c++/15.2.1/bits/nested_exception.h:
+
+/usr/include/bits/siginfo-consts.h:
+
+/usr/include/c++/15.2.1/bits/new_allocator.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx10_2-512minmaxintrin.h:
+
+/usr/include/c++/15.2.1/bits/ostream.h:
+
+/usr/include/c++/15.2.1/bits/parse_numbers.h:
+
+/usr/include/c++/15.2.1/bits/range_access.h:
+
+/usr/include/c++/15.2.1/bits/shared_ptr.h:
+
+/usr/include/c++/15.2.1/bits/stl_algo.h:
+
+/usr/include/c++/15.2.1/bits/stl_uninitialized.h:
+
+/usr/include/bits/siginfo-arch.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/boundingbox.h:
+
+/usr/include/c++/15.2.1/bits/stl_bvector.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/c++/15.2.1/bits/chrono.h:
+
+/usr/include/c++/15.2.1/bits/stl_function.h:
+
+/usr/lib/libX11.so.6:
+
+/usr/include/c++/15.2.1/bits/stl_set.h:
+
+/usr/include/c++/15.2.1/bits/stl_tree.h:
+
+/usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h:
+
+/usr/include/c++/15.2.1/bits/sstream.tcc:
+
+/usr/include/c++/15.2.1/bits/streambuf_iterator.h:
+
+/usr/include/c++/15.2.1/bits/unique_ptr.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/attributemanager_layout.cpp:
+
+/usr/include/c++/15.2.1/codecvt:
+
+/usr/include/c++/15.2.1/bits/fs_path.h:
+
+/usr/include/c++/15.2.1/cstddef:
+
+/usr/include/c++/15.2.1/cstdint:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxvnniint8intrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.cpp:
+
+/usr/include/c++/15.2.1/cstdio:
+
+/usr/include/c++/15.2.1/cstring:
+
+/usr/include/linux/types.h:
+
+/usr/include/c++/15.2.1/ext/string_conversions.h:
+
+/usr/include/c++/15.2.1/new:
+
+/usr/include/c++/15.2.1/pstl/execution_defs.h:

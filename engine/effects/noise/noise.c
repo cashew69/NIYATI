@@ -1,3 +1,5 @@
+#ifndef NOISE_C
+#define NOISE_C
 #include "engine/effects/noise/perlin.h"
 
 // Global noise settings (usually driven by UI or project config)
@@ -160,3 +162,4 @@ float threeDNoise(float x, float y, float z) {
 
     return density;
 }
+#endif // NOISE_C

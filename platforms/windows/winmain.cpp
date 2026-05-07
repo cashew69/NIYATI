@@ -94,6 +94,14 @@ void platformGetFramebufferSize(int* width, int* height) {
     }
 }
 
+void platformSetSwapInterval(int interval) {
+    typedef BOOL (WINAPI *PFNWGLSWAPINTERVALEXTPROC)(int interval);
+    static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+    if (wglSwapIntervalEXT) {
+        wglSwapIntervalEXT(interval);
+    }
+}
+
 
 
 // Entry-Point Function
@@ -181,12 +189,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
         // Continuous Keyboard Movement (GLFW-style)
         if (mouse_captured) {
-          if (GetAsyncKeyState('W') & 0x8000) camera_pos[2] -= 1.0f;
-          if (GetAsyncKeyState('S') & 0x8000) camera_pos[2] += 1.0f;
-          if (GetAsyncKeyState('A') & 0x8000) camera_pos[0] -= 1.0f;
-          if (GetAsyncKeyState('D') & 0x8000) camera_pos[0] += 1.0f;
-          if (GetAsyncKeyState('Q') & 0x8000) camera_pos[1] -= 1.0f;
-          if (GetAsyncKeyState('E') & 0x8000) camera_pos[1] += 1.0f;
+          float speed = 20.0f; // Units per second
+          float ds = speed * g_DeltaTime;
+          if (GetAsyncKeyState('W') & 0x8000) camera_pos[2] -= ds;
+          if (GetAsyncKeyState('S') & 0x8000) camera_pos[2] += ds;
+          if (GetAsyncKeyState('A') & 0x8000) camera_pos[0] -= ds;
+          if (GetAsyncKeyState('D') & 0x8000) camera_pos[0] += ds;
+          if (GetAsyncKeyState('Q') & 0x8000) camera_pos[1] -= ds;
+          if (GetAsyncKeyState('E') & 0x8000) camera_pos[1] += ds;
         }
 
         // Render
@@ -421,6 +431,9 @@ int initialize(void) {
   if (result != 0) {
     return result;
   }
+
+  // Set initial VSync state
+  platformSetSwapInterval(g_VSyncEnabled ? 1 : 0);
 
   // Warmup Resize
   resize(WIN_WIDTH, WIN_HEIGHT);

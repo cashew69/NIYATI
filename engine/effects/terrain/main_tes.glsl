@@ -15,6 +15,7 @@ out vec2 TexCoord;
 uniform mat4 uView;
 uniform mat4 uProjection;
 uniform sampler2D uHeightMap;
+uniform float uTexelSize; // 1.0 / heightmap_width, uploaded from CPU once per draw
 uniform sampler2D uDisplacementMap;
 uniform bool uHasDisplacementMap;
 uniform float uDisplacementScale;
@@ -60,7 +61,7 @@ void main(void)
     pos.y += height;
 
     // Compute normal from heightmap using finite differences (using unscaled UVs)
-    float texelSize = 1.0 / textureSize(uHeightMap, 0).x;
+    float texelSize = uTexelSize;
     float hL = sampleHeight(baseTexCoord + vec2(-texelSize, 0.0));
     float hR = sampleHeight(baseTexCoord + vec2( texelSize, 0.0));
     float hD = sampleHeight(baseTexCoord + vec2(0.0, -texelSize));

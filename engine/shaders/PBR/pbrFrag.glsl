@@ -32,7 +32,14 @@ uniform bool uHasEmissiveMap;
 // Lights
 uniform vec3 uLightPos;
 uniform vec3 uLightColor;
+uniform float uLightIntensity;
 uniform vec3 uViewPos;
+
+uniform int   uLightType;     // 0: Dir, 1: Point, 2: Spot
+uniform vec3  uLightDir;
+uniform float uLightRadius;
+uniform float uInnerCutoff;
+uniform float uOuterCutoff;
 
 // IBL Uniforms
 uniform samplerCube irradianceMap;   // For Diffuse IBL
@@ -40,6 +47,8 @@ uniform samplerCube prefilterMap;    // For Specular IBL (MIP-mapped)
 uniform sampler2D   brdfLUT;         // For Specular IBL (2D Look-up Table)
 uniform bool        uHasIBL;         // Toggle for environment lighting
 uniform float       uIBLIntensity;   // Intensity for environment lighting
+uniform float       uRoughness;      // Fallback roughness
+uniform float       uMetalness;      // Fallback metalness
 
 // Debug Overrides
 uniform bool uDebugDisableDiffuseTex;
@@ -75,7 +84,10 @@ mat3 getTBN(vec3 N, vec3 p, vec2 uv)
     vec3 B = dp2perp * duv1.y + dp1perp * duv2.y;
 
     // construct a scale-invariant frame 
-    float invmax = inversesqrt(max(dot(T,T), dot(B,B)));
+    float magSq = max(dot(T,T), dot(B,B));
+    if (magSq < 1e-10) return mat3(vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), N);
+    
+    float invmax = inversesqrt(magSq);
     return mat3(T * invmax, B * invmax, N);
 }
 // ----------------------------------------------------------------------------
@@ -122,129 +134,143 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0, float roughness)
 
 void main()
 {
-    // 1. Albedo
     vec4 albedoSample = vec4(uDiffuseColor, 1.0);
     if (uHasDiffuseTexture && !uDebugDisableDiffuseTex) {
         albedoSample = texture(uDiffuseTexture, TexCoord);
     }
-    vec3 albedo = pow(albedoSample.rgb, vec3(2.2)); // Gamma correction for PBR
-    float alpha = albedoSample.a * uOpacity;
     
-    // 2. Normal
-    vec3 N = normalize(Normal);
+    vec3 N = length(Normal) > 0.001 ? normalize(Normal) : vec3(0.0, 1.0, 0.0);
     if (uHasNormalTexture && !uDebugDisableNormalTex) {
         vec3 tangentNormal = texture(uNormalTexture, TexCoord).xyz * 2.0 - 1.0;
         mat3 TBN = getTBN(N, FragPos, TexCoord);
-        N = normalize(TBN * tangentNormal);
-    }
-
-    // 3. Metallic / Roughness
-    float metallic = 0.0;
-    if (uDebugOverrideMetallic) {
-        metallic = uDebugMetallic;
-    } else if (uHasMetallicMap && !uDebugDisableMetallicTex) {
-        // glTF ORM: R=Occlusion, G=Roughness, B=Metallic
-        metallic = texture(uMetallicMap, TexCoord).b;
-    }
-
-    float roughness = 0.5;
-    if (uDebugOverrideRoughness) {
-        roughness = uDebugRoughness;
-    } else if (uHasRoughnessMap && !uDebugDisableRoughnessTex) {
-        // glTF ORM: G = Roughness
-        roughness = texture(uRoughnessMap, TexCoord).g;
-    } else {
-        roughness = sqrt(2.0 / (uShininess + 2.0));
+        vec3 tn = TBN * tangentNormal;
+        N = length(tn) > 0.001 ? normalize(tn) : N;
     }
     
-    // 4. AO
-    float ao = 1.0;
-    if (uHasAOMap && !uDebugDisableAOTex) {
-        // glTF ORM: R = Occlusion
-        float aoSample = texture(uAOMap, TexCoord).r;
-        ao = mix(1.0, aoSample, uDebugAOStrength > 0.0 ? uDebugAOStrength : 1.0);
+    // 3. Metallic / Roughness
+    float metallic = uMetalness;
+    if (uHasMetallicMap && !uDebugDisableMetallicTex) {
+        metallic *= texture(uMetallicMap, TexCoord).b;
+    }
+    if (uDebugOverrideMetallic) {
+        metallic = uDebugMetallic;
     }
 
-    // PBR Loop
-    vec3 V = normalize(uViewPos - FragPos);
+    float roughness = uRoughness;
+    if (uHasRoughnessMap && !uDebugDisableRoughnessTex) {
+        roughness *= texture(uRoughnessMap, TexCoord).g;
+    }
+    if (uDebugOverrideRoughness) {
+        roughness = uDebugRoughness;
+    }
 
+    // Fallback for legacy models with 0 roughness
+    if (roughness <= 0.001 && !uHasRoughnessMap && !uDebugOverrideRoughness) {
+        roughness = sqrt(2.0 / (max(uShininess, 0.001) + 2.0));
+    }
+    
+    vec3 viewDir = uViewPos - FragPos;
+    vec3 V = length(viewDir) > 0.001 ? normalize(viewDir) : vec3(0.0, 1.0, 0.0);
+
+    vec3 L;
+    float attenuation = 1.0;
+
+    if (uLightType == 0) { // Directional
+        L = normalize(-uLightDir);
+        attenuation = 1.0;
+    } else { // Point or Spot
+        vec3 lightToFrag = uLightPos - FragPos;
+        float distance = length(lightToFrag);
+        L = normalize(lightToFrag);
+        
+        // Quadratic attenuation with range limit
+        attenuation = 1.0 / (distance * distance + 0.0001);
+        
+        // Smoothly fade out at radius
+        if (uLightRadius > 0.0) {
+            float distFactor = distance / uLightRadius;
+            attenuation *= clamp(1.0 - distFactor * distFactor, 0.0, 1.0);
+        }
+
+        if (uLightType == 2) { // Spot Light
+            float theta = dot(L, normalize(-uLightDir));
+            float epsilon = uInnerCutoff - uOuterCutoff;
+            float spotIntensity = clamp((theta - uOuterCutoff) / epsilon, 0.0, 1.0);
+            attenuation *= spotIntensity;
+        }
+    }
+    
     // Calculate F0
+    vec3 albedo = pow(max(albedoSample.rgb, 0.0001), vec3(2.2));
     vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 
     // Reflectance equation
     vec3 Lo = vec3(0.0);
 
-    // Only one light source for now (point light at uLightPos)
-    vec3 L = normalize(uLightPos - FragPos);
-    vec3 H = normalize(V + L);
-    float distance = length(uLightPos - FragPos);
+    vec3 halfDir = V + L;
+    vec3 H = length(halfDir) > 0.001 ? normalize(halfDir) : vec3(0.0, 1.0, 0.0);
     
-    // Attenuation (physically correct quadratic)
-    float attenuation = 1.0 / (distance * distance);
-    // Simple tweak to make it visible in typical game scales if light is weak
-    // attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);
-    
-    vec3 radiance = uLightColor * attenuation * 500.0; // Scaled up radiance for visibility
+    vec3 radiance = uLightColor * attenuation * uLightIntensity; 
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);   
-float G   = GeometrySmith(N, V, L, roughness);      
-vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0, roughness); // Direct Fresnel
+    float G   = GeometrySmith(N, V, L, roughness);      
+    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0, roughness);
 
-vec3 numerator    = NDF * G * F; 
-float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
-vec3 specular     = numerator / denominator;
+    vec3 numerator    = NDF * G * F; 
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+    vec3 specular     = numerator / denominator;
 
-vec3 kS = F;
-vec3 kD = vec3(1.0) - kS;
-kD *= 1.0 - metallic;
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;
 
-float NdotL = max(dot(N, L), 0.0);        
-Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+    float NdotL = max(dot(N, L), 0.0);        
+    Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 
-// --- IBL Section ---
-vec3 ambient = vec3(0.0);
-if (uHasIBL) {
-    // 1. Calculate Fresnel for the environment (Indirect Fresnel)
-    vec3 F_ibl = fresnelSchlick(max(dot(N, V), 0.0), F0, roughness);
-    vec3 kS_ibl = F_ibl;
-    vec3 kD_ibl = 1.0 - kS_ibl;
-    kD_ibl *= 1.0 - metallic;	  
+    // 4. AO (Temporarily disabled for stability)
+    float ao = 1.0;
+    /*
+    if (uHasAOMap && !uDebugDisableAOTex) {
+        float aoSample = texture(uAOMap, TexCoord).r;
+        ao = mix(1.0, aoSample, uDebugAOStrength > 0.0 ? uDebugAOStrength : 1.0);
+    }
+    */
 
-    // 2. Diffuse IBL (Irradiance)
-    vec3 irradiance = texture(irradianceMap, N).rgb;
-    vec3 diffuseIBL = irradiance * albedo;
-
-    // 3. Specular IBL (Prefilter + LUT)
-    vec3 R = reflect(-V, N); 
-    const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;    
-    vec2 envBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
-    vec3 specularIBL = prefilteredColor * (F_ibl * envBRDF.x + envBRDF.y);
-
-    // 4. Combine Ambient IBL with intensity
-    ambient = (kD_ibl * diffuseIBL + specularIBL) * ao * uIBLIntensity;
-} else {
-    // Fallback: Simple ambient when IBL is disabled
-    ambient = vec3(0.03) * albedo * ao;
-}
+    // 5. Ambient / IBL
+    vec3 ambient = vec3(0.03) * albedo * ao;
+    if (uHasIBL) {
+        vec3 F_ibl = fresnelSchlick(max(dot(N, V), 0.0), F0, roughness);
+        vec3 kS_ibl = F_ibl;
+        vec3 kD_ibl = 1.0 - kS_ibl;
+        kD_ibl *= 1.0 - metallic;	  
+        vec3 irradiance = texture(irradianceMap, N).rgb;
+        vec3 diffuseIBL = irradiance * albedo;
+        vec3 R = reflect(-V, N); 
+        const float MAX_REFLECTION_LOD = 4.0;
+        vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;    
+        vec2 envBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+        vec3 specularIBL = prefilteredColor * (F_ibl * envBRDF.x + envBRDF.y);
+        ambient = (kD_ibl * diffuseIBL + specularIBL) * ao * uIBLIntensity;
+    }
     
     // Emissive
     vec3 emissive = vec3(0.0);
-    float emissiveBoost = uDebugEmissiveIntensity > 0.0 ? uDebugEmissiveIntensity : 5.0;
     if (uHasEmissiveMap && !uDebugDisableEmissiveTex) {
-         emissive = texture(uEmissiveMap, TexCoord).rgb * emissiveBoost;
+         emissive = texture(uEmissiveMap, TexCoord).rgb * (uDebugEmissiveIntensity > 0.0 ? uDebugEmissiveIntensity : 5.0);
     } else if (uIsEmissive) {
          emissive = albedo * 2.0; 
     }
 
     vec3 color = ambient + Lo + emissive;
 
-    // HDR tonemapping
+    // Tone mapping and gamma correction
     color = color / (color + vec3(1.0));
-    // Gamma correction
-    color = pow(color, vec3(1.0/2.2)); 
+    color = pow(max(color, 0.0001), vec3(1.0/2.2)); 
+
+    // USE uOpacity instead of texture alpha to avoid invisible models
+    float alpha = uOpacity;
 
     FragColor = vec4(color, alpha);
 }

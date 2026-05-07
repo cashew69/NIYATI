@@ -14,34 +14,59 @@ static GLuint axisVBO = 0;
 static GLuint debugLineVAO = 0;
 static GLuint debugLineVBO = 0;
 
-void drawDebugLine(vec3 start, vec3 end, vec3 color, mat4 view, mat4 proj) {
-    if (!lineShaderProgram) return;
-    
-    float vertices[] = {
-        start[0], start[1], start[2], color[0], color[1], color[2],
-        end[0], end[1], end[2], color[0], color[1], color[2]
-    };
-    
-    if (debugLineVAO == 0) {
-        glGenVertexArrays(1, &debugLineVAO);
-        glGenBuffers(1, &debugLineVBO);
-    }
-    
+static void ensureDebugLineVAO() {
+    if (debugLineVAO) return;
+    glGenVertexArrays(1, &debugLineVAO);
+    glGenBuffers(1, &debugLineVBO);
     glBindVertexArray(debugLineVAO);
     glBindBuffer(GL_ARRAY_BUFFER, debugLineVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-    
     glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(ATTRIB_POSITION);
     glVertexAttribPointer(ATTRIB_COLOR, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(ATTRIB_COLOR);
-    
+    glBindVertexArray(0);
+}
+
+// Draws multiple line segments in a single draw call.
+// verts: flat array of (lineCount * 12) floats — per segment: start.xyz, start.rgb, end.xyz, end.rgb.
+static void drawDebugLinesBatch(float* verts, int lineCount, mat4 view, mat4 proj) {
+    if (!lineShaderProgram || lineCount == 0) return;
+    ensureDebugLineVAO();
+
+    glBindVertexArray(debugLineVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, debugLineVBO);
+    glBufferData(GL_ARRAY_BUFFER, lineCount * 12 * sizeof(float), verts, GL_DYNAMIC_DRAW);
+
     glUseProgram(lineShaderProgram->id);
-    glUniformMatrix4fv(glGetUniformLocation(lineShaderProgram->id, "view"), 1, GL_FALSE, view);
-    glUniformMatrix4fv(glGetUniformLocation(lineShaderProgram->id, "projection"), 1, GL_FALSE, proj);
+    glUniformMatrix4fv(lineShaderProgram->loc.view,       1, GL_FALSE, view);
+    glUniformMatrix4fv(lineShaderProgram->loc.projection, 1, GL_FALSE, proj);
+    mat4 m = mat4::identity();
+    glUniformMatrix4fv(lineShaderProgram->loc.model,      1, GL_FALSE, m);
+
+    glDrawArrays(GL_LINES, 0, lineCount * 2);
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
+void drawDebugLine(vec3 start, vec3 end, vec3 color, mat4 view, mat4 proj) {
+    if (!lineShaderProgram) return;
+    ensureDebugLineVAO();
+
+    float vertices[] = {
+        start[0], start[1], start[2], color[0], color[1], color[2],
+        end[0],   end[1],   end[2],   color[0], color[1], color[2]
+    };
+
+    glBindVertexArray(debugLineVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, debugLineVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+    glUseProgram(lineShaderProgram->id);
+    glUniformMatrix4fv(lineShaderProgram->loc.view,       1, GL_FALSE, view);
+    glUniformMatrix4fv(lineShaderProgram->loc.projection, 1, GL_FALSE, proj);
     mat4 model = mat4::identity();
-    glUniformMatrix4fv(glGetUniformLocation(lineShaderProgram->id, "model"), 1, GL_FALSE, model);
-    
+    glUniformMatrix4fv(lineShaderProgram->loc.model,      1, GL_FALSE, model);
+
     glDrawArrays(GL_LINES, 0, 2);
     glBindVertexArray(0);
     glUseProgram(0);
@@ -49,7 +74,11 @@ void drawDebugLine(vec3 start, vec3 end, vec3 color, mat4 view, mat4 proj) {
 
 
 void initEditorPrimitives() {
-    // 1. Grid (C syntax: using dynamic allocation or fixed array)
+    // Shaders are now initialized via InitializeShaders() in shadermanager.cpp
+
+
+    // 2. Grid (C syntax)
+
     int size = 100;
     int step = 5;
     int numLines = ((size * 2) / step + 1) * 2;
@@ -142,11 +171,10 @@ void renderEditorPrimitives(mat4 view, mat4 proj) {
     
     glUseProgram(lineShaderProgram->id);
     
-    glUniformMatrix4fv(glGetUniformLocation(lineShaderProgram->id, "view"), 1, GL_FALSE, view);
-    glUniformMatrix4fv(glGetUniformLocation(lineShaderProgram->id, "projection"), 1, GL_FALSE, proj);
-    
+    glUniformMatrix4fv(lineShaderProgram->loc.view,       1, GL_FALSE, view);
+    glUniformMatrix4fv(lineShaderProgram->loc.projection, 1, GL_FALSE, proj);
     mat4 m = mat4::identity();
-    glUniformMatrix4fv(glGetUniformLocation(lineShaderProgram->id, "model"), 1, GL_FALSE, m);
+    glUniformMatrix4fv(lineShaderProgram->loc.model,      1, GL_FALSE, m);
 
 
     // 1. Draw Grid

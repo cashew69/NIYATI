@@ -11,9 +11,7 @@
 // ImGui
 
 #include "engine/engine.h"
-#include "logger.h"
-#include "platform_common.cpp"
-
+#include "editor_root.cpp"
 
 #include "engine/dependancies/imgui/imgui.h"
 
@@ -22,23 +20,9 @@
 
 
 
-// Default stub — project 03 overrides this by defining UpdateGUI() in gui.cpp
-// which is included before this point via platform_common.cpp → project.cpp → gui.cpp.
-#if !defined(PROJECT_TEMPLATE)
-
-void UpdateGUI() {
-    NewFrameGUI();
-    // No panels for simple projects
-}
-// Projects 01/02 don't use mouse look or wireframe — empty stubs so platform compiles
-void toggleWireframe(void)           {}
-#endif
-
-
-
 // Macros
-#define winwidth 800
-#define winheight 600
+#define winwidth 1920
+#define winheight 1080
 
 // GLFW-specific Global Variables
 GLFWwindow *window = NULL;
@@ -56,6 +40,10 @@ void platformGetFramebufferSize(int* width, int* height) {
     *width = 800;
     *height = 600;
   }
+}
+
+void platformSetSwapInterval(int interval) {
+  glfwSwapInterval(interval);
 }
 
 // Mouse Input (GLFW-specific tracking)
@@ -158,8 +146,6 @@ int main(void) {
   LOG_I("initialize() SUCCEEDED");
   }
 
-  float lastFrameTime = (float)glfwGetTime();
-
   while (!glfwWindowShouldClose(window)) {
     // Poll Events
     glfwPollEvents();
@@ -167,13 +153,8 @@ int main(void) {
     // Update and Render GUI
     UpdateGUI();
 
-    // Calculate Delta Time
-    float currentFrameTime = (float)glfwGetTime();
-    float deltaTime = currentFrameTime - lastFrameTime;
-    lastFrameTime = currentFrameTime;
-
     // Handle Camera Input (from engine/utils/camera_utils)
-    HandleCameraInput(window, deltaTime);
+    HandleCameraInput(window, g_DeltaTime);
 
 
     // Render
@@ -201,6 +182,12 @@ int initialize(void) {
   if (result != 0) {
     return result;
   }
+
+  // Initialize Editor-specific systems
+  initEditorPrimitives();
+
+  // Set initial VSync state
+  platformSetSwapInterval(g_VSyncEnabled ? 1 : 0);
 
   // Warmup Resize
   int width, height;
@@ -238,9 +225,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods) {
   if (action == GLFW_PRESS) {
     switch (key) {
-    case GLFW_KEY_CAPS_LOCK:
-      glfwSetWindowShouldClose(window, GLFW_TRUE);
-      break;
+
     case GLFW_KEY_F:
       toggleFullScreen();
       break;
@@ -255,12 +240,13 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
                            int mods) {
-  if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-    mouse_captured = !mouse_captured;
-    if (mouse_captured) {
+  if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+    if (action == GLFW_PRESS) {
+      mouse_captured = true;
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
       first_mouse = true;
-    } else {
+    } else if (action == GLFW_RELEASE) {
+      mouse_captured = false;
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
   }

@@ -1,9 +1,15 @@
+#ifndef TERRAIN_CPP
+#define TERRAIN_CPP
+
 #include "terrain.h"
 #include "../engine/effects/noise/perlin.h"
 #include "../engine/effects/noise/noise.c"
 #include <GL/gl.h>
 #include <cmath>
 #include <cstdlib>
+
+// Owned here; terrain_node.cpp accesses via extern.
+Mesh* terrainMesh = NULL;
 
 // ============================================================================
 // TERRAIN GENERATION PARAMETERS
@@ -35,7 +41,7 @@ float g_terrainScale = 10.0f;
 int g_tessellationInner = 4;
 int g_tessellationOuter = 4;
 float g_displacementScale = 20.0f;
-bool g_wireframeMode = false;
+// g_wireframeMode now in engine.h
 int g_lodBias = 0;
 int g_heightmapSource = 0;
 GLuint g_loadedHeightmapTexture = 0;
@@ -67,8 +73,7 @@ TerrainMaterialDef g_terrainMaterials[] = {
 };
 int g_terrainMaterialCount = sizeof(g_terrainMaterials) / sizeof(g_terrainMaterials[0]);
 
-#define PLANE_WIDTH 256
-#define PLANE_DEPTH 256
+// PLANE_WIDTH and PLANE_DEPTH macros removed in favor of g_terrainMeshWidth/Depth
 
 // ============================================================================
 // BIOME HEIGHT FUNCTIONS
@@ -243,17 +248,23 @@ GLuint createTextureFromPixels(unsigned char* pixels, int width, int height) {
     return textureID;
 }
 
-GLuint createHeightMapTexture(int width, int depth, float frequency, float heightScale) {
+void createTerrainTextures(int width, int depth, float frequency, float heightScale,
+                            GLuint* outHeightTex, GLuint* outNormalTex) {
     TerrainData data = generateTerrainData(width, depth, frequency);
-    GLuint tex = createTextureFromPixels(data.heightPixels, width, depth);
+    if (outHeightTex) *outHeightTex = createTextureFromPixels(data.heightPixels, width, depth);
+    if (outNormalTex) *outNormalTex = createTextureFromPixels(data.normalPixels, width, depth);
     freeTerrainData(&data);
+}
+
+GLuint createHeightMapTexture(int width, int depth, float frequency, float heightScale) {
+    GLuint tex = 0;
+    createTerrainTextures(width, depth, frequency, heightScale, &tex, nullptr);
     return tex;
 }
 
 GLuint createNormalMapTexture(int width, int depth, float frequency, float heightScale) {
-    TerrainData data = generateTerrainData(width, depth, frequency);
-    GLuint tex = createTextureFromPixels(data.normalPixels, width, depth);
-    freeTerrainData(&data);
+    GLuint tex = 0;
+    createTerrainTextures(width, depth, frequency, heightScale, nullptr, &tex);
     return tex;
 }
 
@@ -285,10 +296,10 @@ bool exportNormalmapToPNG(const char* filename, int width, int depth, float freq
 // ============================================================================
 
 Mesh* createTerrainMesh() {
-    fprintf(gpFile, "Generating terrain mesh %dx%d...\n", PLANE_WIDTH, PLANE_DEPTH);
+    LOG_I("Generating terrain mesh %dx%d...", g_terrainMeshWidth, g_terrainMeshDepth);
 
-    int vertexCount = PLANE_WIDTH * PLANE_DEPTH;
-    int patchCount = (PLANE_WIDTH - 1) * (PLANE_DEPTH - 1);
+    int vertexCount = g_terrainMeshWidth * g_terrainMeshDepth;
+    int patchCount = (g_terrainMeshWidth - 1) * (g_terrainMeshDepth - 1);
     int indexCount = patchCount * 4;
 
     float* positions = (float*)malloc(vertexCount * 3 * sizeof(float));
@@ -297,7 +308,7 @@ Mesh* createTerrainMesh() {
     unsigned int* indices = (unsigned int*)malloc(indexCount * sizeof(unsigned int));
 
     if (!positions || !normals || !texCoords || !indices) {
-        fprintf(gpFile, "Error: Failed to allocate terrain mesh data\n");
+        LOG_E("Failed to allocate terrain mesh data");
         free(positions);
         free(normals);
         free(texCoords);
@@ -305,13 +316,13 @@ Mesh* createTerrainMesh() {
         return NULL;
     }
 
-    float spacing = 10.0f;
-    float halfWidth = (PLANE_WIDTH * spacing) / 2.0f;
-    float halfDepth = (PLANE_DEPTH * spacing) / 2.0f;
+    float spacing = g_terrainScale;
+    float halfWidth = (g_terrainMeshWidth * spacing) / 2.0f;
+    float halfDepth = (g_terrainMeshDepth * spacing) / 2.0f;
 
     int idx = 0;
-    for (int z = 0; z < PLANE_DEPTH; z++) {
-        for (int x = 0; x < PLANE_WIDTH; x++) {
+    for (int z = 0; z < g_terrainMeshDepth; z++) {
+        for (int x = 0; x < g_terrainMeshWidth; x++) {
             positions[idx * 3 + 0] = (float)x * spacing - halfWidth;
             positions[idx * 3 + 1] = 0.0f;
             positions[idx * 3 + 2] = (float)z * spacing - halfDepth;
@@ -320,19 +331,19 @@ Mesh* createTerrainMesh() {
             normals[idx * 3 + 1] = 1.0f;
             normals[idx * 3 + 2] = 0.0f;
 
-            texCoords[idx * 2 + 0] = (float)x / (float)(PLANE_WIDTH - 1);
-            texCoords[idx * 2 + 1] = (float)z / (float)(PLANE_DEPTH - 1);
+            texCoords[idx * 2 + 0] = (float)x / (float)(g_terrainMeshWidth - 1);
+            texCoords[idx * 2 + 1] = (float)z / (float)(g_terrainMeshDepth - 1);
 
             idx++;
         }
     }
 
     idx = 0;
-    for (int z = 0; z < PLANE_DEPTH - 1; z++) {
-        for (int x = 0; x < PLANE_WIDTH - 1; x++) {
-            int bottomLeft = z * PLANE_WIDTH + x;
+    for (int z = 0; z < g_terrainMeshDepth - 1; z++) {
+        for (int x = 0; x < g_terrainMeshWidth - 1; x++) {
+            int bottomLeft = z * g_terrainMeshWidth + x;
             int bottomRight = bottomLeft + 1;
-            int topLeft = (z + 1) * PLANE_WIDTH + x;
+            int topLeft = (z + 1) * g_terrainMeshWidth + x;
             int topRight = topLeft + 1;
 
             indices[idx++] = bottomLeft;
@@ -362,19 +373,22 @@ Mesh* createTerrainMesh() {
     material.opacity = 1.0f;
     material.isEmissive = false;
 
+    // Enable texture usage flags for PBR
+    material.useDiffuseTexture = true;
+    material.useNormalTexture = true;
+    material.useMetallicRoughnessTexture = true;
+    material.useAOTexture = true;
+    material.useEmissiveTexture = true;
+
     TerrainMaterialDef* matDef = &g_terrainMaterials[g_terrainMaterialIndex];
 
     loadPNGTexture(&material.diffuseTexture, const_cast<char*>(matDef->diffusePath), 1);
-    fprintf(gpFile, "  Loaded diffuse texture: %u\n", material.diffuseTexture);
-
     loadPNGTexture(&material.normalTexture, const_cast<char*>(matDef->normalPath), 1);
-    fprintf(gpFile, "  Loaded normal texture: %u\n", material.normalTexture);
-
     loadPNGTexture(&material.metallicRoughnessTexture, const_cast<char*>(matDef->armPath), 1);
-    fprintf(gpFile, "  Loaded ARM texture: %u\n", material.metallicRoughnessTexture);
-
     loadPNGTexture(&g_terrainDisplacementMap, const_cast<char*>(matDef->dispPath), 1);
-    fprintf(gpFile, "  Loaded displacement texture: %u\n", g_terrainDisplacementMap);
+    LOG_I("Terrain textures loaded: diffuse=%u normal=%u ARM=%u disp=%u",
+          material.diffuseTexture, material.normalTexture,
+          material.metallicRoughnessTexture, g_terrainDisplacementMap);
 
     Mesh* mesh = createMesh(&vertexData, &material);
 
@@ -384,10 +398,11 @@ Mesh* createTerrainMesh() {
     free(indices);
 
     if (mesh) {
-        fprintf(gpFile, "Terrain mesh created: %d vertices, %d patches (%d indices)\n",
-                vertexCount, patchCount, indexCount);
+        mesh->aabbLocal.min[1] -= g_displacementScale * 2.0f;
+        mesh->aabbLocal.max[1] += g_displacementScale * 2.0f;
+        LOG_I("Terrain mesh created: %d vertices, %d patches (%d indices)", vertexCount, patchCount, indexCount);
     } else {
-        fprintf(gpFile, "Error: Failed to create terrain mesh\n");
+        LOG_E("Failed to create terrain mesh");
     }
 
     return mesh;
@@ -406,9 +421,9 @@ void regenerateTerrainMesh() {
     terrainMesh = createTerrainMesh();
 
     if (terrainMesh) {
-        fprintf(gpFile, "Terrain mesh regenerated successfully\n");
+        LOG_I("Terrain mesh regenerated successfully");
     } else {
-        fprintf(gpFile, "Error: Failed to regenerate terrain mesh\n");
+        LOG_E("Failed to regenerate terrain mesh");
     }
 }
 
@@ -429,7 +444,7 @@ void switchTerrainMaterial(int materialIndex) {
     loadPNGTexture(&terrainMesh->material.metallicRoughnessTexture, const_cast<char*>(matDef->armPath), 1);
     loadPNGTexture(&g_terrainDisplacementMap, const_cast<char*>(matDef->dispPath), 1);
 
-    fprintf(gpFile, "Switched terrain material to: %s\n", matDef->name);
+    LOG_I("Switched terrain material to: %s", matDef->name);
 }
 
 // ============================================================================
@@ -438,11 +453,16 @@ void switchTerrainMaterial(int materialIndex) {
 
 extern vec3 lightPos;
 extern vec3 lightColor;
+extern vec3 lightDir;
+extern int lightType;
+extern float lightRadius;
+extern float lightInnerCutoff;
+extern float lightOuterCutoff;
 extern float lightIntensity;
 extern bool useIBL;
 extern float iblIntensity;
 
-void renderTerrain(GLint HeightMap) {
+void renderTerrain(GLint HeightMap, mat4 modelMatrix) {
     if (terrainMesh == NULL || tessellationShaderProgram == NULL) {
         return;
     }
@@ -452,84 +472,68 @@ void renderTerrain(GLint HeightMap) {
     }
 
     glUseProgram(tessellationShaderProgram->id);
+    ShaderLocations& loc = tessellationShaderProgram->loc;
 
-    GLint projLoc = glGetUniformLocation(tessellationShaderProgram->id, "uProjection");
-    if (projLoc != -1) glUniformMatrix4fv(projLoc, 1, GL_FALSE, perspectiveProjectionMatrix);
+    glUniformMatrix4fv(loc.uProjection,     1, GL_FALSE, perspectiveProjectionMatrix);
+    glUniformMatrix4fv(loc.uView,           1, GL_FALSE, viewMatrix);
+    glUniformMatrix4fv(loc.uModel,          1, GL_FALSE, modelMatrix);
 
-    GLint viewLoc = glGetUniformLocation(tessellationShaderProgram->id, "uView");
-    if (viewLoc != -1) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, viewMatrix);
+    glUniform1f(loc.uTessLevelInner,    (float)g_tessellationInner);
+    glUniform1f(loc.uTessLevelOuter,    (float)g_tessellationOuter);
+    glUniform1f(loc.uDisplacementScale, g_displacementScale);
 
-    mat4 modelMatrix = mat4::identity();
-    GLint modelLoc = glGetUniformLocation(tessellationShaderProgram->id, "uModel");
-    if (modelLoc != -1) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, modelMatrix);
+    extern Camera* GetActiveCamera();
+    Camera* cam = GetActiveCamera();
+    vec3 viewPosFromCamera = cam ? cam->position : vec3(0.0f, 50.0f, 100.0f);
 
-    GLint tessInnerLoc = glGetUniformLocation(tessellationShaderProgram->id, "uTessLevelInner");
-    GLint tessOuterLoc = glGetUniformLocation(tessellationShaderProgram->id, "uTessLevelOuter");
-    if (tessInnerLoc != -1) glUniform1f(tessInnerLoc, (float)g_tessellationInner);
-    if (tessOuterLoc != -1) glUniform1f(tessOuterLoc, (float)g_tessellationOuter);
-
-    GLint dispLoc = glGetUniformLocation(tessellationShaderProgram->id, "uDisplacementScale");
-    if (dispLoc != -1) glUniform1f(dispLoc, g_displacementScale);
-
-    vec3 viewPosFromCamera = mainCamera ? mainCamera->position : vec3(0.0f, 50.0f, 100.0f);
-
-    GLint lightPosLoc = glGetUniformLocation(tessellationShaderProgram->id, "uLightPos");
-    if (lightPosLoc != -1) glUniform3fv(lightPosLoc, 1, lightPos);
-
-    GLint lightColorLoc = glGetUniformLocation(tessellationShaderProgram->id, "uLightColor");
-    if (lightColorLoc != -1) glUniform3fv(lightColorLoc, 1, lightColor * lightIntensity);
-
-    GLint viewPosLoc = glGetUniformLocation(tessellationShaderProgram->id, "uViewPos");
-    if (viewPosLoc != -1) glUniform3fv(viewPosLoc, 1, viewPosFromCamera);
-
-    GLint hasIBLLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHasIBL");
-    if (hasIBLLoc != -1) glUniform1i(hasIBLLoc, useIBL);
-
-    GLint iblIntensityLoc = glGetUniformLocation(tessellationShaderProgram->id, "uIBLIntensity");
-    if (iblIntensityLoc != -1) glUniform1f(iblIntensityLoc, iblIntensity);
+    glUniform3fv(loc.uLightPos,       1, lightPos);
+    glUniform3fv(loc.uLightColor,     1, lightColor);
+    glUniform1f(loc.uLightIntensity,  lightIntensity);
+    glUniform1i(loc.uLightType,       lightType);
+    glUniform3fv(loc.uLightDir,       1, lightDir);
+    glUniform1f(loc.uLightRadius,     lightRadius);
+    glUniform1f(loc.uInnerCutoff,     lightInnerCutoff);
+    glUniform1f(loc.uOuterCutoff,     lightOuterCutoff);
+    
+    glUniform3fv(loc.uViewPos,     1, viewPosFromCamera);
+    glUniform1i(loc.uHasIBL,       useIBL);
+    glUniform1f(loc.uIBLIntensity, iblIntensity);
 
     if (useIBL) {
         bindIBL(tessellationShaderProgram);
     }
 
+    extern void setDebugUniforms(ShaderProgram* program);
+    setDebugUniforms(tessellationShaderProgram);
+
     setMaterialUniforms(tessellationShaderProgram, &terrainMesh->material);
 
     // Override texture enable flags based on GUI toggles
-    GLint hasDiffLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHasDiffuseTexture");
-    if (hasDiffLoc != -1 && !g_enableTerrainDiffuse) glUniform1i(hasDiffLoc, 0);
-
-    GLint hasNormLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHasNormalTexture");
-    if (hasNormLoc != -1 && !g_enableTerrainNormalMap) glUniform1i(hasNormLoc, 0);
-
-    GLint hasMetLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHasMetallicMap");
-    GLint hasRghLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHasRoughnessMap");
-    GLint hasAOLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHasAOMap");
+    if (!g_enableTerrainDiffuse)  glUniform1i(loc.uHasDiffuseTexture, 0);
+    if (!g_enableTerrainNormalMap) glUniform1i(loc.uHasNormalTexture,  0);
     if (!g_enableTerrainARM) {
-        if (hasMetLoc != -1) glUniform1i(hasMetLoc, 0);
-        if (hasRghLoc != -1) glUniform1i(hasRghLoc, 0);
-        if (hasAOLoc != -1) glUniform1i(hasAOLoc, 0);
+        glUniform1i(loc.uHasMetallicMap,   0);
+        glUniform1i(loc.uHasRoughnessMap,  0);
+        glUniform1i(loc.uHasAOMap,         0);
     }
 
-    // UV tiling scale
-    GLint uvScaleLoc = glGetUniformLocation(tessellationShaderProgram->id, "uUVScale");
-    if (uvScaleLoc != -1) glUniform1f(uvScaleLoc, g_terrainUVScale);
+    glUniform1f(loc.uUVScale, g_terrainUVScale);
 
-    GLint heightLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHeightMap");
-    if (heightLoc != -1) {
-        glActiveTexture(GL_TEXTURE9);
-        glBindTexture(GL_TEXTURE_2D, HeightMap);
-        glUniform1i(heightLoc, 9);
-    }
+    glActiveTexture(GL_TEXTURE9);
+    glBindTexture(GL_TEXTURE_2D, HeightMap);
+    glUniform1i(loc.uHeightMap, 9);
 
-    GLint dispMapLoc = glGetUniformLocation(tessellationShaderProgram->id, "uDisplacementMap");
-    if (dispMapLoc != -1 && g_terrainDisplacementMap != 0) {
+    int hmW = 512;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &hmW);
+    glUniform1f(loc.uTexelSize, 1.0f / (float)hmW);
+
+    if (g_terrainDisplacementMap != 0) {
         glActiveTexture(GL_TEXTURE10);
         glBindTexture(GL_TEXTURE_2D, g_terrainDisplacementMap);
-        glUniform1i(dispMapLoc, 10);
+        glUniform1i(loc.uDisplacementMap, 10);
     }
 
-    GLint hasDispLoc = glGetUniformLocation(tessellationShaderProgram->id, "uHasDisplacementMap");
-    if (hasDispLoc != -1) glUniform1i(hasDispLoc, g_enableTerrainDisplacement && g_terrainDisplacementMap != 0);
+    glUniform1i(loc.uHasDisplacementMap, g_enableTerrainDisplacement && g_terrainDisplacementMap != 0);
 
     glBindVertexArray(terrainMesh->vao);
 
@@ -546,3 +550,4 @@ void renderTerrain(GLint HeightMap) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }
+#endif // TERRAIN_CPP

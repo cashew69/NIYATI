@@ -311,6 +311,7 @@ Bool buildShaderProgram(const GLchar **SourceCodes, GLenum* shaderTypes, int sha
     (*program)->id = 0;
     (*program)->name = NULL;
     (*program)->shaderCount = 0;
+    memset(&(*program)->loc, -1, sizeof(ShaderLocations)); // all -1 = "not found" sentinel
 
     Shader* shaders[6]; 
     for (int i = 0; i < shaderCount && i < 6; i++) {

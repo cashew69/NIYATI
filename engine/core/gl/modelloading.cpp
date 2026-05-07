@@ -20,12 +20,12 @@ const char* getDirectoryFromPath(const char* filepath) {
 }
 
 // Helper to check and bind texture
-void bindTex(ShaderProgram* program, const char* hasName, const char* texName, GLuint textureID, int slot) {
+void bindTex(ShaderProgram* program, const char* hasName, const char* texName, GLuint textureID, Bool useTex, int slot) {
     GLint hasLoc = getUniformLocation(program, hasName);
     GLint texLoc = getUniformLocation(program, texName);
 
     if (hasLoc != -1 && texLoc != -1) {
-        Bool hasTex = (textureID != 0);
+        Bool hasTex = (textureID != 0 && useTex);
         glUniform1i(hasLoc, hasTex);
         if (hasTex) {
             glActiveTexture(GL_TEXTURE0 + slot);
@@ -33,6 +33,62 @@ void bindTex(ShaderProgram* program, const char* hasName, const char* texName, G
             glUniform1i(texLoc, slot);
         }
     }
+}
+
+// PBR Debug Globals
+bool debugDisableDiffuse = false;
+bool debugDisableNormal = false;
+bool debugDisableMetallic = false;
+bool debugDisableRoughness = false;
+bool debugDisableAO = false;
+bool debugDisableEmissive = false;
+
+bool debugOverrideRoughness = false;
+bool debugOverrideMetallic = false;
+float debugRoughness = 0.5f;
+float debugMetallic = 0.0f;
+float debugAOStrength = 1.0f;
+float debugEmissiveIntensity = 5.0f;
+
+void setDebugUniforms(ShaderProgram* program)
+{
+    GLint loc;
+    
+    loc = glGetUniformLocation(program->id, "uDebugDisableDiffuseTex");
+    if (loc != -1) glUniform1i(loc, debugDisableDiffuse);
+    
+    loc = glGetUniformLocation(program->id, "uDebugDisableNormalTex");
+    if (loc != -1) glUniform1i(loc, debugDisableNormal);
+    
+    loc = glGetUniformLocation(program->id, "uDebugDisableMetallicTex");
+    if (loc != -1) glUniform1i(loc, debugDisableMetallic);
+    
+    loc = glGetUniformLocation(program->id, "uDebugDisableRoughnessTex");
+    if (loc != -1) glUniform1i(loc, debugDisableRoughness);
+    
+    loc = glGetUniformLocation(program->id, "uDebugDisableAOTex");
+    if (loc != -1) glUniform1i(loc, debugDisableAO);
+    
+    loc = glGetUniformLocation(program->id, "uDebugDisableEmissiveTex");
+    if (loc != -1) glUniform1i(loc, debugDisableEmissive);
+    
+    loc = glGetUniformLocation(program->id, "uDebugOverrideRoughness");
+    if (loc != -1) glUniform1i(loc, debugOverrideRoughness);
+    
+    loc = glGetUniformLocation(program->id, "uDebugOverrideMetallic");
+    if (loc != -1) glUniform1i(loc, debugOverrideMetallic);
+    
+    loc = glGetUniformLocation(program->id, "uDebugRoughness");
+    if (loc != -1) glUniform1f(loc, debugRoughness);
+    
+    loc = glGetUniformLocation(program->id, "uDebugMetallic");
+    if (loc != -1) glUniform1f(loc, debugMetallic);
+    
+    loc = glGetUniformLocation(program->id, "uDebugAOStrength");
+    if (loc != -1) glUniform1f(loc, debugAOStrength);
+    
+    loc = glGetUniformLocation(program->id, "uDebugEmissiveIntensity");
+    if (loc != -1) glUniform1f(loc, debugEmissiveIntensity);
 }
 
 void setMaterialUniforms(ShaderProgram* program, Material* material) {
@@ -53,15 +109,21 @@ void setMaterialUniforms(ShaderProgram* program, Material* material) {
     GLint opacityLoc = getUniformLocation(program, "uOpacity");
     if (opacityLoc != -1) glUniform1f(opacityLoc, material->opacity);
 
+    GLint roughnessLoc = getUniformLocation(program, "uRoughness");
+    if (roughnessLoc != -1) glUniform1f(roughnessLoc, material->roughness);
+
+    GLint metalnessLoc = getUniformLocation(program, "uMetalness");
+    if (metalnessLoc != -1) glUniform1f(metalnessLoc, material->metalness);
+
     // Bind Textures
-    bindTex(program, "uHasDiffuseTexture", "uDiffuseTexture", material->diffuseTexture, 0);
-    bindTex(program, "uHasNormalTexture", "uNormalTexture", material->normalTexture, 1);
+    bindTex(program, "uHasDiffuseTexture", "uDiffuseTexture", material->diffuseTexture, material->useDiffuseTexture, 0);
+    bindTex(program, "uHasNormalTexture", "uNormalTexture", material->normalTexture, material->useNormalTexture, 1);
 
-    bindTex(program, "uHasMetallicMap", "uMetallicMap", material->metallicRoughnessTexture, 2);
-    bindTex(program, "uHasRoughnessMap", "uRoughnessMap", material->metallicRoughnessTexture, 3);
-    bindTex(program, "uHasAOMap", "uAOMap", material->metallicRoughnessTexture, 4);
+    bindTex(program, "uHasMetallicMap", "uMetallicMap", material->metallicRoughnessTexture, material->useMetallicRoughnessTexture, 2);
+    bindTex(program, "uHasRoughnessMap", "uRoughnessMap", material->metallicRoughnessTexture, material->useMetallicRoughnessTexture, 3);
+    bindTex(program, "uHasAOMap", "uAOMap", material->metallicRoughnessTexture, material->useAOTexture, 4);
 
-    bindTex(program, "uHasEmissiveMap", "uEmissiveMap", material->emissiveTexture, 5);
+    bindTex(program, "uHasEmissiveMap", "uEmissiveMap", material->emissiveTexture, material->useEmissiveTexture, 5);
 
     if (material->opacity < 1.0f) {
         glEnable(GL_BLEND);
@@ -222,6 +284,21 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
         material->opacity = 1.0f;
     }
 
+    // PBR Properties
+    float metalness = 0.0f;
+    if (aiGetMaterialFloat(aiMat, "$mat.gltf.pbrMetallicRoughness.metallicFactor", 0, 0, &metalness) == AI_SUCCESS) {
+        material->metalness = metalness;
+    } else {
+        material->metalness = 0.0f;
+    }
+
+    float roughness = 0.5f;
+    if (aiGetMaterialFloat(aiMat, "$mat.gltf.pbrMetallicRoughness.roughnessFactor", 0, 0, &roughness) == AI_SUCCESS) {
+        material->roughness = roughness;
+    } else {
+        material->roughness = 0.5f;
+    }
+
     aiColor4D emissive;
     if (aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_EMISSIVE, &emissive) == AI_SUCCESS) {
         material->isEmissive = (emissive.r > 0.01f || emissive.g > 0.01f || emissive.b > 0.01f);
@@ -239,6 +316,12 @@ void loadMaterialFromAssimp(Material* material, const struct aiMaterial* aiMat, 
         }
     }
     fprintf(gpFile, "--- End Material Debug ---\n");
+
+    material->useDiffuseTexture = True;
+    material->useNormalTexture = True;
+    material->useMetallicRoughnessTexture = True;
+    material->useAOTexture = True;
+    material->useEmissiveTexture = True;
 
     material->diffuseTexture = 0;
     if (aiGetMaterialTexture(aiMat, aiTextureType_DIFFUSE, 0, &texPath, NULL, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
@@ -362,6 +445,24 @@ Mesh* createMesh(const ModelVertexData* data, const Material* material) {
 
     mesh->indexCount = data->indexCount;
 
+    if (data->positions && data->vertexCount > 0) {
+        float minX =  1e30f, minY =  1e30f, minZ =  1e30f;
+        float maxX = -1e30f, maxY = -1e30f, maxZ = -1e30f;
+        for (int v = 0; v < data->vertexCount; v++) {
+            float x = data->positions[v * 3 + 0];
+            float y = data->positions[v * 3 + 1];
+            float z = data->positions[v * 3 + 2];
+            if (x < minX) minX = x; if (x > maxX) maxX = x;
+            if (y < minY) minY = y; if (y > maxY) maxY = y;
+            if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+        }
+        mesh->aabbLocal.min = vec3(minX, minY, minZ);
+        mesh->aabbLocal.max = vec3(maxX, maxY, maxZ);
+    } else {
+        mesh->aabbLocal.min = vec3(0.0f, 0.0f, 0.0f);
+        mesh->aabbLocal.max = vec3(0.0f, 0.0f, 0.0f);
+    }
+
     if (material) {
         memcpy(mesh->material.diffuseColor, material->diffuseColor, sizeof(float) * 3);
         memcpy(mesh->material.specularColor, material->specularColor, sizeof(float) * 3);
@@ -375,6 +476,12 @@ Mesh* createMesh(const ModelVertexData* data, const Material* material) {
         mesh->material.aoTexture = material->aoTexture;
         mesh->material.emissiveTexture = material->emissiveTexture;
 
+        mesh->material.useDiffuseTexture = material->useDiffuseTexture;
+        mesh->material.useNormalTexture = material->useNormalTexture;
+        mesh->material.useMetallicRoughnessTexture = material->useMetallicRoughnessTexture;
+        mesh->material.useAOTexture = material->useAOTexture;
+        mesh->material.useEmissiveTexture = material->useEmissiveTexture;
+
     } else {
         // Defaults
         mesh->material.diffuseColor[0] = 0.8f; mesh->material.diffuseColor[1] = 0.8f; mesh->material.diffuseColor[2] = 0.8f;
@@ -387,6 +494,12 @@ Mesh* createMesh(const ModelVertexData* data, const Material* material) {
         mesh->material.metallicRoughnessTexture = 0;
         mesh->material.aoTexture = 0;
         mesh->material.emissiveTexture = 0;
+
+        mesh->material.useDiffuseTexture = True;
+        mesh->material.useNormalTexture = True;
+        mesh->material.useMetallicRoughnessTexture = True;
+        mesh->material.useAOTexture = True;
+        mesh->material.useEmissiveTexture = True;
     }
 
 
@@ -395,8 +508,6 @@ Mesh* createMesh(const ModelVertexData* data, const Material* material) {
         vec3(0.0f, 0.0f, 0.0f),  // rotation
         vec3(1.0f, 1.0f, 1.0f)   // scale
     );
-
-    mesh->userFragmentCode = NULL;
 
     fprintf(gpFile, "Mesh created: %zu indices\n", mesh->indexCount);
     return mesh;
@@ -410,10 +521,6 @@ void freeMesh(Mesh* mesh) {
     }
     if (mesh->material.normalTexture) {
         glDeleteTextures(1, &mesh->material.normalTexture);
-    }
-
-    if (mesh->userFragmentCode) {
-        free(mesh->userFragmentCode);
     }
 
     if (mesh->transform) {
@@ -537,6 +644,22 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
 
         (*meshes)[i].indexCount = data.indexCount;
 
+        // Local-space AABB from raw positions (used for BVH/culling/visualizer)
+        {
+            float minX =  1e30f, minY =  1e30f, minZ =  1e30f;
+            float maxX = -1e30f, maxY = -1e30f, maxZ = -1e30f;
+            for (int v = 0; v < data.vertexCount; v++) {
+                float x = data.positions[v * 3 + 0];
+                float y = data.positions[v * 3 + 1];
+                float z = data.positions[v * 3 + 2];
+                if (x < minX) minX = x; if (x > maxX) maxX = x;
+                if (y < minY) minY = y; if (y > maxY) maxY = y;
+                if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+            }
+            (*meshes)[i].aabbLocal.min = vec3(minX, minY, minZ);
+            (*meshes)[i].aabbLocal.max = vec3(maxX, maxY, maxZ);
+        }
+
         memcpy((*meshes)[i].material.diffuseColor, material.diffuseColor, sizeof(float) * 3);
         memcpy((*meshes)[i].material.specularColor, material.specularColor, sizeof(float) * 3);
         (*meshes)[i].material.shininess = material.shininess;
@@ -548,6 +671,12 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
         (*meshes)[i].material.emissiveTexture = material.emissiveTexture;
         (*meshes)[i].material.aoTexture = material.aoTexture;
 
+        (*meshes)[i].material.useDiffuseTexture = material.useDiffuseTexture;
+        (*meshes)[i].material.useNormalTexture = material.useNormalTexture;
+        (*meshes)[i].material.useMetallicRoughnessTexture = material.useMetallicRoughnessTexture;
+        (*meshes)[i].material.useAOTexture = material.useAOTexture;
+        (*meshes)[i].material.useEmissiveTexture = material.useEmissiveTexture;
+
         (*meshes)[i].transform = createTransform(
             vec3(0.0f, 0.0f, 0.0f),
             vec3(0.0f, 0.0f, 0.0f),
@@ -556,8 +685,6 @@ Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale)
         
         strncpy((*meshes)[i].name, aiMesh->mName.C_Str(), 63);
         (*meshes)[i].name[63] = '\0';
-
-        (*meshes)[i].userFragmentCode = NULL;
 
         free(data.positions);
         if (data.normals) free(data.normals);
@@ -580,10 +707,6 @@ void freeModel(Mesh* meshes, int meshCount) {
         }
         if (meshes[i].material.normalTexture) {
             glDeleteTextures(1, &meshes[i].material.normalTexture);
-        }
-
-        if (meshes[i].userFragmentCode) {
-            free(meshes[i].userFragmentCode);
         }
 
         if (meshes[i].transform) {

@@ -227,15 +227,19 @@ void initSkybox(const char* hdrPath)
     {
         fprintf(gpFile, "WARNING: No environment loaded. Skybox and IBL disabled.\n");
     }
-
-    // 4. Build skybox rendering shader
-    const char* skyboxFiles[5] = { "engine/shaders/PBR/skybox.vert", NULL, NULL, NULL, "engine/shaders/PBR/skybox.frag" };
-    buildShaderProgramFromFiles(skyboxFiles, 5, &skyboxShader, NULL, NULL, 0);
 }
 
 void renderSkybox(mat4 viewMatrix, mat4 projectionMatrix)
 {
-    if (!skyboxShader || !envCubemap) return;
+    if (!envCubemap) return;
+
+    if (!skyboxShader)
+    {
+        const char* skyboxFiles[5] = { "engine/shaders/PBR/skybox.vert", NULL, NULL, NULL, "engine/shaders/PBR/skybox.frag" };
+        buildShaderProgramFromFiles(skyboxFiles, 5, &skyboxShader, NULL, NULL, 0);
+    }
+    
+    if (!skyboxShader) return;
 
     glDepthFunc(GL_LEQUAL);
     glUseProgram(skyboxShader->id);

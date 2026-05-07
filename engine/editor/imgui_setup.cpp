@@ -45,6 +45,10 @@ void updateViewportFBO(int width, int height) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     viewportWidth = width;
     viewportHeight = height;
+
+    // Update projection matrix to match the new aspect ratio
+    extern void resize(int width, int height);
+    resize(width, height);
 }
 
 void InitGUI(void* window_handle) {

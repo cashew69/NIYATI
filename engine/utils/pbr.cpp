@@ -170,13 +170,13 @@ void bindIBL(ShaderProgram* program)
 
     glActiveTexture(GL_TEXTURE6);
     glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-    glUniform1i(glGetUniformLocation(program->id, "irradianceMap"), 6);
+    glUniform1i(program->loc.irradianceMap, 6);
 
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
-    glUniform1i(glGetUniformLocation(program->id, "prefilterMap"), 7);
+    glUniform1i(program->loc.prefilterMap, 7);
 
     glActiveTexture(GL_TEXTURE8);
     glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
-    glUniform1i(glGetUniformLocation(program->id, "brdfLUT"), 8);
+    glUniform1i(program->loc.brdfLUT, 8);
 }

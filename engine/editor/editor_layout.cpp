@@ -1,149 +1,100 @@
 #ifdef HAS_IMGUI
-//#include "engine/dependancies/imgui/imgui.h"
-//#include "engine/utils/camera_utils/camera_base.h"
+#include "engine/dependancies/imgui/imgui.h"
+// Forward decls
+extern void CreateSceneModel(const char* name, const char* path);
+extern void CreateSceneQuad(const char* name);
+extern bool ReloadModelFromFile(Model* model, const char* path);
+extern void AddSceneLight(const char* name);
+extern void AddSceneReferenceObject(const char* name);
+extern void AddSceneInstance(const char* name);
+
+#include "engine/editor/scenemanager_layout.cpp"
+#include "engine/editor/attributemanager_layout.cpp"
+#include "engine/editor/utilbar_layout.cpp"
 #include <string>
 
-// Forward decls
-void AddStrategicCamera(const char* name);
+// --- Scene Management Implementations ---
 
-void ShowEditorToolbar() {
-    ImGui::Begin("UtilBar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+extern Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale);
+
+void CreateSceneModel(const char* name, const char* path) {
+    if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
     
-    // Camera Selection Dropdown
-    const char* base_modes[] = { "Editor: WASD", "Editor: Mouse" };
-    const char* current_label = "Unknown";
-    if (currentCameraMode == CAM_MODE_WASD_EULER) current_label = base_modes[0];
-    else if (currentCameraMode == CAM_MODE_MOUSE_BOARD) current_label = base_modes[1];
-    else if (currentCameraMode == CAM_MODE_STRATEGIC) {
-         if (g_ActiveStrategicCameraIndex < g_StrategicCameraCount)
-            current_label = g_StrategicCameras[g_ActiveStrategicCameraIndex].name;
-         else
-            current_label = "Strategic View";
-    }
-
-    ImGui::SetNextItemWidth(250.0f);
-    if (ImGui::BeginCombo("View Mode", current_label)) {
-        if (ImGui::Selectable(base_modes[0], currentCameraMode == CAM_MODE_WASD_EULER)) currentCameraMode = CAM_MODE_WASD_EULER;
-        if (ImGui::Selectable(base_modes[1], currentCameraMode == CAM_MODE_MOUSE_BOARD)) currentCameraMode = CAM_MODE_MOUSE_BOARD;
-        
-        ImGui::Separator();
-        for (int i = 0; i < g_StrategicCameraCount; i++) {
-            if (ImGui::Selectable(g_StrategicCameras[i].name, (currentCameraMode == CAM_MODE_STRATEGIC && g_ActiveStrategicCameraIndex == i))) {
-                currentCameraMode = CAM_MODE_STRATEGIC;
-                g_ActiveStrategicCameraIndex = i;
+    if (path && path[0] != '\0') {
+        Mesh* meshes = nullptr;
+        int meshCount = 0;
+        if (loadModel(path, &meshes, &meshCount, 1.0f)) {
+            // Create a parent node for the entire model
+            SceneNode* modelRoot = sg_CreateNode(ENTITY_EMPTY, name);
+            
+            for (int i = 0; i < meshCount; i++) {
+                char meshName[64];
+                if (strlen(meshes[i].name) > 0) {
+                    strncpy(meshName, meshes[i].name, 64);
+                } else {
+                    snprintf(meshName, 64, "Mesh_%d", i);
+                }
+                
+                SceneNode* meshNode = sg_CreateNode(ENTITY_MODEL, meshName);
+                meshNode->data.mesh = meshes[i]; // Copy the mesh structure
+                strncpy(meshNode->sourcePath, path, 256);
+                meshNode->meshIndex = i;
+                sg_AddChild(modelRoot, meshNode);
             }
+            sg_AddChild(g_SceneRoot, modelRoot);
+            LOG_I("Loaded model '%s' with %d meshes", path, meshCount);
+        } else {
+            LOG_E("Failed to load model from path: %s", path);
         }
-        ImGui::EndCombo();
+    } else {
+        // Create an empty node if no path provided
+        SceneNode* node = sg_CreateNode(ENTITY_EMPTY, name);
+        sg_AddChild(g_SceneRoot, node);
     }
-
-    ImGui::SameLine();
-    static bool show_settings = false;
-    if (ImGui::SmallButton(show_settings ? "<< Close" : "Cam Settings >>")) {
-        show_settings = !show_settings;
-    }
-
-    if (show_settings) {
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(100.0f);
-        ImGui::SliderFloat("Speed", &camera_speed, 10.0f, 100.0f, "%.1f");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(100.0f);
-        ImGui::SliderFloat("Sens", &camera_sensitivity, 0.05f, 2.0f, "%.2f");
-    }
-
-    // Reset Flight Cam Button
-    ImGui::SameLine();
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.7f, 0.0f, 0.0f, 1.0f));
-    if (ImGui::Button("R", ImVec2(24, 24))) {
-        camera_pos = vec3(10.0f, 10.0f, 10.0f);
-        camera_yaw = 0.0f;
-        camera_pitch = 0.0f;
-    }
-    ImGui::PopStyleColor();
-
-    ImGui::SameLine();
-    ImGui::TextDisabled("|");
-    ImGui::SameLine();
-    vec3 cp = (currentCameraMode == CAM_MODE_STRATEGIC) ? g_StrategicCameras[g_ActiveStrategicCameraIndex].pos : camera_pos;
-    ImGui::Text("Pos: %.1f, %.1f, %.1f", cp[0], cp[1], cp[2]);
-
-    ImGui::End();
 }
 
-// Selection tracking
-enum SelectedType {
-    SEL_NONE,
-    SEL_STRAT_CAM,
-    SEL_FLIGHT_CAM
-};
-static SelectedType selectedType = SEL_NONE;
-static int selectedIndex = -1;
+void CreateSceneQuad(const char* name) {
+    // Legacy stub, could be implemented with primitive generation
+}
+
+void AddSceneLight(const char* name) {
+    if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* node = sg_CreateNode(ENTITY_LIGHT, name);
+    // Initialize light data
+    node->data.light.type = LIGHT_POINT;
+    node->data.light.color = vec3(1.0f, 1.0f, 1.0f);
+    node->data.light.intensity = 500.0f;
+    node->data.light.radius = 100.0f;
+    node->data.light.direction = vec3(0.0f, -1.0f, 0.0f);
+    node->data.light.innerCutoff = 0.9f;
+    node->data.light.outerCutoff = 0.8f;
+    node->data.light.cast_shadows = true;    sg_AddChild(g_SceneRoot, node);
+}
+
+void AddSceneReferenceObject(const char* name) {
+    if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* node = sg_CreateNode(ENTITY_EMPTY, name);
+    sg_AddChild(g_SceneRoot, node);
+}
+
+void AddSceneInstance(const char* name) {
+    extern void instance_Init(InstanceData* inst);
+    if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* node = sg_CreateNode(ENTITY_INSTANCE, name);
+    instance_Init(&node->data.instance);
+    sg_AddChild(g_SceneRoot, node);
+}
+
+bool ReloadModelFromFile(Model* model, const char* path) {
+    // This is for the legacy Model struct, might be deprecated by SceneNode later
+    return true; 
+}
 
 void ShowEditorLayout() {
+
     ShowEditorToolbar();
+    showSceneEditorUI();
+    showAttributeEditorUI();
 
-    // 1. Scene Manager
-    ImGui::Begin("Scene Manager");
-    if (ImGui::Button("Add Strategic Camera")) {
-        AddStrategicCamera("Camera");
-    }
-    ImGui::Separator();
-
-    if (ImGui::TreeNodeEx("Cameras", ImGuiTreeNodeFlags_DefaultOpen)) {
-        if (ImGui::Selectable("Flight Camera (Editor)", selectedType == SEL_FLIGHT_CAM)) {
-            selectedType = SEL_FLIGHT_CAM;
-        }
-        for (int i = 0; i < g_StrategicCameraCount; i++) {
-            if (ImGui::Selectable(g_StrategicCameras[i].name, (selectedType == SEL_STRAT_CAM && selectedIndex == i))) {
-                selectedType = SEL_STRAT_CAM;
-                selectedIndex = i;
-                g_SelectedStrategicCameraIndex = i;
-            }
-        }
-        ImGui::TreePop();
-    }
-    ImGui::End();
-
-    // 2. Attribute Manager
-    ImGui::Begin("Attribute Manager");
-    if (selectedType == SEL_STRAT_CAM && selectedIndex >= 0 && selectedIndex < g_StrategicCameraCount) {
-        StrategicCamera* cam = &g_StrategicCameras[selectedIndex];
-        ImGui::Text("Camera Settings: %s", cam->name);
-        ImGui::InputText("Name", cam->name, 32);
-        ImGui::Separator();
-
-        if (ImGui::CollapsingHeader("LookAt Properties", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ImGui::Text("Position");
-            ImGui::InputFloat3("##PosM", (float*)&cam->pos, "%.2f");
-            ImGui::DragFloat3("##PosD", (float*)&cam->pos, 0.1f);
-            
-            ImGui::Spacing();
-            ImGui::Text("Target");
-            ImGui::InputFloat3("##TarM", (float*)&cam->target, "%.2f");
-            ImGui::DragFloat3("##TarD", (float*)&cam->target, 0.1f);
-
-            ImGui::Spacing();
-            ImGui::Text("Up Vector");
-            ImGui::InputFloat3("##UpM", (float*)&cam->up, "%.2f");
-            ImGui::DragFloat3("##UpD", (float*)&cam->up, 0.05f);
-
-            ImGui::Spacing();
-            ImGui::Text("Roll Angle");
-            ImGui::SliderFloat("##RollS", &cam->roll, -180.0f, 180.0f);
-        }
-    } else if (selectedType == SEL_FLIGHT_CAM) {
-        ImGui::Text("Flight Camera Stats");
-        ImGui::DragFloat3("Pos", (float*)&camera_pos, 0.1f);
-        ImGui::DragFloat("Yaw", &camera_yaw, 0.5f);
-        ImGui::DragFloat("Pitch", &camera_pitch, 0.5f);
-    } else {
-        ImGui::TextDisabled("Select an object to edit.");
-    }
-    ImGui::End();
-
-    // 3. Filesystem (Stub)
-    ImGui::Begin("Filesystem");
-    ImGui::Text("Assets/");
-    ImGui::End();
 }
 #endif

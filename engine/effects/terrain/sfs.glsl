@@ -30,7 +30,14 @@ uniform sampler2D uAOMap;
 // Lights
 uniform vec3 uLightPos;
 uniform vec3 uLightColor;
+uniform float uLightIntensity;
 uniform vec3 uViewPos;
+
+uniform int   uLightType;     // 0: Dir, 1: Point, 2: Spot
+uniform vec3  uLightDir;
+uniform float uLightRadius;
+uniform float uInnerCutoff;
+uniform float uOuterCutoff;
 
 // IBL Uniforms
 uniform samplerCube irradianceMap;
@@ -176,11 +183,33 @@ void main()
     // Direct lighting
     vec3 Lo = vec3(0.0);
 
-    vec3 L = normalize(uLightPos - FragPos);
+    vec3 L;
+    float attenuation = 1.0;
+
+    if (uLightType == 0) { // Directional
+        L = normalize(-uLightDir);
+        attenuation = 1.0;
+    } else { // Point or Spot
+        vec3 lightToFrag = uLightPos - FragPos;
+        float distance = length(lightToFrag);
+        L = normalize(lightToFrag);
+        attenuation = 1.0 / (distance * distance + 0.0001);
+        
+        if (uLightRadius > 0.0) {
+            float distFactor = distance / uLightRadius;
+            attenuation *= clamp(1.0 - distFactor * distFactor, 0.0, 1.0);
+        }
+
+        if (uLightType == 2) { // Spot Light
+            float theta = dot(L, normalize(-uLightDir));
+            float epsilon = uInnerCutoff - uOuterCutoff;
+            float spotIntensity = clamp((theta - uOuterCutoff) / epsilon, 0.0, 1.0);
+            attenuation *= spotIntensity;
+        }
+    }
+
     vec3 H = normalize(V + L);
-    float distance = length(uLightPos - FragPos);
-    float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = uLightColor * attenuation * 500.0;
+    vec3 radiance = uLightColor * attenuation * uLightIntensity;
 
     float NDF = DistributionGGX(N, H, roughness);
     float G = GeometrySmith(N, V, L, roughness);
