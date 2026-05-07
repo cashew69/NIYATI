@@ -1,10 +1,11 @@
-Program started successfully...!!!
-HELLO WORLD !!!
-glXChooseFBConfig returned 10 configs
-[20:04:42] [INFO] OpenGL Vendor   : AMD
-[20:04:42] [INFO] OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, ACO, DRM 3.64, 7.0.2-2-cachyos)
-[20:04:42] [INFO] OpenGL Version  : 4.6 (Core Profile) Mesa 26.0.6-arch2.2
-[20:04:42] [INFO] GLSL Version    : 4.60
+[20:28:12] [INFO] Logger initialized. Outputting to log.txt
+[20:28:12] [INFO] OpenGL Vendor   : AMD
+[20:28:12] [INFO] OpenGL Renderer : AMD Radeon RX 9070 XT (radeonsi, gfx1201, ACO, DRM 3.64, 7.0.2-2-cachyos)
+[20:28:12] [INFO] OpenGL Version  : 4.6 (Core Profile) Mesa 26.0.6-arch2.2
+[20:28:12] [INFO] GLSL Version    : 4.60
+Successfully read shader file: engine/shaders/lineVert.glsl
+Successfully read shader file: engine/shaders/lineFrag.glsl
+Shader Program Linked Successfully
 Successfully read shader file: engine/shaders/vertex_shader.glsl
 Successfully read shader file: engine/shaders/main_fs[lambart].glsl
 Shader Program Linked Successfully
@@ -22,7 +23,9 @@ Shader Program Linked Successfully
 Successfully read shader file: engine/shaders/icon.vert
 Successfully read shader file: engine/shaders/icon.frag
 Shader Program Linked Successfully
-[20:04:42] [INFO] Project Initializing...
+[20:28:12] [INFO] Editor Initializing...
+[20:28:12] [INFO] initializeOpenGL() completed
+[20:28:12] [INFO] initialize() SUCCEEDED
 Loaded cubemap face 0: user/models/skybox/posx.jpg (2048x2048)
 Loaded cubemap face 1: user/models/skybox/negx.jpg (2048x2048)
 Loaded cubemap face 2: user/models/skybox/posy.jpg (2048x2048)
@@ -39,11 +42,11 @@ Shader Program Linked Successfully
 Successfully read shader file: engine/shaders/PBR/brdf.vert
 Successfully read shader file: engine/shaders/PBR/brdf.frag
 Shader Program Linked Successfully
-IBL maps generated. Irradiance=2, Prefilter=3, BRDF=4
-[20:04:42] [INFO] Generating terrain mesh 256x256...
-[20:04:42] [INFO] Terrain textures loaded: diffuse=6 normal=7 ARM=8 disp=9
+IBL maps generated. Irradiance=5, Prefilter=6, BRDF=7
+[20:28:16] [INFO] Generating terrain mesh 256x256...
+[20:28:16] [INFO] Terrain textures loaded: diffuse=9 normal=10 ARM=11 disp=12
 Mesh created: 260100 indices
-[20:04:42] [INFO] Terrain mesh created: 65536 vertices, 65025 patches (260100 indices)
+[20:28:16] [INFO] Terrain mesh created: 65536 vertices, 65025 patches (260100 indices)
 Loading model: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/04_clouds/f22blend.glb
 Number of meshes: 6
 --- Material Texture Debug ---
@@ -52,7 +55,7 @@ Number of meshes: 6
 --- End Material Debug ---
 Loading Diffuse (DIFFUSE): *0
 Loading embedded texture: *0
-Diffuse texture ID: 10
+Diffuse texture ID: 13
 Normal texture ID: 0
 ORM texture ID: 0
 Emissive texture ID: 0
@@ -67,7 +70,7 @@ Loading embedded texture: *0
 --- End Material Debug ---
 Loading Diffuse (DIFFUSE): *0
 Loading embedded texture: *0
-Diffuse texture ID: 12
+Diffuse texture ID: 15
 Normal texture ID: 0
 ORM texture ID: 0
 Emissive texture ID: 0
@@ -82,7 +85,7 @@ Loading embedded texture: *0
 --- End Material Debug ---
 Loading Diffuse (DIFFUSE): *0
 Loading embedded texture: *0
-Diffuse texture ID: 14
+Diffuse texture ID: 17
 Normal texture ID: 0
 ORM texture ID: 0
 Emissive texture ID: 0
@@ -97,7 +100,7 @@ Loading embedded texture: *0
 --- End Material Debug ---
 Loading Diffuse (DIFFUSE): *0
 Loading embedded texture: *0
-Diffuse texture ID: 16
+Diffuse texture ID: 19
 Normal texture ID: 0
 ORM texture ID: 0
 Emissive texture ID: 0
@@ -112,7 +115,7 @@ Loading embedded texture: *0
 --- End Material Debug ---
 Loading Diffuse (DIFFUSE): *0
 Loading embedded texture: *0
-Diffuse texture ID: 18
+Diffuse texture ID: 21
 Normal texture ID: 0
 ORM texture ID: 0
 Emissive texture ID: 0
@@ -127,7 +130,7 @@ Loading embedded texture: *0
 --- End Material Debug ---
 Loading Diffuse (DIFFUSE): *0
 Loading embedded texture: *0
-Diffuse texture ID: 20
+Diffuse texture ID: 23
 Normal texture ID: 0
 ORM texture ID: 0
 Emissive texture ID: 0
@@ -137,10 +140,8 @@ FALLBACK: Force assigning *0 to ORM
 DEBUG: Force loading embedded texture 0 (*0)
 Loading embedded texture: *0
 Model loaded successfully: /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/04_clouds/f22blend.glb
-[20:04:44] [INFO] initializeOpenGL() completed
-initialize() SUCCEEDED
 Successfully read shader file: engine/shaders/PBR/skybox.vert
 Successfully read shader file: engine/shaders/PBR/skybox.frag
 Shader Program Linked Successfully
-[20:04:56] [INFO] OpenGL resources cleaned up
-Program terminated successfully...!!!
+[20:29:57] [INFO] OpenGL resources cleaned up
+[20:29:57] [INFO] Logger shutting down.
