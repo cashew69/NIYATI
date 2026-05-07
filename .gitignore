@@ -5,6 +5,7 @@ build-win/
 examples/04-clouds/
 .cache
 .vscode/
+.claude/
 *.blend
 .zed
 .cache
