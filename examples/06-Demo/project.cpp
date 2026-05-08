@@ -5,18 +5,6 @@
 #include "utils/scenegraph.h"
 #include <cstdio>
 
-// ============================================================================
-// Scene entity handles
-//
-// After building the scene in the editor, check the Scene Manager panel for
-// each node's ID. IDs are saved to the .scene file and never change.
-//   sg_FindById(2)           — stable lookup by ID
-//   sg_FindByName("Sun")     — lookup by name (breaks if renamed)
-// Combine with typed accessors:
-//   sg_Light(sg_FindByName("Sun"))  — PointLightData* or null if wrong type
-//   sg_Mesh(sg_FindById(3))         — Mesh* or null if wrong type
-// ============================================================================
-
 static SceneNode* nikhilCam       = nullptr;
 static SceneNode* Cam2       = nullptr;
 static Camera* cam = nullptr;
@@ -37,12 +25,12 @@ void projectInit() {
 
     InitCustomCameras();
 
-    // Load scene — restores all nodes (meshes, lights, terrain, cameras).
+    // Load scene: restores all nodes (meshes, lights, terrain, cameras).
     g_SceneRoot = sg_LoadScene("scene.scene");
     if (!g_SceneRoot)
         g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
 
-    // ---- Find scene entities -----------------------------------------------
+    // Find scene entities
     krishna = sg_FindByName("krishna");
     planeInstance = sg_FindById(5);
     if (planeInstance) {
@@ -51,9 +39,7 @@ void projectInit() {
     } else {
         LOG_I("Warning: node ID 5 not found — check Scene Manager.");
     }
-    // ---- Camera setup -------------------------------------------------------
-    // sg_LoadScene restores camera nodes saved from the editor.
-    // If the scene has no camera yet, sg_AddCameraNode creates one.
+    // Camera setup
     nikhilCam = sg_FindByName("NikhilCam");
     Cam2 = sg_FindByName("Cam2");
     nikhilCamPosSpline = sg_FindByName("spline1");
@@ -82,12 +68,18 @@ void projectUpdate() {
         float radius = 1.0f;
         planeInstance->position[0] = instanceX + radius * cosf(t);
         planeInstance->position[1] = instanceY + radius * sinf(t);
-        redLight->position[0] = lightX + 117.0 * sin(t);
-        //redLight->position[1] = lightY + radius * sinf(t);
 
     }
 
+    if (redLight) {
+    redLight->position[0] = lightX + 117.0 * sin(t);
+    //redLight->position[1] = lightY + radius * sinf(t);
+    }
+
+    if (nikhilCam)
+    {
     //nikhilCam->data.camera.position[0] = redLight->position[0];
+    }
 
 
     vec3 newCamPos = sg_AdvanceSpline(nikhilCamPosSpline, &progress, 0.05f * g_DeltaTime);
@@ -109,4 +101,9 @@ void projectRender() {
     RenderSceneModels(view, perspectiveProjectionMatrix);
 }
 
-void projectCleanup() {}
+void projectCleanup()
+{
+
+
+
+}
