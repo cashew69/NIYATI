@@ -1280,6 +1280,7 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/stb_image.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/attributemanager_layout.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/catmulattributes_layout.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.h \
@@ -1307,6 +1308,8 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: /run/media/cas
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/custom_camera.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
@@ -1793,6 +1796,12 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o:
 
 /usr/include/c++/15.2.1/tuple:
 
+/usr/include/c++/15.2.1/stdexcept:
+
+/usr/include/c++/15.2.1/sstream:
+
+/usr/include/c++/15.2.1/set:
+
 /usr/include/bits/types/clock_t.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/movrsintrin.h:
@@ -1828,10 +1837,6 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui.cpp.o:
 /usr/include/assimp/Compiler/pushpack1.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/bmi2intrin.h:
-
-/usr/include/c++/15.2.1/unordered_set:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cetintrin.h:
 
 /usr/include/assimp/vector2.inl:
 
@@ -1958,8 +1963,6 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o:
 /usr/include/limits.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fp16intrin.h:
-
-/usr/include/bits/types/__sigset_t.h:
 
 /usr/include/c++/15.2.1/tr1/riemann_zeta.tcc:
 
@@ -2237,6 +2240,10 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/clwbintrin.h:
 
+/usr/include/bits/types/__sigset_t.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/catmulattributes_layout.cpp:
+
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h:
 
 /usr/include/c++/15.2.1/bits/uses_allocator.h:
@@ -2266,6 +2273,12 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_draw.cpp.o:
 CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o:
 
 /usr/include/c++/15.2.1/stdlib.h:
+
+/usr/include/c++/15.2.1/unordered_set:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/cetintrin.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.h:
 
 /usr/include/bits/types/cookie_io_functions_t.h:
 
@@ -2356,8 +2369,6 @@ CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o:
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512fp16vlintrin.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avx512vbmi2intrin.h:
-
-/usr/include/c++/15.2.1/sstream:
 
 /usr/include/alloca.h:
 
@@ -2571,8 +2582,6 @@ CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h:
 
-/usr/include/c++/15.2.1/stdexcept:
-
 /usr/include/bits/stdint-least.h:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp:
@@ -2636,8 +2645,6 @@ CMakeFiles/window_glfw_linux.dir/engine/core/logger.cpp.o:
 /usr/include/bits/iscanonical.h:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/transform.h:
-
-/usr/include/c++/15.2.1/set:
 
 /usr/include/c++/15.2.1/istream:
 
@@ -2756,6 +2763,8 @@ CMakeFiles/window_glfw_linux.dir/engine/dependancies/imgui/imgui_tables.cpp.o:
 /usr/include/assimp/postprocess.h:
 
 /usr/include/assimp/quaternion.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.cpp:
 
 /usr/include/c++/15.2.1/ostream:
 

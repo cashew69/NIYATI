@@ -88,6 +88,16 @@ static void sg_SaveNodeNew(FILE* f, SceneNode* node, int depth) {
         fprintf(f, "\n");
         const void* base = (const char*)node + desc->dataOffset;
         sg_SaveSection(f, desc->sectionKey, desc->attrs, desc->attrCount, base, depth + 1);
+        
+        if (node->type == ENTITY_CATMULLROMSPLINE) {
+            CatmullRomNodeData* cat = &node->data.catmullrom;
+            sg_Indent(f, depth + 1); fprintf(f, "ControlPoints {\n");
+            sg_Indent(f, depth + 2); fprintf(f, "pointCount  %d\n", cat->pointCount);
+            for (int i = 0; i < cat->pointCount; i++) {
+                sg_Indent(f, depth + 2); fprintf(f, "p%d  %g %g %g\n", i, cat->controlPoints[i][0], cat->controlPoints[i][1], cat->controlPoints[i][2]);
+            }
+            sg_Indent(f, depth + 1); fprintf(f, "}\n");
+        }
     }
 
     for (int i = 0; i < node->num_children; i++) {
@@ -308,6 +318,40 @@ static SceneNode* sg_LoadNodeNew(SceneParser& p) {
         if (d && d->attrs) {
             void* base = (char*)node + d->dataOffset;
             sg_LoadSection(p, d->attrs, d->attrCount, base);
+            continue;
+        }
+
+        if (strcmp(tok, "ControlPoints") == 0) {
+            if (node->type == ENTITY_CATMULLROMSPLINE) {
+                CatmullRomNodeData* cat = &node->data.catmullrom;
+                p.consumeChar('{');
+                while (p.pos < p.len && !p.peekChar('}')) {
+                    char k[64];
+                    if (!p.readToken(k, sizeof(k))) break;
+                    if (strcmp(k, "pointCount") == 0) {
+                        cat->pointCount = (int)p.readFloat();
+                        cat->pointCapacity = cat->pointCount < 4 ? 4 : cat->pointCount;
+                        if (cat->controlPoints) free(cat->controlPoints);
+                        cat->controlPoints = (vec3*)calloc(cat->pointCapacity, sizeof(vec3));
+                    } else if (k[0] == 'p') {
+                        int idx = atoi(k + 1);
+                        if (idx >= 0 && idx < cat->pointCount && cat->controlPoints) {
+                            cat->controlPoints[idx][0] = p.readFloat();
+                            cat->controlPoints[idx][1] = p.readFloat();
+                            cat->controlPoints[idx][2] = p.readFloat();
+                        } else {
+                            p.readFloat(); p.readFloat(); p.readFloat();
+                        }
+                    } else {
+                        p.skipToNextLine();
+                    }
+                }
+                p.consumeChar('}');
+            } else {
+                p.consumeChar('{');
+                while (p.pos < p.len && !p.peekChar('}')) p.skipToNextLine();
+                p.consumeChar('}');
+            }
             continue;
         }
 

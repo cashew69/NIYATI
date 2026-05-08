@@ -124,3 +124,4 @@ bool g_wireframeMode = false;
 #include "utils/terrain_node.cpp"
 #include "utils/skybox.cpp"
 #include "utils/skybox_node.cpp"
+#include "utils/catmulromspline.cpp"

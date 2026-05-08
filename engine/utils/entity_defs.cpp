@@ -97,6 +97,15 @@ static const AttrDesc kSkybox[] = {
     { "currentPreset", ATTR_INT,    (int)offsetof(SkyboxNodeData, currentPreset), 1.0f, 0, 1, 0   },
 };
 
+// ---- Catmull-Rom Spline ----------------------------------------------------
+static const AttrDesc kCatmullRom[] = {
+    { "tension",          ATTR_FLOAT,  (int)offsetof(CatmullRomNodeData, tension),          0.01f, 0, 10,  0 },
+    { "segmentsPerCurve", ATTR_INT,    (int)offsetof(CatmullRomNodeData, segmentsPerCurve), 1.0f,  1, 100, 0 },
+    { "isLooping",        ATTR_BOOL,   (int)offsetof(CatmullRomNodeData, isLooping),        0,     0, 0,   0 },
+    { "showControlPoints",ATTR_BOOL,   (int)offsetof(CatmullRomNodeData, showControlPoints),0,     0, 0,   0 },
+    { "color",            ATTR_COLOR3, (int)offsetof(CatmullRomNodeData, color),            0.01f, 0, 0,   0 },
+};
+
 // ============================================================================
 // THE TABLE — one row per entity type
 // ============================================================================
@@ -108,6 +117,7 @@ const EntityDesc g_EntityTable[] = {
     { ENTITY_INSTANCE, "INSTANCE", "Instance", kInstance, NELEM(kInstance),  offsetof(SceneNode, data.instance)   },
     { ENTITY_TERRAIN,  "TERRAIN",  "Terrain",  kTerrain,  NELEM(kTerrain),   offsetof(SceneNode, data.terrain)    },
     { ENTITY_SKYBOX,   "SKYBOX",   "Skybox",   kSkybox,   NELEM(kSkybox),    offsetof(SceneNode, data.skybox)     },
+    { ENTITY_CATMULLROMSPLINE, "CATMULLROMSPLINE", "CatmullRomSpline", kCatmullRom, NELEM(kCatmullRom), offsetof(SceneNode, data.catmullrom) },
 };
 const int g_EntityTableCount = NELEM(g_EntityTable);
 

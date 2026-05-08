@@ -1,6 +1,7 @@
 log.txt
 todo.list
 build/
+compile_commands.json
 build-win/
 examples/04-clouds/
 .cache

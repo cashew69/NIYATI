@@ -1,4 +1,4 @@
-#include "camera_base.h"
+//#include "camera_base.h"
 #include "engine/engine.h"
 #include "platform.h"
 #include "structs.h"
@@ -19,8 +19,12 @@
 
 static SceneNode* nikhilCam       = nullptr;
 static SceneNode* Cam2       = nullptr;
+static Camera* cam = nullptr;
 static SceneNode* planeInstance = nullptr;
 static SceneNode* redLight = nullptr;
+SceneNode* nikhilCamPosSpline = nullptr;
+SceneNode* spline2 = nullptr;
+SceneNode* krishna = nullptr;
 static LightData* light = nullptr;
 static float instanceX = 0.0f;
 static float instanceY = 0.0f;
@@ -39,6 +43,7 @@ void projectInit() {
         g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
 
     // ---- Find scene entities -----------------------------------------------
+    krishna = sg_FindByName("krishna");
     planeInstance = sg_FindById(5);
     if (planeInstance) {
         instanceX = planeInstance->position[0];
@@ -46,17 +51,18 @@ void projectInit() {
     } else {
         LOG_I("Warning: node ID 5 not found — check Scene Manager.");
     }
-
     // ---- Camera setup -------------------------------------------------------
     // sg_LoadScene restores camera nodes saved from the editor.
     // If the scene has no camera yet, sg_AddCameraNode creates one.
     nikhilCam = sg_FindByName("NikhilCam");
     Cam2 = sg_FindByName("Cam2");
+    nikhilCamPosSpline = sg_FindByName("spline1");
+    spline2 = sg_FindByName("spline2");
     if (nikhilCam) {
         printf("%f \n",nikhilCam->position[0]);
     }
 
-    Camera* cam = sg_GetCamera(nikhilCam);
+    cam = sg_GetCamera(nikhilCam);
     redLight = sg_FindByName("Light");
     /*if (cam) {
         cam->position = vec3(5.0f, 10.0f, 75.0f);
@@ -67,6 +73,7 @@ void projectInit() {
 }
 
 static float t = 0.0f;
+static float progress = 0.0f;
 
 void projectUpdate() {
     t += g_DeltaTime;
@@ -77,14 +84,26 @@ void projectUpdate() {
         planeInstance->position[1] = instanceY + radius * sinf(t);
         redLight->position[0] = lightX + 117.0 * sin(t);
         //redLight->position[1] = lightY + radius * sinf(t);
-    }
-    if (g_Time > 10.0f && !sg_IsActiveCamera(Cam2))
-    {
-        sg_SetActiveCamera(Cam2);
+
     }
 
+    //nikhilCam->data.camera.position[0] = redLight->position[0];
+
+
+    vec3 newCamPos = sg_AdvanceSpline(nikhilCamPosSpline, &progress, 0.05f * g_DeltaTime);
+    cam->position[0] = newCamPos[0];
+    cam->position[1] = newCamPos[1];
+    cam->position[2] = newCamPos[2];
+
+    vec3 krishnaPos = sg_GetSplinePoint(spline2, t / 5.0f);
+    krishna->position[0] = krishnaPos[0];
+    krishna->position[1] = krishnaPos[1];
+    krishna->position[2] = krishnaPos[2];
+
+    cam->target[0] = krishna->position[0];
+    cam->target[1] = krishna->position[1];
+    cam->target[2] = krishna->position[2];
 }
-
 void projectRender() {
     mat4 view = GetActiveCameraViewMatrix();
     RenderSceneModels(view, perspectiveProjectionMatrix);

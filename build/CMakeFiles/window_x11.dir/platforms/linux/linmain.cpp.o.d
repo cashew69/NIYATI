@@ -233,6 +233,7 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o: \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/scenegraph.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/scenegraph.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/scenegraph_readwrite.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/shadermanager.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/shadermanager.h \
@@ -242,8 +243,10 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o: \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/skybox.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/skybox_node.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../engine/utils/catmulromspline.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../platform_common.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../platforms/engine_loop.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../active_project.h \
- /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../templates/project_template/project.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/linux/../../examples/06-Demo/project.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h

@@ -227,6 +227,7 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph_readwrite.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/shadermanager.h \
@@ -236,6 +237,7 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox_node.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/editor/editor_root.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/engine_loop.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp \
@@ -308,6 +310,7 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o: \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/attributemanager_layout.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/terrain_attribute_layout.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/skybox_attribute_layout.cpp \
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/catmulattributes_layout.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/utilbar_layout.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp \
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/imgui/imgui_impl_opengl3.h \

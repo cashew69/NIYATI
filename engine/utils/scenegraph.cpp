@@ -3,6 +3,7 @@
 #include "engine/utils/BVH.h"
 #include "engine/utils/culling.h"
 #include "engine/dependancies/vmath.h"
+#include "engine/utils/catmulromspline.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -84,6 +85,10 @@ void sg_FreeNode(SceneNode* node) {
         currentCameraMode  = CAM_MODE_MOUSE_BOARD;
     }
 
+    if (node->type == ENTITY_CATMULLROMSPLINE) {
+        sg_FreeCatmullRomNode(node);
+    }
+
     if (node->children)  free(node->children);
     if (node->name)      free((void*)node->name);
     free(node);
@@ -91,6 +96,7 @@ void sg_FreeNode(SceneNode* node) {
 
 SceneNode* sg_AddCameraNode(const char* name) {
     SceneNode* n = sg_CreateNode(ENTITY_CAMERA, name);
+    n->position             = vec3(10.0f, 10.0f, 10.0f);
     n->data.camera.position = vec3(10.0f, 10.0f, 10.0f);
     n->data.camera.target   = vec3(0.0f,  0.0f,  0.0f);
     n->data.camera.up       = vec3(0.0f,  1.0f,  0.0f);
@@ -484,6 +490,9 @@ void sg_DrawNode(SceneNode* node, mat4 view, mat4 proj, int* nodesDrawn) {
     } else if (node->type == ENTITY_SKYBOX) {
         sg_DrawSkyboxNode(node, view, proj);
         if (nodesDrawn) (*nodesDrawn)++;
+    } else if (node->type == ENTITY_CATMULLROMSPLINE) {
+        sg_RenderCatmullRomNode(node, view, proj);
+        if (nodesDrawn) (*nodesDrawn)++;
     }
     for (int i = 0; i < node->num_children; i++) {
         sg_DrawNode(node->children[i], view, proj, nodesDrawn);
@@ -729,6 +738,8 @@ void sg_InitNode(SceneNode* node) {
     } else if (node->type == ENTITY_SKYBOX) {
         extern void sg_InitSkyboxNode(SceneNode* node);
         sg_InitSkyboxNode(node);
+    } else if (node->type == ENTITY_CATMULLROMSPLINE) {
+        sg_InitCatmullRomNode(node);
     }
 
     for (int i = 0; i < node->num_children; i++) {

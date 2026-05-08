@@ -19,6 +19,7 @@ void ShowTerrainAttributes(SceneNode* node);
 
 #include "terrain_attribute_layout.cpp"
 #include "skybox_attribute_layout.cpp"
+#include "catmulattributes_layout.cpp"
 
 
 // File-scope browser for instance model selection
@@ -407,5 +408,7 @@ void ShowSceneNodeAttributes(SceneNode* node) {
         ShowTerrainAttributes(node);
     } else if (node->type == ENTITY_SKYBOX) {
         ShowSkyboxAttributes(node);
+    } else if (node->type == ENTITY_CATMULLROMSPLINE) {
+        ShowCatmullRomAttributes(node);
     }
 }

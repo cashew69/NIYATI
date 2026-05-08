@@ -1,7 +1,8 @@
 #pragma once
 // Forward declaration
-#include "camera.h"
+//
 #include "engine.h"
+#include "camera.h"
 struct Transform;
 
 #ifndef Bool
@@ -260,6 +261,23 @@ typedef struct {
     int  currentPreset;
 } SkyboxNodeData;
 
+typedef struct {
+    vec3* controlPoints;
+    int pointCount;
+    int pointCapacity;
+    float tension;
+    int segmentsPerCurve;
+    bool isLooping;
+    vec3* curvePoints;
+    int curvePointCount;
+    int curvePointCapacity;
+    GLuint vao;
+    GLuint vbo;
+    bool showControlPoints;
+    vec3 color;
+} CatmullRomNodeData;
+
+
 typedef enum {
     ENTITY_EMPTY,
     ENTITY_MODEL,
@@ -267,7 +285,8 @@ typedef enum {
     ENTITY_CAMERA,
     ENTITY_INSTANCE,
     ENTITY_TERRAIN,
-    ENTITY_SKYBOX
+    ENTITY_SKYBOX,
+    ENTITY_CATMULLROMSPLINE
 } NodeType;
 
 typedef enum {
@@ -310,6 +329,7 @@ typedef struct SceneNode {
         InstanceData instance;
         TerrainNodeData terrain;
         SkyboxNodeData skybox;
+        CatmullRomNodeData catmullrom;
     } data;
 
     const char *name;
@@ -318,4 +338,5 @@ typedef struct SceneNode {
     int ID;
     bool terrainYOffset;
     int selectedTerrainID;
+    float pathProgress;
 } SceneNode;

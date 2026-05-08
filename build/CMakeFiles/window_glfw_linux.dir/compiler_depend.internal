@@ -1288,6 +1288,7 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/stb_image.h
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/dependancies/vmath.h
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/attributemanager_layout.cpp
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/catmulattributes_layout.cpp
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/editor_layout.cpp
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/imgui_setup.cpp
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/editor/model_controller.h
@@ -1315,6 +1316,8 @@ CMakeFiles/window_glfw_linux.dir/platforms/editor/glfwmain.cpp.o
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/custom_camera.cpp
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.cpp
+ /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.h
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.cpp
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.h
  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h

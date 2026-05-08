@@ -67,6 +67,7 @@ static const char* NodeTypeTag(NodeType t) {
         case ENTITY_INSTANCE: return "[I]";
         case ENTITY_TERRAIN:  return "[T]";
         case ENTITY_SKYBOX:   return "[S]";
+        case ENTITY_CATMULLROMSPLINE: return "[CR]";
         default:              return "[ ]";
     }
 }
@@ -79,6 +80,7 @@ static ImVec4 NodeTypeColor(NodeType t) {
         case ENTITY_INSTANCE: return ImVec4(0.80f, 0.60f, 1.00f, 1.0f);
         case ENTITY_TERRAIN:  return ImVec4(0.40f, 0.80f, 0.30f, 1.0f);
         case ENTITY_SKYBOX:   return ImVec4(0.70f, 0.40f, 0.80f, 1.0f);
+        case ENTITY_CATMULLROMSPLINE: return ImVec4(1.00f, 0.60f, 0.20f, 1.0f);
         default:              return ImVec4(0.70f, 0.70f, 0.70f, 1.0f);
     }
 }
@@ -289,6 +291,16 @@ void showSceneEditorUI()
         if (ImGui::Selectable("[S]  Skybox")) {
             if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
             SceneNode* n = sg_CreateNode(ENTITY_SKYBOX, "Skybox");
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            sg_AddChild(to, n);
+            sg_InitNode(n);
+            g_SceneSelectedType = SEL_SCENENODE;
+            g_SelectedSceneNode = n;
+            ImGui::CloseCurrentPopup();
+        }
+        if (ImGui::Selectable("[CR] Catmull-Rom Spline")) {
+            if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+            SceneNode* n = sg_CreateNode(ENTITY_CATMULLROMSPLINE, "Catmull-Rom Spline");
             SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
             sg_AddChild(to, n);
             sg_InitNode(n);

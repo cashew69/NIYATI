@@ -215,14 +215,7 @@ void sg_RegenerateTerrain(SceneNode* node) {
         data->heightmapTex = createHeightMapTexture(512, 512, 0.01f, 1.0f);
     }
     
-    // regenerateTerrainMesh in terrain.cpp uses the global terrainMesh.
-    // We need to manage it ourselves for the node.
     if (data->mesh) {
-        // We need a way to free the mesh. createTerrainMesh uses createMesh which uses malloc.
-        // For now, let's just leak or assume freeMesh works.
-        // Actually, terrain.cpp has regenerateTerrainMesh() which frees and creates.
-        
-        // Let's just swap the global terrainMesh pointer temporarily.
         extern Mesh* terrainMesh;
         Mesh* oldMesh = terrainMesh;
         terrainMesh = data->mesh;

@@ -67,6 +67,8 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o: /run/media/cashew/NewVo
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/terrain/terrain.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/BVH.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/active_project.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp \
@@ -98,6 +100,7 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o: /run/media/cashew/NewVo
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_manager.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/custom_camera.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/culling.h \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h \
@@ -113,9 +116,9 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o: /run/media/cashew/NewVo
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox_node.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/terrain_node.cpp \
+  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/06-Demo/project.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platform_common.cpp \
   /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/engine_loop.cpp \
-  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/templates/project_template/project.cpp \
   /usr/include/GL/gl.h \
   /usr/include/GL/glew.h \
   /usr/include/GL/glu.h \
@@ -440,8 +443,6 @@ CMakeFiles/window_x11.dir/engine/core/logger.cpp.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
-
 /usr/lib/libm.so:
 
 /usr/lib/libgcc_s.so.1:
@@ -508,8 +509,6 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /usr/include/c++/15.2.1/string:
 
-/usr/include/c++/15.2.1/stdlib.h:
-
 /usr/include/c++/15.2.1/pstl/pstl_config.h:
 
 /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h:
@@ -546,15 +545,9 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /usr/include/c++/15.2.1/cerrno:
 
-/usr/include/assert.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h:
+/usr/include/c++/15.2.1/bits/version.h:
 
 /usr/include/asm-generic/errno-base.h:
-
-/usr/include/alloca.h:
-
-/usr/include/assimp/defs.h:
 
 /usr/include/X11/keysymdef.h:
 
@@ -566,15 +559,33 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /usr/include/X11/XKBlib.h:
 
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.cpp:
+
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/camera_base.h:
 
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/templates/project_template/project.cpp:
+/usr/include/c++/15.2.1/stdlib.h:
 
-/usr/include/GL/gl.h:
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/catmulromspline.h:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platforms/engine_loop.cpp:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/platform_common.cpp:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/06-Demo/project.cpp:
+
+/usr/include/errno.h:
+
+/usr/include/c++/15.2.1/tuple:
+
+/usr/include/bits/getopt_posix.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox_node.cpp:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h:
+
+/usr/include/c++/15.2.1/bits/vector.tcc:
 
 /usr/include/c++/15.2.1/ext/aligned_buffer.h:
 
@@ -588,8 +599,6 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph.cpp:
 
-/usr/include/c++/15.2.1/bits/version.h:
-
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/entity_defs.cpp:
 
 /usr/include/assimp/postprocess.h:
@@ -597,6 +606,10 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
 
 /usr/include/bits/types/__sigset_t.h:
+
+/usr/include/alloca.h:
+
+/usr/include/assimp/defs.h:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/camera_utils/mouseboard.cpp:
 
@@ -678,6 +691,10 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/editor_utils.h:
 
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/platform.h:
+
+/usr/include/assert.h:
+
 /usr/include/X11/Xutil.h:
 
 /usr/lib32/libGLX.so.0:
@@ -744,10 +761,6 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/effects/noise/perlin.h:
 
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp:
-
-/usr/include/assimp/Compiler/poppack1.h:
-
 /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/scenegraph_readwrite.cpp:
 
 /usr/include/sys/cdefs.h:
@@ -806,18 +819,6 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /usr/include/bits/types/struct_tm.h:
 
-/usr/include/errno.h:
-
-/usr/include/c++/15.2.1/tuple:
-
-/usr/include/bits/getopt_posix.h:
-
-/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/utils/skybox_node.cpp:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h:
-
-/usr/include/c++/15.2.1/bits/vector.tcc:
-
 /usr/include/GL/glu.h:
 
 /usr/include/c++/15.2.1/ext/numeric_traits.h:
@@ -827,6 +828,8 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 /usr/include/c++/15.2.1/iosfwd:
 
 /usr/include/bits/types/struct_timeval.h:
+
+/usr/include/GL/gl.h:
 
 /usr/include/bits/long-double.h:
 
@@ -903,6 +906,10 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 /usr/include/bits/types.h:
 
 /usr/include/c++/15.2.1/bits/move.h:
+
+/run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/engine/core/gl/camera.cpp:
+
+/usr/include/assimp/Compiler/poppack1.h:
 
 /usr/include/assimp/Compiler/pushpack1.h:
 
@@ -1070,6 +1077,10 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 
 /usr/include/c++/15.2.1/algorithm:
 
+/usr/include/c++/15.2.1/cctype:
+
+/usr/include/c++/15.2.1/backward/binders.h:
+
 /usr/include/c++/15.2.1/bits/uses_allocator_args.h:
 
 /usr/include/c++/15.2.1/bits/basic_string.h:
@@ -1087,10 +1098,6 @@ CMakeFiles/window_x11.dir/platforms/linux/linmain.cpp.o:
 /usr/include/c++/15.2.1/bits/exception_defines.h:
 
 /usr/include/c++/15.2.1/bits/hash_bytes.h:
-
-/usr/include/c++/15.2.1/backward/binders.h:
-
-/usr/include/c++/15.2.1/cctype:
 
 /usr/include/c++/15.2.1/bits/hashtable.h:
 
