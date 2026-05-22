@@ -161,6 +161,17 @@ void generateIBLMaps(unsigned int envCubemap)
 }
 
 // ============================================================================
+// IBL Map Cleanup
+// ============================================================================
+
+void clearIBLMaps()
+{
+    if (irradianceMap) { glDeleteTextures(1, &irradianceMap); irradianceMap = 0; }
+    if (prefilterMap)  { glDeleteTextures(1, &prefilterMap);  prefilterMap = 0; }
+    // brdfLUTTexture is environment-independent — keep it alive.
+}
+
+// ============================================================================
 // IBL Binding (called per-frame during PBR rendering)
 // ============================================================================
 

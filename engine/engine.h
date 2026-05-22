@@ -53,7 +53,12 @@ ShaderProgram *pbrShaderProgram = NULL;
 ShaderProgram *VolumeRenderingProgram = NULL;
 ShaderProgram *instancedProgram = NULL;
 ShaderProgram *iconShaderProgram = NULL;
+ShaderProgram *instancedShadowProgram = NULL;
 
+extern bool   g_ShadowActive;
+extern mat4   g_ShadowSBPV;
+extern GLuint g_ShadowDepthTexID;
+extern float  g_ShadowBias;
 
 #include "core/logger.h"
 
@@ -99,6 +104,7 @@ bool g_wireframeMode = false;
 // ============================================================================
 #include "core/gl/texture.cpp"
 #include "core/gl/shaders.cpp"
+#include "effects/shadow/shadow_map.cpp"
 #include "utils/primitives.cpp"
 #include "utils/pbr.cpp"
 #include "core/gl/camera.cpp"
@@ -125,3 +131,11 @@ bool g_wireframeMode = false;
 #include "utils/skybox.cpp"
 #include "utils/skybox_node.cpp"
 #include "utils/catmulromspline.cpp"
+#include "utils/dynamic_cubemap.cpp"
+#include "effects/clouds/volumetricCloudOnCompute.cpp"
+#include "effects/clouds/nvdf_generator.cpp"
+#include "effects/vclouds/vcloud_texture.cpp"
+#include "effects/vclouds/vcloud_noise.cpp"
+#include "effects/vclouds/nvdf_compressor.cpp"
+#include "effects/vclouds/nvdf_editor_v2.cpp"
+#include "effects/atmospheric_Scattering/sky_atmosphere_node.cpp"

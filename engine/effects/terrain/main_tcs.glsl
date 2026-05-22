@@ -5,10 +5,12 @@ layout(vertices = 4) out;
 in vec3 FragPos[];
 in vec3 Normal[];
 in vec2 TexCoord[];
+in vec4 ShadowCoord[];
 
 out vec3 tcFragPos[];
 out vec3 tcNormal[];
 out vec2 tcTexCoord[];
+out vec4 tcShadowCoord[];
 
 uniform mat4 uView;
 uniform float uTessLevelInner; // minimum tess level (far patches)
@@ -17,9 +19,10 @@ uniform float uTessLevelOuter; // maximum tess level (close patches)
 void main(void)
 {
     gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
-    tcFragPos[gl_InvocationID]  = FragPos[gl_InvocationID];
-    tcTexCoord[gl_InvocationID] = TexCoord[gl_InvocationID];
-    tcNormal[gl_InvocationID]   = Normal[gl_InvocationID];
+    tcFragPos[gl_InvocationID]     = FragPos[gl_InvocationID];
+    tcTexCoord[gl_InvocationID]    = TexCoord[gl_InvocationID];
+    tcNormal[gl_InvocationID]      = Normal[gl_InvocationID];
+    tcShadowCoord[gl_InvocationID] = ShadowCoord[gl_InvocationID];
 
     if (gl_InvocationID == 0)
     {

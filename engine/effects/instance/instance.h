@@ -13,6 +13,7 @@ void instance_UploadToGPU(InstanceData* inst);
 
 // Draw all instances of a specific mesh using glDrawElementsInstanced
 void instance_DrawInstances(SceneNode* node, Mesh* mesh, mat4 view, mat4 proj);
+void instance_DrawDepthOnly(SceneNode* node, Mesh* mesh, mat4 vp, ShaderProgram* shader);
 
 // Free GPU resources
 void instance_Cleanup(InstanceData* inst);

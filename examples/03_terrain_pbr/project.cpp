@@ -149,7 +149,7 @@ void projectRender()
     updateCamera(mainCamera);
     viewMatrix = mainCamera->viewMatrix;
 
-    renderTerrain(HeightMap, mat4::identity());
+    renderTerrain(HeightMap, mat4::identity(), viewMatrix, perspectiveProjectionMatrix);
     renderUserMeshes(HeightMap);
 }
 

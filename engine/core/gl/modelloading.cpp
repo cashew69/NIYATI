@@ -35,6 +35,9 @@ void bindTex(ShaderProgram* program, const char* hasName, const char* texName, G
     }
 }
 
+// Set true during additive light passes so setMaterialUniforms doesn't kill GL_BLEND
+bool g_forceAdditiveBlend = false;
+
 // PBR Debug Globals
 bool debugDisableDiffuse = false;
 bool debugDisableNormal = false;
@@ -125,11 +128,13 @@ void setMaterialUniforms(ShaderProgram* program, Material* material) {
 
     bindTex(program, "uHasEmissiveMap", "uEmissiveMap", material->emissiveTexture, material->useEmissiveTexture, 5);
 
-    if (material->opacity < 1.0f) {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    } else {
-        glDisable(GL_BLEND);
+    if (!g_forceAdditiveBlend) {
+        if (material->opacity < 1.0f) {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        } else {
+            glDisable(GL_BLEND);
+        }
     }
 
 }

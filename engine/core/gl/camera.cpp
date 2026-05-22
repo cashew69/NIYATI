@@ -36,6 +36,7 @@ Camera* createCamera(vec3 position, vec3 target, vec3 up) {
     camera->fov          = 45.0f;
     camera->near         = 0.1f;
     camera->far          = 10000.0f;
+    camera->useDistanceSorting = false;
     camera->orientation  = quaternion(0.0f, 0.0f, 0.0f, 1.0f);
     camera->useQuaternion = false;
     camera->path_name[0] = '\0';

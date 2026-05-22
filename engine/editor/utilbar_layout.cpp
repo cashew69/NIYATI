@@ -118,6 +118,19 @@ void ShowEditorToolbar() {
         ImGui::SetTooltip("Toggle bounding-box visualizer for models + lights");
     
     ImGui::SameLine();
+    ImGui::TextDisabled("|");
+    ImGui::SameLine();
+    ImVec4 sortCol = g_EditorCamera->useDistanceSorting ? ImVec4(0.55f, 0.35f, 0.15f, 1.0f)
+                                                        : ImVec4(0.30f, 0.30f, 0.30f, 1.0f);
+    ImGui::PushStyleColor(ImGuiCol_Button, sortCol);
+    if (ImGui::Button(g_EditorCamera->useDistanceSorting ? "Sort: ON" : "Sort: OFF", ImVec2(80, 24))) {
+        g_EditorCamera->useDistanceSorting = !g_EditorCamera->useDistanceSorting;
+    }
+    ImGui::PopStyleColor();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Toggle Front-to-Back State-Based Sorting");
+    
+    ImGui::SameLine();
     ImVec4 vsyncCol = g_VSyncEnabled ? ImVec4(0.45f, 0.15f, 0.55f, 1.0f)
                                      : ImVec4(0.30f, 0.30f, 0.30f, 1.0f);
     ImGui::PushStyleColor(ImGuiCol_Button, vsyncCol);
@@ -134,6 +147,23 @@ void ShowEditorToolbar() {
         ImGui::TextDisabled("Vis %d / Cull %d  Lights %d",
                             g_VisibleModelCount, g_CulledModelCount, g_VisibleLightCount);
     }
+
+    extern bool IsNVDFGeneratorOpen();
+    extern void OpenNVDFGenerator();
+    extern void CloseNVDFGenerator();
+    ImGui::SameLine();
+    ImGui::TextDisabled("|");
+    ImGui::SameLine();
+    bool nvdfOpen = IsNVDFGeneratorOpen();
+    ImVec4 nvdfCol = nvdfOpen ? ImVec4(0.20f, 0.45f, 0.65f, 1.0f)
+                              : ImVec4(0.30f, 0.30f, 0.30f, 1.0f);
+    ImGui::PushStyleColor(ImGuiCol_Button, nvdfCol);
+    if (ImGui::Button(nvdfOpen ? "NVDF: ON" : "NVDF Gen", ImVec2(80, 24))) {
+        if (nvdfOpen) CloseNVDFGenerator(); else OpenNVDFGenerator();
+    }
+    ImGui::PopStyleColor();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Toggle the NVDF (cloud texture) authoring window");
 
     ImGui::End();
 }

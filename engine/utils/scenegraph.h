@@ -8,12 +8,17 @@ void sg_AddChild(SceneNode* parent, SceneNode* child);
 void sg_RemoveChild(SceneNode* parent, SceneNode* child);
 void sg_FreeNode(SceneNode* node);
 void sg_MarkSceneDirty(); // call after any transform change on animated nodes
+void sg_SetAllVisible(SceneNode* node);
 void sg_UpdateWorldMatrix(SceneNode* node, mat4 parentWorldMatrix);
 void sg_InitNode(SceneNode* node);
 SceneNode* sg_AddCameraNode(const char* name); // creates ENTITY_CAMERA node with default values
 void sg_DrawNode(SceneNode* node, mat4 view, mat4 proj, int* nodesDrawn = nullptr);
 
 void RenderSceneModels(mat4 view, mat4 proj);
+void sg_DrawDepthNodes(SceneNode* node, mat4 vp, ShaderProgram* shader, ShaderProgram* instancedShader = nullptr);
+// Syncs lightPos/lightDir/lightType globals from the first light in the scene tree.
+// Must be called before shadow rendering since RenderSceneModels hasn't run yet.
+void sg_SyncFirstLight(SceneNode* root);
 void RenderLightIcons(mat4 view, mat4 proj);  // editor only: billboard icon at each light
 bool sg_SaveScene(SceneNode* root, const char* filename);
 SceneNode* sg_LoadScene(const char* filename);
@@ -46,3 +51,12 @@ Camera*     sg_GetCamera(SceneNode* node);
 
 // Activates a camera node for rendering.
 void            sg_SetActiveCamera(SceneNode* node);
+
+// ---- Render Debug / Visualization ------------------------------------------
+struct RenderDebugInfo {
+    char  name[64];
+    float dist;
+    int   type;
+};
+extern RenderDebugInfo g_LastFrameRenderOrder[256];
+extern int             g_LastFrameRenderCount;

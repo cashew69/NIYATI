@@ -263,7 +263,7 @@ void restoreViewport()
 
 void getCubemapCaptureMatrices(mat4* projOut, mat4 viewsOut[6])
 {
-    *projOut = vmath::perspective(90.0f, 1.0f, 0.1f, 10.0f);
+    if (projOut) *projOut = vmath::perspective(90.0f, 1.0f, 0.1f, 10000.0f);
     viewsOut[0] = vmath::lookat(vec3(0.0f, 0.0f, 0.0f), vec3( 1.0f,  0.0f,  0.0f), vec3(0.0f, -1.0f,  0.0f));
     viewsOut[1] = vmath::lookat(vec3(0.0f, 0.0f, 0.0f), vec3(-1.0f,  0.0f,  0.0f), vec3(0.0f, -1.0f,  0.0f));
     viewsOut[2] = vmath::lookat(vec3(0.0f, 0.0f, 0.0f), vec3( 0.0f,  1.0f,  0.0f), vec3(0.0f,  0.0f,  1.0f));

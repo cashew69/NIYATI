@@ -2,8 +2,9 @@
 in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoord;
+in vec4 ShadowCoord;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
 
 // Material Uniforms (matching modelloading.cpp + PBR extensions)
 uniform vec3 uDiffuseColor;
@@ -63,6 +64,31 @@ uniform float uDebugRoughness;
 uniform float uDebugMetallic;
 uniform float uDebugAOStrength;
 uniform float uDebugEmissiveIntensity;
+
+// Fog
+uniform vec3 uFogColor;
+uniform float uFogDensity;
+uniform float uFogStart;
+uniform float uFogEnd;
+uniform int uFogType;
+uniform bool uFogEnabled;
+
+// Shadow
+layout(binding = 9) uniform sampler2DShadow uShadowMap;
+uniform bool  uShadowEnabled;
+uniform float uShadowBias;
+
+float calculateFog(float dist) {
+    float fogFactor = 0.0;
+    if (uFogType == 0) { // Linear
+        fogFactor = (uFogEnd - dist) / (uFogEnd - uFogStart);
+    } else if (uFogType == 1) { // Exp
+        fogFactor = exp(-uFogDensity * dist);
+    } else if (uFogType == 2) { // Exp2
+        fogFactor = exp(-pow(uFogDensity * dist, 2.0));
+    }
+    return 1.0 - clamp(fogFactor, 0.0, 1.0);
+}
 
 const float PI = 3.14159265359;
 
@@ -226,17 +252,22 @@ void main()
     vec3 kD = vec3(1.0) - kS;
     kD *= 1.0 - metallic;
 
-    float NdotL = max(dot(N, L), 0.0);        
+    float NdotL = max(dot(N, L), 0.0);
     Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+
+    // Shadow — attenuates direct lighting only, ambient is unaffected
+    float shadow = 1.0;
+    if (uShadowEnabled) {
+        vec4 sc = ShadowCoord;
+        if (sc.w > 0.0 && sc.z <= sc.w) {
+            sc.z -= uShadowBias * sc.w;
+            shadow = textureProj(uShadowMap, sc);
+        }
+    }
+    Lo *= shadow;
 
     // 4. AO (Temporarily disabled for stability)
     float ao = 1.0;
-    /*
-    if (uHasAOMap && !uDebugDisableAOTex) {
-        float aoSample = texture(uAOMap, TexCoord).r;
-        ao = mix(1.0, aoSample, uDebugAOStrength > 0.0 ? uDebugAOStrength : 1.0);
-    }
-    */
 
     // 5. Ambient / IBL
     vec3 ambient = vec3(0.03) * albedo * ao;
@@ -263,14 +294,18 @@ void main()
          emissive = albedo * 2.0; 
     }
 
-    vec3 color = ambient + Lo + emissive;
+    vec3 hdrColor = ambient + Lo + emissive;
 
     // Tone mapping and gamma correction
-    color = color / (color + vec3(1.0));
-    color = pow(max(color, 0.0001), vec3(1.0/2.2)); 
+    vec3 color = hdrColor / (hdrColor + vec3(1.0));
+    color = pow(max(color, 0.0001), vec3(1.0/2.2));
 
-    // USE uOpacity instead of texture alpha to avoid invisible models
+    if (uFogEnabled) {
+        float dist = length(uViewPos - FragPos);
+        float fogFactor = calculateFog(dist);
+        color = mix(color, pow(max(uFogColor, 0.0), vec3(1.0/2.2)), fogFactor);
+    }
+
     float alpha = uOpacity;
-
     FragColor = vec4(color, alpha);
 }

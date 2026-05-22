@@ -1,0 +1,130 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   FRAMEBUFFER MANAGER - QUICK REFERENCE                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+BASIC PATTERN:
+──────────────
+  1. Create:  Framebuffer* fb = fb_Create(w, h, "Name");
+  2. Attach:  fb_AttachColorTexture(fb, 0, GL_RGBA16F);
+              fb_AttachDepthRenderbuffer(fb);
+  3. Bind:    fb_Bind(fb);
+  4. Render:  glClear(...); [your render code]
+  5. Unbind:  fb_Unbind();
+  6. Use:     GLuint tex = fb_GetColorTexture(fb, 0);
+  7. Cleanup: fb_Destroy(fb);
+
+────────────────────────────────────────────────────────────────────────────
+
+ATTACHMENT OPTIONS:
+───────────────────
+
+Color Textures:
+  fb_AttachColorTexture(fb, index, GL_RGBA16F)      — 16-bit float color
+  fb_AttachColorTexture(fb, index, GL_RGB8)         — 8-bit sRGB
+  fb_AttachColorArray(fb, index, layers, GL_RGBA16F) — Array texture
+
+Depth:
+  fb_AttachDepthTexture(fb, GL_DEPTH_COMPONENT24)   — Texture (samplers)
+  fb_AttachDepthRenderbuffer(fb, GL_DEPTH_COMPONENT24) — RBO (fast)
+  fb_AttachDepthArray(fb, layers, GL_DEPTH_COMPONENT32F) — Array (cascades)
+
+Cubemap:
+  fb_AttachCubemapColor(fb, GL_RGB16F)              — Cubemap texture
+  fb_AttachCubemapDepth(fb, GL_DEPTH_COMPONENT24)   — Cubemap depth
+
+Other:
+  fb_AttachStencilRenderbuffer(fb)                  — Stencil only
+
+────────────────────────────────────────────────────────────────────────────
+
+BINDING:
+────────
+  fb_Bind(fb)       — Both read & write (normal case)
+  fb_BindRead(fb)   — Read-only (for blits)
+  fb_BindDraw(fb)   — Write-only (special cases)
+  fb_Unbind()       — Bind to screen (GL_FRAMEBUFFER = 0)
+
+Multiple Render Targets:
+  int indices[] = {0, 2, 3};
+  fb_SetDrawBuffers(fb, indices, 3);  // Write to attachments 0, 2, 3
+
+────────────────────────────────────────────────────────────────────────────
+
+GETTERS:
+────────
+  fb_GetColorTexture(fb, index)      → GLuint texture ID
+  fb_GetDepthTexture(fb)             → GLuint texture ID (texture mode only)
+  fb_GetDepthRenderbuffer(fb)        → GLuint RBO ID (RBO mode only)
+  fb_GetWidth(fb), fb_GetHeight(fb)  → int dimensions
+  fb_IsValid(fb)                     → bool (GL_FRAMEBUFFER_COMPLETE)
+
+────────────────────────────────────────────────────────────────────────────
+
+CLEAR:
+──────
+  fb_Clear(fb, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+  fb_ClearColor(fb, 1.0f, 0.0f, 0.0f, 1.0f)        — Clear + set color
+  fb_ClearColorIndexed(fb, 2, r, g, b, a)          — Clear specific MRT
+
+────────────────────────────────────────────────────────────────────────────
+
+RESIZE:
+───────
+  fb_Resize(fb, newWidth, newHeight)  — Recreates all attachments
+
+────────────────────────────────────────────────────────────────────────────
+
+COMMON FORMATS:
+───────────────
+  Colors:   GL_RGBA16F, GL_RGBA8, GL_RGB16F, GL_RGB8, GL_R16F
+  Depth:    GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT32F
+  Stencil:  GL_STENCIL_INDEX8
+
+────────────────────────────────────────────────────────────────────────────
+
+EXAMPLE: Simple SSAO
+────────────────────
+  Framebuffer* aoFB = fb_Create(sw/2, sh/2, "SSAO");
+  fb_AttachColorTexture(aoFB, 0, GL_R16F);
+
+  fb_Bind(aoFB);
+  glUseProgram(ssaoShader);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, normalTex);
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, depthTex);
+  renderQuad();
+  fb_Unbind();
+
+  GLuint result = fb_GetColorTexture(aoFB, 0);
+
+────────────────────────────────────────────────────────────────────────────
+
+EXAMPLE: Cascaded Shadows
+──────────────────────────
+  Framebuffer* shadowFB = fb_Create(2048, 2048, "Shadows");
+  fb_AttachDepthArray(shadowFB, 4, GL_DEPTH_COMPONENT32F);  // 4 cascades
+
+  fb_Bind(shadowFB);
+  for (int cascade = 0; cascade < 4; ++cascade) {
+      glUniform1i(glGetUniformLocation(shader, "layer"), cascade);
+      // Set cascade-specific view/proj
+      glClear(GL_DEPTH_BUFFER_BIT);
+      sg_DrawNode(root, view, proj, nullptr);
+  }
+  fb_Unbind();
+
+  GLuint depthArray = fb_GetDepthTexture(shadowFB);
+  // In shader: texture(depthSampler, vec3(uv, cascadeIndex))
+
+────────────────────────────────────────────────────────────────────────────
+
+DEBUG:
+──────
+  fb_PrintInfo(fb)           — Logs full attachment info
+  fb_GetStatus(fb)           → Status string ("GL_FRAMEBUFFER_COMPLETE" etc)
+  fb_GetCurrentBound()       → Currently bound FBO ID
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║  For detailed examples, see: engine/core/gl/FRAMEBUFFER_USAGE.md          ║
+╚════════════════════════════════════════════════════════════════════════════╝

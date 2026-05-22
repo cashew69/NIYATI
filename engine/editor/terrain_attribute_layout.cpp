@@ -97,6 +97,8 @@ void ShowTerrainAttributes(SceneNode* node) {
         ImGui::Checkbox("ARM Map (AO/Roughness/Metallic)",&data->enableARM);
         ImGui::Checkbox("Displacement Map",               &data->enableDisplacement);
         
+        ImGui::SliderFloat("Roughness", &data->roughness, 0.0f, 1.0f);
+        ImGui::SliderFloat("Metalness", &data->metalness, 0.0f, 1.0f);
         ImGui::SliderFloat("UV Scale", &data->uvScale, 1.0f, 500.0f, "%.1f");
     }
 

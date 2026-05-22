@@ -266,6 +266,13 @@ void renderSkybox(mat4 viewMatrix, mat4 projectionMatrix)
 // Skybox Preset Reloading
 // ============================================================================
 
+void freeSkybox()
+{
+    if (envCubemap) { glDeleteTextures(1, &envCubemap); envCubemap = 0; }
+    extern void clearIBLMaps();
+    clearIBLMaps();
+}
+
 void reloadSkyboxPreset(int presetIndex)
 {
     if (presetIndex < 0 || presetIndex >= SKYBOX_PRESET_COUNT) return;

@@ -167,12 +167,10 @@ void instance_DrawInstances(SceneNode* node, Mesh* mesh, mat4 view, mat4 proj) {
 
     glUseProgram(program->id);
 
-    // Set standard uniforms (non-instanced)
-    glUniformMatrix4fv(glGetUniformLocation(program->id, "uProjection"), 1, GL_FALSE, (float*)&proj);
-    glUniformMatrix4fv(glGetUniformLocation(program->id, "uView"), 1, GL_FALSE, (float*)&view);
-
-    // Set node's world matrix for uModel so instances are local to the node
-    glUniformMatrix4fv(glGetUniformLocation(program->id, "uModel"), 1, GL_FALSE, node->world_matrix);
+    // Set standard uniforms (using cached locations)
+    glUniformMatrix4fv(program->loc.uProjection, 1, GL_FALSE, (const float*)proj);
+    glUniformMatrix4fv(program->loc.uView,       1, GL_FALSE, (const float*)view);
+    glUniformMatrix4fv(program->loc.uModel,      1, GL_FALSE, (const float*)node->world_matrix);
 
     // Light setup (using centralized globals)
     extern vec3  lightPos;
@@ -184,43 +182,98 @@ void instance_DrawInstances(SceneNode* node, Mesh* mesh, mat4 view, mat4 proj) {
     extern float lightInnerCutoff;
     extern float lightOuterCutoff;
 
-    glUniform3fv(program->loc.uLightPos,      1, (float*)&lightPos);
-    glUniform3fv(program->loc.uLightColor,    1, (float*)&lightColor);
+    glUniform3fv(program->loc.uLightPos,      1, (const float*)lightPos);
+    glUniform3fv(program->loc.uLightColor,    1, (const float*)lightColor);
     glUniform1f(program->loc.uLightIntensity, lightIntensity);
     glUniform1i(program->loc.uLightType,      lightType);
-    glUniform3fv(program->loc.uLightDir,      1, (float*)&lightDir);
+    glUniform3fv(program->loc.uLightDir,      1, (const float*)lightDir);
     glUniform1f(program->loc.uLightRadius,    lightRadius);
     glUniform1f(program->loc.uInnerCutoff,    lightInnerCutoff);
     glUniform1f(program->loc.uOuterCutoff,    lightOuterCutoff);
 
     // Ensure PBR uniforms are initialized to safe defaults
-    glUniform1i(glGetUniformLocation(program->id, "uHasIBL"), useIBL ? 1 : 0);
-    glUniform1f(glGetUniformLocation(program->id, "uIBLIntensity"), iblIntensity);
-    glUniform1f(glGetUniformLocation(program->id, "uRoughness"), mesh->material.roughness);
-    glUniform1f(glGetUniformLocation(program->id, "uMetalness"), mesh->material.metalness);
+    glUniform1i(program->loc.uHasIBL,       useIBL ? 1 : 0);
+    glUniform1f(program->loc.uIBLIntensity, iblIntensity);
+    glUniform1f(program->loc.uRoughness,    mesh->material.roughness);
+    glUniform1f(program->loc.uMetalness,    mesh->material.metalness);
     if (useIBL) {
         extern void bindIBL(ShaderProgram* program);
         bindIBL(program);
     }
-    glUniform1i(glGetUniformLocation(program->id, "uDebugDisableDiffuseTex"), 0);
-    glUniform1i(glGetUniformLocation(program->id, "uDebugDisableNormalTex"), 0);
-    glUniform1i(glGetUniformLocation(program->id, "uDebugDisableORMMap"), 0);
-    glUniform1i(glGetUniformLocation(program->id, "uDebugDisableAOTex"), 0);
-    glUniform1i(glGetUniformLocation(program->id, "uDebugDisableEmissiveTex"), 0);
     
     extern void setDebugUniforms(ShaderProgram* program);
     setDebugUniforms(program);
 
-    vec3 viewPos = vec3(0, 0, 0);
-    if (g_EditorCamera) viewPos = g_EditorCamera->position;
-    glUniform3fv(glGetUniformLocation(program->id, "uViewPos"), 1, (float*)&viewPos);
+    extern void setFogUniforms(ShaderProgram* program);
+    setFogUniforms(program);
+
+    extern vec3 GetActiveCameraPosition();
+    vec3 viewPos = GetActiveCameraPosition();
+    glUniform3fv(program->loc.uViewPos, 1, (const float*)viewPos);
 
     setMaterialUniforms(program, &mesh->material);
+
+    // Shadow support for instances
+    if (program->loc.uShadowEnabled >= 0) {
+        glUniform1i(program->loc.uShadowEnabled, g_ShadowActive ? 1 : 0);
+        if (g_ShadowActive) {
+            glUniformMatrix4fv(program->loc.uShadowMatrix, 1, GL_FALSE, (const float*)g_ShadowSBPV);
+            glActiveTexture(GL_TEXTURE9);
+            glBindTexture(GL_TEXTURE_2D, g_ShadowDepthTexID);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+            glUniform1i(program->loc.uShadowMap, 9);
+            glUniform1f(program->loc.uShadowBias, g_ShadowBias);
+        }
+    }
 
     // Bind mesh VAO
     glBindVertexArray(mesh->vao);
 
     // Bind instance VBO to available attribute slots (4, 5, 6, 7 for mat4 columns)
+    glBindBuffer(GL_ARRAY_BUFFER, inst->instanceVBO);
+
+    // mat4 takes 4 attribute slots; use locations 4-7
+    for (int i = 0; i < 4; i++) {
+        GLint loc = 4 + i;
+        glEnableVertexAttribArray(loc);
+        glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, sizeof(mat4),
+                             (void*)(i * sizeof(vec4)));
+        glVertexAttribDivisor(loc, 1);
+    }
+
+    // Draw instanced
+    glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)mesh->indexCount,
+                           GL_UNSIGNED_INT, 0, inst->visibleCount);
+
+    // Cleanup
+    for (int i = 0; i < 4; i++) {
+        glDisableVertexAttribArray(4 + i);
+        glVertexAttribDivisor(4 + i, 0);
+    }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void instance_DrawDepthOnly(SceneNode* node, Mesh* mesh, mat4 vp, ShaderProgram* shader) {
+    if (!node || node->type != ENTITY_INSTANCE || !mesh || !shader) return;
+
+    InstanceData* inst = &node->data.instance;
+    if (inst->visibleCount <= 0 || mesh->vao == 0 || mesh->indexCount <= 0) return;
+
+    if (inst->instanceVBO == 0) return;
+
+    glUseProgram(shader->id);
+
+    // Set lightVP * world_matrix into uLightMVP (matches model depth shader)
+    mat4 vpWorld = vp * node->world_matrix;
+    glUniformMatrix4fv(glGetUniformLocation(shader->id, "uLightMVP"), 1, GL_FALSE, (const float*)vpWorld);
+
+    // Bind mesh VAO
+    glBindVertexArray(mesh->vao);
+
+    // Bind instance VBO to available attribute slots
     glBindBuffer(GL_ARRAY_BUFFER, inst->instanceVBO);
 
     // mat4 takes 4 attribute slots; use locations 4-7

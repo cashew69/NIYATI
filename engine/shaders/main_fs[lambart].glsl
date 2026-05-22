@@ -3,7 +3,9 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoord;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
+layout (location = 2) out vec4 NormalDepth;
 
 uniform vec3 uLightPos;
 uniform vec3 uLightColor;
@@ -28,6 +30,31 @@ uniform sampler2D uNormalTexture;
 uniform bool uHasDiffuseTexture;
 uniform sampler2D uDiffuseTexture;
 uniform sampler2D uColorTexture;
+
+uniform vec3 uFogColor;
+uniform float uFogDensity;
+uniform float uFogStart;
+uniform float uFogEnd;
+uniform int uFogType;
+uniform bool uFogEnabled;
+
+// Shadow
+layout(binding = 9) uniform sampler2DShadow uShadowMap;
+uniform bool  uShadowEnabled;
+uniform float uShadowBias;
+in vec4 ShadowCoord;
+
+float calculateFog(float dist) {
+    float fogFactor = 0.0;
+    if (uFogType == 0) { // Linear
+        fogFactor = (uFogEnd - dist) / (uFogEnd - uFogStart);
+    } else if (uFogType == 1) { // Exp
+        fogFactor = exp(-uFogDensity * dist);
+    } else if (uFogType == 2) { // Exp2
+        fogFactor = exp(-pow(uFogDensity * dist, 2.0));
+    }
+    return 1.0 - clamp(fogFactor, 0.0, 1.0);
+}
 
 void main() {
     // Material color
@@ -96,5 +123,33 @@ void main() {
     }
 
     vec3 result = ambient + diffuse + specular + emissive;
+
+    // Shadow — attenuates direct lighting only, ambient is unaffected
+    if (uShadowEnabled) {
+        vec4 sc = ShadowCoord;
+        float shadow = 1.0;
+        if (sc.w > 0.0 && sc.z <= sc.w) {
+            sc.z -= uShadowBias * sc.w;
+            shadow = textureProj(uShadowMap, sc);
+        }
+        result = ambient + (diffuse + specular) * shadow + emissive;
+    }
+
+    if (uFogEnabled) {
+        float dist = length(uViewPos - FragPos);
+        float fogFactor = calculateFog(dist);
+        result = mix(result, uFogColor, fogFactor);
+    }
+
     FragColor = vec4(result, uOpacity);
+
+    // Brightpass for Bloom
+    float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
+    if (brightness > 1.0)
+        BrightColor = vec4(result, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+    // NormalDepth for SSAO (N.xyz, ViewSpaceZ)
+    NormalDepth = vec4(N, (uViewPos - FragPos).z);
 }

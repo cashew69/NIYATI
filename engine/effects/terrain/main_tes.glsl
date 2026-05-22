@@ -6,14 +6,17 @@ layout(quads, equal_spacing, ccw) in;
 in vec3 tcFragPos[];
 in vec3 tcNormal[];
 in vec2 tcTexCoord[];
+in vec4 tcShadowCoord[];
 
 // Outputs to pbrFrag.glsl
 out vec3 FragPos;
 out vec3 Normal;
 out vec2 TexCoord;
+out vec4 ShadowCoord;
 
 uniform mat4 uView;
 uniform mat4 uProjection;
+uniform mat4 uShadowMatrix; // shared with vertex_shader.glsl — same uniform name = same location
 uniform sampler2D uHeightMap;
 uniform float uTexelSize; // 1.0 / heightmap_width, uploaded from CPU once per draw
 uniform sampler2D uDisplacementMap;
@@ -71,8 +74,15 @@ void main(void)
 
     // Outputs for pbrFrag.glsl
     FragPos = pos;
-    Normal = normal; 
-    TexCoord = baseTexCoord * uUVScale; // scale UV for the PBR fragment textures!
+    Normal = normal;
+    TexCoord = baseTexCoord * uUVScale;
+    
+    // Recompute ShadowCoord from the DISPLACED world position so the terrain
+    // samples the shadow map at the actual rendered surface — not the flat,
+    // pre-displacement position the VS saw. Mirrors the same scale-bias the
+    // VS uses for non-tessellated geometry.
+    vec4 sc  = uShadowMatrix * vec4(FragPos, 1.0);
+    ShadowCoord = vec4(sc.xyz * 0.5 + 0.5 * sc.w, sc.w);
 
     gl_Position = uProjection * uView * vec4(FragPos, 1.0);
 }

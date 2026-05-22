@@ -16,14 +16,21 @@
 
 // ---- Light ----------------------------------------------------------------
 static const AttrDesc kLight[] = {
-    { "type",         ATTR_INT,    (int)offsetof(LightData, type),         1.0f,  0, 2,    0 },
-    { "color",        ATTR_COLOR3, (int)offsetof(LightData, color),        0.01f, 0, 0,    0 },
-    { "intensity",    ATTR_FLOAT,  (int)offsetof(LightData, intensity),    0.1f,  0, 1000, 0 },
-    { "radius",       ATTR_FLOAT,  (int)offsetof(LightData, radius),       0.1f,  0, 1000, 0 },
-    { "direction",    ATTR_VEC3,   (int)offsetof(LightData, direction),    0.05f, 0, 0,    0 },
-    { "innerCutoff",  ATTR_FLOAT,  (int)offsetof(LightData, innerCutoff),  0.01f, 0, 1,    0 },
-    { "outerCutoff",  ATTR_FLOAT,  (int)offsetof(LightData, outerCutoff),  0.01f, 0, 1,    0 },
-    { "castShadows",  ATTR_BOOL,   (int)offsetof(LightData, cast_shadows), 0,     0, 0,    0 },
+    { "type",             ATTR_INT,    (int)offsetof(LightData, type),             1.0f,  0, 2,    0 },
+    { "color",            ATTR_COLOR3, (int)offsetof(LightData, color),            0.01f, 0, 0,    0 },
+    { "intensity",        ATTR_FLOAT,  (int)offsetof(LightData, intensity),        0.1f,  0, 1000, 0 },
+    { "radius",           ATTR_FLOAT,  (int)offsetof(LightData, radius),           0.1f,  0, 1000, 0 },
+    { "direction",        ATTR_VEC3,   (int)offsetof(LightData, direction),        0.05f, 0, 0,    0 },
+    { "innerCutoff",      ATTR_FLOAT,  (int)offsetof(LightData, innerCutoff),      0.01f, 0, 1,    0 },
+    { "outerCutoff",      ATTR_FLOAT,  (int)offsetof(LightData, outerCutoff),      0.01f, 0, 1,    0 },
+    { "castShadow",       ATTR_BOOL,   (int)offsetof(LightData, castShadow),       0,     0, 0,    0 },
+    { "shadowResolution", ATTR_INT,    (int)offsetof(LightData, shadowResolution), 1.0f,  128, 8192, 0 },
+    { "shadowBias",       ATTR_FLOAT,  (int)offsetof(LightData, shadowBias),       0.0001f, 0, 0.5f, 0 },
+    { "shadowOrthoSize",  ATTR_FLOAT,  (int)offsetof(LightData, shadowOrthoSize),  0.5f,  1, 5000, 0 },
+    { "shadowNear",       ATTR_FLOAT,  (int)offsetof(LightData, shadowNear),       0.1f,  0.1f, 100, 0 },
+    { "shadowFar",        ATTR_FLOAT,  (int)offsetof(LightData, shadowFar),        1.0f,  1, 10000, 0 },
+    { "shadowPolyFactor", ATTR_FLOAT,  (int)offsetof(LightData, shadowPolyFactor), 0.05f, 0, 16,    0 },
+    { "shadowPolyUnits",  ATTR_FLOAT,  (int)offsetof(LightData, shadowPolyUnits),  0.1f,  0, 64,    0 },
 };
 
 // ---- Camera ---------------------------------------------------------------
@@ -89,6 +96,8 @@ static const AttrDesc kTerrain[] = {
     { "enableDisp",      ATTR_BOOL,   (int)offsetof(TerrainNodeData, enableDisplacement),  0,     0,     0,     0   },
     { "powerCurve",      ATTR_FLOAT,  (int)offsetof(TerrainNodeData, powerCurve),          0.01f, 0.1f,  10.0f, 0   },
     { "heightmapSource", ATTR_INT,    (int)offsetof(TerrainNodeData, heightmapSource),     1.0f,  0,     1,     0   },
+    { "roughness",       ATTR_FLOAT,  (int)offsetof(TerrainNodeData, roughness),           0.01f, 0,     1,     0   },
+    { "metalness",       ATTR_FLOAT,  (int)offsetof(TerrainNodeData, metalness),           0.01f, 0,     1,     0   },
 };
 
 // ---- Skybox ---------------------------------------------------------------
@@ -106,6 +115,130 @@ static const AttrDesc kCatmullRom[] = {
     { "color",            ATTR_COLOR3, (int)offsetof(CatmullRomNodeData, color),            0.01f, 0, 0,   0 },
 };
 
+// ---- Volumetric Cloud -------------------------------------------------------
+static const AttrDesc kVolumetricCloud[] = {
+    // Appearance
+    { "cloudColorTop",     ATTR_COLOR3, (int)offsetof(VolumetricCloudNodeData, cloudColorTop),     0.01f, 0,    0,     0 },
+    { "cloudColorBottom",  ATTR_COLOR3, (int)offsetof(VolumetricCloudNodeData, cloudColorBottom),  0.01f, 0,    0,     0 },
+    { "absorption",        ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, absorption),        0.01f, 0.01f,1,     0 },
+    { "coverage",          ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, coverage),          0.05f, -3,   3,     0 },
+    { "erosion",           ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, erosion),           0.01f, 0.1f, 1,     0 },
+    { "silverLining",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, silverLining),      0.01f, 0,    3,     0 },
+    { "flatBottom",        ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, flatBottom),        0,     0,    0,     0 },
+    { "cloudType",         ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, cloudType),         0.05f, 0,    1,     0 },
+    { "noiseScale",        ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, noiseScale),        0.001f,0.001f,0.05f, 0 },
+    { "detailScale",       ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, detailScale),       0.002f,0.002f,0.1f,  0 },
+    { "noiseRes",          ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, noiseRes),          1.0f,  16,   512,   0 },
+    { "noiseBasePath",     ATTR_STRING, (int)offsetof(VolumetricCloudNodeData, noiseBaseTexPath),   0,     0,    0,     256 },
+    { "noiseDetailPath",   ATTR_STRING, (int)offsetof(VolumetricCloudNodeData, noiseDetailTexPath), 0,     0,    0,     256 },
+    // Lighting
+    { "sunDirection",      ATTR_VEC3,   (int)offsetof(VolumetricCloudNodeData, sunDirection),      0.01f, 0,    0,     0 },
+    { "sunColor",          ATTR_COLOR3, (int)offsetof(VolumetricCloudNodeData, sunColor),          0.01f, 0,    0,     0 },
+    { "sunIntensity",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, sunIntensity),      0.1f,  0,    100,   0 },
+    { "ambientStrength",   ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, ambientStrength),   0.01f, 0,    10,    0 },
+    { "scatterG",          ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, scatterG),          0.01f, -1,   1,     0 },
+    // Raymarching
+    { "densityScale",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, densityScale),      0.1f,  0.1f, 50,    0 },
+    { "maxSteps",          ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, maxSteps),          1.0f,  8,    256,   0 },
+    { "stepSize",          ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, stepSize),          0.01f, 0.05f,5,     0 },
+    { "turbulence",        ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, turbulence),        0.01f, 0,    4,     0 },
+    { "windSpeed",         ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, windSpeed),         0.01f, 0,    10,    0 },
+    { "localNoiseSpeed",   ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, localNoiseSpeed),   0.01f, 0,    10,    0 },
+    // Scene-depth occlusion
+    { "useSceneDepth",     ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, useSceneDepth),     0,     0,    0,     0 },
+    // Volume
+    { "boxSize",           ATTR_VEC3,   (int)offsetof(VolumetricCloudNodeData, boxSize),           1.0f,  1,    10000, 0 },
+    { "gridX",             ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, gridX),             1.0f,  1,    20,    0 },
+    { "gridZ",             ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, gridZ),             1.0f,  1,    20,    0 },
+    { "gridSpacing",       ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, gridSpacing),       0.5f,  5,    200,   0 },
+    { "gridScale",         ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, gridScale),         0.05f, 0.1f, 10,    0 },
+    { "spheresPerMin",     ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, spheresPerCloudMin),1.0f,  1,    16,    0 },
+    { "spheresPerMax",     ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, spheresPerCloudMax),1.0f,  1,    32,    0 },
+    // Rendering
+    { "renderScale",       ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, renderScale),       0.05f, 0.1f, 1,     0 },
+    { "enableTAA",         ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, enableTAA),         0,     0,    0,     0 },
+    { "taaBlend",          ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, taaBlend),          0.01f, 0.01f,1,     0 },
+    // Circle field
+    { "useCircleField",    ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, useCircleField),    0,     0,    0,     0 },
+    { "circleRadius",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, circleRadius),      1.0f,  10,   10000, 0 },
+    // Sphere field
+    { "useSphereField",    ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, useSphereField),    0,     0,    0,     0 },
+    { "planetRadius",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, planetRadius),      10.0f, 500,  50000, 0 },
+    { "cloudBaseHeight",   ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, cloudBaseHeight),   1.0f,  0,    5000,  0 },
+    { "cloudThickness",    ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, cloudThickness),    1.0f,  10,   5000,  0 },
+    { "domeExtent",        ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, domeExtent),        0.01f, 0,    1,     0 },
+    // Weather map
+    { "useWeatherMap",       ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, useWeatherMap),       0,      0,      0,     0 },
+    { "weatherMapPath",      ATTR_STRING, (int)offsetof(VolumetricCloudNodeData, weatherMapPath),      0,      0,      0,     256 },
+    { "weatherMapScale",     ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, weatherMapScale),     0.0001f,0.0001f,0.05f, 0 },
+    { "autoWeatherMap",      ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, autoWeatherMap),      0,      0,      0,     0 },
+    { "weatherMapGridExtent",ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, weatherMapGridExtent),1.0f,   0,      50000, 0 },
+    // Atmospheric fog
+    { "fogColor",          ATTR_COLOR3, (int)offsetof(VolumetricCloudNodeData, fogColor),          0.01f, 0,    0,     0 },
+    { "fogDensity",        ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, fogDensity),        0.0001f,0,   0.01f, 0 },
+    { "fogStart",          ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, fogStart),          1.0f,  0,    2000,  0 },
+    // NVDF
+    { "useNVDF",           ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, useNVDF),           0,     0,    0,     0 },
+    { "nvdfPath",          ATTR_STRING, (int)offsetof(VolumetricCloudNodeData, nvdfPath),          0,     0,    0,     256 },
+    { "hwModStrength",     ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, hwModStrength),     0.01f, 0,    1,     0 },
+    { "hwModScale",        ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, hwModScale),        0.0001f,0.0001f,0.05f, 0 },
+    { "curlStrength",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, curlStrength),      0.01f, 0,    1,     0 },
+    { "nvdfTileScale",     ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, nvdfTileScale),     0.001f,0.001f,0.5f, 0 },
+    { "nvdfRotAngle",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, nvdfRotAngle),      0.01f, -3.14159f, 3.14159f, 0 },
+    { "nvdfRotX",          ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, nvdfRotX),          0.01f, -3.14159f, 3.14159f, 0 },
+    { "nvdfRotZ",          ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, nvdfRotZ),          0.01f, -3.14159f, 3.14159f, 0 },
+    { "nvdfWorldOffset",   ATTR_VEC3,   (int)offsetof(VolumetricCloudNodeData, nvdfWorldOffset),   1.0f,  0,    0,     0 },
+    { "nvdfYOffset",       ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, nvdfYOffset),       0.005f,-1,   1,     0 },
+    // Adaptive raymarching
+    { "adaptiveFactor",    ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, adaptiveFactor),    0.001f,0,    0.1f,  0 },
+    { "jitterSwitchDist",  ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, jitterSwitchDist),  1.0f,  0,    2000,  0 },
+    // Dual pass
+    { "useDualPass",       ATTR_BOOL,   (int)offsetof(VolumetricCloudNodeData, useDualPass),       0,     0,    0,     0 },
+    { "nearFarSplit",      ATTR_FLOAT,  (int)offsetof(VolumetricCloudNodeData, nearFarSplit),      1.0f,  0,    2000,  0 },
+    { "nearOutputW",       ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, nearOutputW),       1.0f,  64,   2048,  0 },
+    { "nearOutputH",       ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, nearOutputH),       1.0f,  32,   1024,  0 },
+    { "farOutputW",        ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, farOutputW),        1.0f,  64,   2048,  0 },
+    { "farOutputH",        ATTR_INT,    (int)offsetof(VolumetricCloudNodeData, farOutputH),        1.0f,  32,   1024,  0 },
+};
+
+// ---- Sky Atmosphere --------------------------------------------------------
+static const AttrDesc kSkyAtmosphere[] = {
+    { "bottomRadius",            ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, bottomRadius),           0.1f,    100,      10000,  0 },
+    { "topRadius",               ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, topRadius),              0.1f,    100,      10000,  0 },
+    { "groundAlbedo",            ATTR_COLOR3, (int)offsetof(SkyAtmosphereNodeData, groundAlbedo),           0.01f,   0,        0,      0 },
+    { "rayleighScattering",      ATTR_VEC3,   (int)offsetof(SkyAtmosphereNodeData, rayleighScattering),     0.00001f,0,        0,      0 },
+    { "rayleighDensityExpScale", ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, rayleighDensityExpScale),0.001f,  -1,       0,      0 },
+    { "mieScattering",           ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, mieScattering),          0.0001f, 0,        0.1f,   0 },
+    { "mieAbsorption",           ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, mieAbsorption),          0.0001f, 0,        0.1f,   0 },
+    { "mieAnisotropy",           ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, mieAnisotropy),          0.01f,   0,        0.99f,  0 },
+    { "mieDensityExpScale",      ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, mieDensityExpScale),     0.001f,  -2,       0,      0 },
+    { "absorptionExtinction",    ATTR_VEC3,   (int)offsetof(SkyAtmosphereNodeData, absorptionExtinction),   0.00001f,0,        0,      0 },
+    { "sunDirection",            ATTR_VEC3,   (int)offsetof(SkyAtmosphereNodeData, sunDirection),           0.01f,   0,        0,      0 },
+    { "sunColor",                ATTR_COLOR3, (int)offsetof(SkyAtmosphereNodeData, sunColor),               0.01f,   0,        0,      0 },
+    { "sunIntensity",            ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, sunIntensity),           0.1f,    0,        100,    0 },
+    { "sunAngularRadius",        ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, sunAngularRadius),       0.0001f, 0.001f,   0.1f,   0 },
+    { "worldScale",              ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, worldScale),             0.0001f, 0.00001f, 1.0f,   0 },
+    { "exposure",                ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, exposure),               0.1f,    0.01f,    100,    0 },
+    { "castShadow",              ATTR_BOOL,   (int)offsetof(SkyAtmosphereNodeData, castShadow),             0,       0,        0,      0 },
+    { "shadowResolution",        ATTR_INT,    (int)offsetof(SkyAtmosphereNodeData, shadowResolution),       1.0f,    128,      8192,   0 },
+    { "shadowBias",              ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, shadowBias),             0.0001f, 0,        0.5f,   0 },
+    { "shadowOrthoSize",         ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, shadowOrthoSize),        0.5f,    1,        5000,   0 },
+    { "shadowNear",              ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, shadowNear),             0.1f,    0.1f,     100,    0 },
+    { "shadowFar",               ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, shadowFar),              1.0f,    1,        10000,  0 },
+    { "shadowPolyFactor",        ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, shadowPolyFactor),       0.05f,   0,        16,     0 },
+    { "shadowPolyUnits",         ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, shadowPolyUnits),        0.1f,    0,        64,     0 },
+};
+
+// ---- Fog -------------------------------------------------------------------
+static const AttrDesc kFog[] = {
+    { "color",   ATTR_COLOR3, (int)offsetof(FogNodeData, color),   0.01f, 0,    0,    0 },
+    { "density", ATTR_FLOAT,  (int)offsetof(FogNodeData, density), 0.001f,0,    10,   0 },
+    { "start",   ATTR_FLOAT,  (int)offsetof(FogNodeData, start),   1.0f,  0,    10000,0 },
+    { "end",     ATTR_FLOAT,  (int)offsetof(FogNodeData, end),     1.0f,  0,    10000,0 },
+    { "type",    ATTR_INT,    (int)offsetof(FogNodeData, type),    1.0f,  0,    2,    0 },
+    { "enabled", ATTR_BOOL,   (int)offsetof(FogNodeData, enabled), 0,     0,    0,    0 },
+};
+
 // ============================================================================
 // THE TABLE — one row per entity type
 // ============================================================================
@@ -117,7 +250,10 @@ const EntityDesc g_EntityTable[] = {
     { ENTITY_INSTANCE, "INSTANCE", "Instance", kInstance, NELEM(kInstance),  offsetof(SceneNode, data.instance)   },
     { ENTITY_TERRAIN,  "TERRAIN",  "Terrain",  kTerrain,  NELEM(kTerrain),   offsetof(SceneNode, data.terrain)    },
     { ENTITY_SKYBOX,   "SKYBOX",   "Skybox",   kSkybox,   NELEM(kSkybox),    offsetof(SceneNode, data.skybox)     },
-    { ENTITY_CATMULLROMSPLINE, "CATMULLROMSPLINE", "CatmullRomSpline", kCatmullRom, NELEM(kCatmullRom), offsetof(SceneNode, data.catmullrom) },
+    { ENTITY_CATMULLROMSPLINE,   "CATMULLROMSPLINE",   "CatmullRomSpline",  kCatmullRom,       NELEM(kCatmullRom),       offsetof(SceneNode, data.catmullrom)       },
+    { ENTITY_VOLUMETRIC_CLOUD,   "VOLUMETRIC_CLOUD",   "VolumetricCloud",   kVolumetricCloud,  NELEM(kVolumetricCloud),  offsetof(SceneNode, data.volumetricCloud)  },
+    { ENTITY_SKY_ATMOSPHERE,    "SKY_ATMOSPHERE",     "SkyAtmosphere",     kSkyAtmosphere,    NELEM(kSkyAtmosphere),    offsetof(SceneNode, data.skyAtmosphere)    },
+    { ENTITY_FOG,               "FOG",                "Fog",               kFog,              NELEM(kFog),             offsetof(SceneNode, data.fog)              },
 };
 const int g_EntityTableCount = NELEM(g_EntityTable);
 

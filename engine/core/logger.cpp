@@ -14,7 +14,8 @@ FILE* gpFile = NULL;
 void Logger_Init(const char* filename) {
     gpFile = fopen(filename, "w");
     if (!gpFile) {
-        printf("[Logger] Failed to open log file %s\n", filename);
+        printf("[Logger] Failed to open log file %s. Falling back to stderr for gpFile.\n", filename);
+        gpFile = stderr;
         return;
     }
     LOG_I("Logger initialized. Outputting to %s", filename);
@@ -62,15 +63,15 @@ void Logger_Log(LogLevel level, const char* format, ...) {
     printf("%s%s\033[0m", color, finalMessage);
 #endif
 
-    // File output
-    if (gpFile) {
+    // File output - avoid double printing if gpFile is stderr/stdout
+    if (gpFile && gpFile != stdout && gpFile != stderr) {
         fprintf(gpFile, "%s", finalMessage);
         fflush(gpFile);
     }
 }
 
 void Logger_Cleanup() {
-    if (gpFile) {
+    if (gpFile && gpFile != stdout && gpFile != stderr) {
         LOG_I("Logger shutting down.");
         fclose(gpFile);
         gpFile = NULL;

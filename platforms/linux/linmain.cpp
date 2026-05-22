@@ -15,6 +15,10 @@
 #include "../../platform_common.cpp"
 #include "platform.h"
 
+// Stub for the editor depth texture — 0 disables cloud depth masking in the
+// game build (the feature requires the editor's viewport FBO, imgui_setup.cpp).
+GLuint viewportDepthTex = 0;
+
 // Stubs for projects that don't define camera/wireframe (01, 02).
 // Project 03 defines PROJECT_03 and provides the real functions.
 #ifndef PROJECT_03

@@ -26,6 +26,8 @@ uniform bool uHasRoughnessMap;
 uniform sampler2D uRoughnessMap;
 uniform bool uHasAOMap;
 uniform sampler2D uAOMap;
+uniform float uRoughness;
+uniform float uMetalness;
 
 // Lights
 uniform vec3 uLightPos;
@@ -52,6 +54,26 @@ uniform sampler2D uDisplacementMap;
 uniform bool uHasDisplacementMap;
 uniform float uDisplacementScale;
 uniform float uUVScale;
+
+// Fog
+uniform vec3 uFogColor;
+uniform float uFogDensity;
+uniform float uFogStart;
+uniform float uFogEnd;
+uniform int uFogType;
+uniform bool uFogEnabled;
+
+float calculateFog(float dist) {
+    float fogFactor = 0.0;
+    if (uFogType == 0) { // Linear
+        fogFactor = (uFogEnd - dist) / (uFogEnd - uFogStart);
+    } else if (uFogType == 1) { // Exp
+        fogFactor = exp(-uFogDensity * dist);
+    } else if (uFogType == 2) { // Exp2
+        fogFactor = exp(-pow(uFogDensity * dist, 2.0));
+    }
+    return 1.0 - clamp(fogFactor, 0.0, 1.0);
+}
 
 const float PI = 3.14159265359;
 
@@ -167,11 +189,11 @@ void main()
     if (uHasMetallicMap) {
         vec3 arm = texture(uMetallicMap, TexCoord * uUVScale).rgb;
         ao = arm.r;
-        roughness = arm.g;
-        metallic = arm.b;
+        roughness = arm.g * uRoughness;
+        metallic = arm.b * uMetalness;
     } else {
-        roughness = mix(0.3, 0.9, clamp(heightSample, 0.0, 1.0));
-        metallic = 0.0;
+        roughness = mix(0.3, 0.9, clamp(heightSample, 0.0, 1.0)) * uRoughness;
+        metallic = uMetalness;
         ao = 1.0;
     }
 
@@ -254,6 +276,12 @@ void main()
     color = color / (color + vec3(1.0));
     // Gamma correction
     color = pow(color, vec3(1.0 / 2.2));
+
+    if (uFogEnabled) {
+        float dist = length(uViewPos - FragPos);
+        float fogFactor = calculateFog(dist);
+        color = mix(color, pow(max(uFogColor, 0.0), vec3(1.0/2.2)), fogFactor);
+    }
 
     FragColor = vec4(color, 1.0);
 }

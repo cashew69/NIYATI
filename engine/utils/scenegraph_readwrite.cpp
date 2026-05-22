@@ -68,6 +68,13 @@ static void sg_SaveNodeNew(FILE* f, SceneNode* node, int depth) {
     sg_Indent(f, depth + 1); fprintf(f, "id  %d\n", node->ID);
     sg_Indent(f, depth + 1); fprintf(f, "terrainYOffset  %s\n", node->terrainYOffset ? "true" : "false");
     sg_Indent(f, depth + 1); fprintf(f, "selectedTerrainID  %d\n", node->selectedTerrainID);
+    if (node->renderRule.enabled) {
+        sg_Indent(f, depth + 1); fprintf(f, "RenderRule {\n");
+        sg_Indent(f, depth + 2); fprintf(f, "condition    %d\n", (int)node->renderRule.condition);
+        sg_Indent(f, depth + 2); fprintf(f, "threshold    %g\n", node->renderRule.threshold);
+        sg_Indent(f, depth + 2); fprintf(f, "targetIndex  %d\n", node->renderRule.targetIndex);
+        sg_Indent(f, depth + 1); fprintf(f, "}\n");
+    }
 
     // Cameras keep their position/target inside the Camera section — skip generic transform.
     if (node->type != ENTITY_CAMERA) {
@@ -310,6 +317,21 @@ static SceneNode* sg_LoadNodeNew(SceneParser& p) {
         // Material section (sub-section of MODEL).
         if (strcmp(tok, "Material") == 0) {
             sg_LoadSection(p, g_MaterialAttrs, g_MaterialAttrCount, &node->data.mesh.material);
+            continue;
+        }
+
+        if (strcmp(tok, "RenderRule") == 0) {
+            node->renderRule.enabled = true;
+            p.consumeChar('{');
+            while (p.pos < p.len && !p.peekChar('}')) {
+                char k[64];
+                if (!p.readToken(k, sizeof(k))) break;
+                if      (strcmp(k, "condition")   == 0) node->renderRule.condition   = (RenderOrderCondition)(int)p.readFloat();
+                else if (strcmp(k, "threshold")   == 0) node->renderRule.threshold   = p.readFloat();
+                else if (strcmp(k, "targetIndex") == 0) node->renderRule.targetIndex = (int)p.readFloat();
+                else p.skipToNextLine();
+            }
+            p.consumeChar('}');
             continue;
         }
 

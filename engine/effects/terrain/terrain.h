@@ -12,7 +12,7 @@ GLuint createNormalMapTexture(int width, int depth, float frequency, float heigh
 
 // Terrain mesh lifecycle
 Mesh* createTerrainMesh();
-void renderTerrain(GLint HeightMap, mat4 modelMatrix);
+void renderTerrain(GLint HeightMap, mat4 modelMatrix, mat4 view, mat4 proj);
 void regenerateTerrainMesh();
 void switchTerrainMaterial(int materialIndex);
 

@@ -13,7 +13,7 @@
 // Viewport FBO Globals
 GLuint viewportFBO = 0;
 GLuint viewportTexture = 0;
-GLuint viewportDepthRBO = 0;
+GLuint viewportDepthTex = 0;   // depth as texture so compute shaders can sample it
 int viewportWidth = 0, viewportHeight = 0;
 
 
@@ -24,7 +24,7 @@ void updateViewportFBO(int width, int height) {
     if (viewportFBO) {
         glDeleteFramebuffers(1, &viewportFBO);
         glDeleteTextures(1, &viewportTexture);
-        glDeleteRenderbuffers(1, &viewportDepthRBO);
+        glDeleteTextures(1, &viewportDepthTex);
     }
 
     glGenFramebuffers(1, &viewportFBO);
@@ -37,10 +37,18 @@ void updateViewportFBO(int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, viewportTexture, 0);
 
-    glGenRenderbuffers(1, &viewportDepthRBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, viewportDepthRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, viewportDepthRBO);
+    // Depth as texture (not renderbuffer) so the cloud compute shader can
+    // sample it for per-pixel occlusion culling.
+    glGenTextures(1, &viewportDepthTex);
+    glBindTexture(GL_TEXTURE_2D, viewportDepthTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0,
+                 GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                           GL_TEXTURE_2D, viewportDepthTex, 0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     viewportWidth = width;
@@ -49,6 +57,12 @@ void updateViewportFBO(int width, int height) {
     // Update projection matrix to match the new aspect ratio
     extern void resize(int width, int height);
     resize(width, height);
+
+    // Update effects manager dimensions
+    extern EffectsManager* g_EffectsManager;
+    if (g_EffectsManager) {
+        effects_Resize(g_EffectsManager, width, height);
+    }
 }
 
 void InitGUI(void* window_handle) {

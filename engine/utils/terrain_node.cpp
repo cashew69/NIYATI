@@ -59,6 +59,8 @@ extern bool g_enableTerrainNormalMap;
 extern bool g_enableTerrainARM;
 extern bool g_enableTerrainDisplacement;
 extern float g_terrainUVScale;
+extern float g_terrainRoughness;
+extern float g_terrainMetalness;
 extern int g_terrainMaterialIndex;
 extern int g_perlinSeed;
 extern float g_turbulence;
@@ -95,6 +97,8 @@ static void SyncNodeToGlobals(TerrainNodeData* data) {
     g_enableTerrainARM = data->enableARM;
     g_enableTerrainDisplacement = data->enableDisplacement;
     g_terrainUVScale = data->uvScale;
+    g_terrainRoughness = data->roughness;
+    g_terrainMetalness = data->metalness;
     g_terrainMaterialIndex = data->materialIndex;
     g_perlinSeed = data->seed;
     g_turbulence = data->turbulence;
@@ -137,6 +141,8 @@ static void SyncGlobalsToNode(TerrainNodeData* data) {
     data->enableARM = g_enableTerrainARM;
     data->enableDisplacement = g_enableTerrainDisplacement;
     data->uvScale = g_terrainUVScale;
+    data->roughness = g_terrainRoughness;
+    data->metalness = g_terrainMetalness;
     data->materialIndex = g_terrainMaterialIndex;
     data->seed = g_perlinSeed;
     data->turbulence = g_turbulence;
@@ -173,6 +179,8 @@ void sg_InitTerrainNode(SceneNode* node) {
         data->tessOuter = 4;
         data->displacementScale = 20.0f;
         data->uvScale = 100.0f;
+        data->roughness = 1.0f;
+        data->metalness = 0.0f;
         data->enableDiffuse = true;
         data->enableNormal = true;
         data->enableARM = true;
@@ -188,8 +196,9 @@ void sg_InitTerrainNode(SceneNode* node) {
     
     if (data->mesh == nullptr) {
         data->mesh = createTerrainMesh();
+        data->displacementMapTex = g_terrainDisplacementMap;
     }
-    
+
     CacheCPUHeightmap(data);
 }
 
@@ -201,7 +210,7 @@ void sg_RenderTerrainNode(SceneNode* node, mat4 view, mat4 proj) {
 
     SyncNodeToGlobals(data);
     
-    renderTerrain(data->heightmapTex, node->world_matrix);
+    renderTerrain(data->heightmapTex, node->world_matrix, view, proj);
 }
 
 void sg_RegenerateTerrain(SceneNode* node) {
@@ -222,6 +231,7 @@ void sg_RegenerateTerrain(SceneNode* node) {
         regenerateTerrainMesh();
         data->mesh = terrainMesh;
         terrainMesh = oldMesh;
+        data->displacementMapTex = g_terrainDisplacementMap;
     }
     
     CacheCPUHeightmap(data);

@@ -37,239 +37,57 @@ Node "Root" EMPTY {
         p3  105.5 7.2 100
       }
     }
+
+    Node "TestCamera" CAMERA {
+      id  44
+      terrainYOffset  false
+      selectedTerrainID  0
+
+      Camera {
+        position  52.5 619.6 -850
+        target  0 200 0
+        up  0 1 0
+        roll  0
+        fov  45
+        near  0.1
+        far  10000
+      }
+    }
   }
 
-  Node "Terrain" TERRAIN {
-    id  5
+  Node "Sky Atmosphere" SKY_ATMOSPHERE {
+    id  64
     terrainYOffset  false
     selectedTerrainID  0
     position  0 0 0
     rotation  0 0 0
     scale  1 1 1
 
-    Terrain {
-      heightmapPath  _
-      octaves  12
-      persistence  0.5
-      lacunarity  2
-      seed  0
-      mountainThreshold  0.3
-      desertThreshold  -0.2
-      mountainHeight  50
-      desertHeight  600
-      plainsHeight  20
-      useIslandMask  false
-      islandFalloff  2
-      biomeMode  2
-      ridgeStrength  1
-      turbulence  0
-      terraceLevels  0
-      heightOffset  0
-      meshWidth  256
-      meshDepth  256
-      worldScale  10
-      tessInner  4
-      tessOuter  4
-      displacement  20
-      lodBias  0
-      wireframe  false
-      materialIndex  0
-      uvScale  100
-      enableDiffuse  true
-      enableNormal  true
-      enableARM  true
-      enableDisp  true
-      powerCurve  1
-      heightmapSource  0
-    }
-  }
-
-  Node "Light" LIGHT {
-    id  6
-    terrainYOffset  false
-    selectedTerrainID  0
-    position  0 15.8 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    Light {
-      type  1
-      color  0.882353 0 0.83045
-      intensity  2000
-      radius  23.2
-      direction  0 -1 0
-      innerCutoff  0.9
-      outerCutoff  0.8
-      castShadows  true
-    }
-  }
-
-  Node "Skybox" SKYBOX {
-    id  7
-    terrainYOffset  false
-    selectedTerrainID  0
-    position  0 0 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    Skybox {
-      hdrPath  _
-      currentPreset  0
-    }
-  }
-
-  Node "krishna" EMPTY {
-    id  9
-    terrainYOffset  false
-    selectedTerrainID  0
-    position  0 0 0
-    rotation  180 0 0
-    scale  20 20 20
-
-    Node "Object_0" MODEL {
-      id  10
-      terrainYOffset  false
-      selectedTerrainID  0
-      position  0 0 0
-      rotation  0 0 0
-      scale  1 1 1
-      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/06-Demo/krishna_muec.glb
-      meshIndex   0
-
-      Material {
-        useDiffuseTexture  true
-        useNormalTexture  true
-        useORMTexture  true
-        useAOTexture  true
-        useEmissiveTexture  true
-        roughness  0
-        metalness  0
-      }
-    }
-
-    Node "Object_1" MODEL {
-      id  11
-      terrainYOffset  false
-      selectedTerrainID  0
-      position  0 0 0
-      rotation  0 0 0
-      scale  1 1 1
-      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/06-Demo/krishna_muec.glb
-      meshIndex   1
-
-      Material {
-        useDiffuseTexture  true
-        useNormalTexture  true
-        useORMTexture  true
-        useAOTexture  true
-        useEmissiveTexture  true
-        roughness  0
-        metalness  0
-      }
-    }
-
-    Node "Object_2" MODEL {
-      id  12
-      terrainYOffset  false
-      selectedTerrainID  0
-      position  0 0 0
-      rotation  0 0 0
-      scale  1 1 1
-      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/06-Demo/krishna_muec.glb
-      meshIndex   2
-
-      Material {
-        useDiffuseTexture  true
-        useNormalTexture  true
-        useORMTexture  true
-        useAOTexture  true
-        useEmissiveTexture  true
-        roughness  0
-        metalness  0
-      }
-    }
-
-    Node "Object_3" MODEL {
-      id  13
-      terrainYOffset  false
-      selectedTerrainID  0
-      position  0 0 0
-      rotation  0 0 0
-      scale  1 1 1
-      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/06-Demo/krishna_muec.glb
-      meshIndex   3
-
-      Material {
-        useDiffuseTexture  true
-        useNormalTexture  true
-        useORMTexture  true
-        useAOTexture  true
-        useEmissiveTexture  true
-        roughness  0
-        metalness  0
-      }
-    }
-
-    Node "Object_4" MODEL {
-      id  14
-      terrainYOffset  false
-      selectedTerrainID  0
-      position  0 0 0
-      rotation  0 0 0
-      scale  1 1 1
-      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/06-Demo/krishna_muec.glb
-      meshIndex   4
-
-      Material {
-        useDiffuseTexture  true
-        useNormalTexture  true
-        useORMTexture  true
-        useAOTexture  true
-        useEmissiveTexture  true
-        roughness  0
-        metalness  0
-      }
-    }
-  }
-
-  Node "Instance" INSTANCE {
-    id  22
-    terrainYOffset  false
-    selectedTerrainID  0
-    position  0 24 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    Instance {
-      modelPath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/examples/04_clouds/f22blend.glb
-      pattern  0
-      gridCountX  5
-      gridCountZ  5
-      spacingX  30.3
-      spacingZ  30
-      noiseScale  0.1
-      noiseThreshold  0.5
-      areaWidth  20
-      areaDepth  20
-      minScale  0.8
-      maxScale  1.2
-      randomYRotation  1
-    }
-  }
-
-  Node "NikhilCam" CAMERA {
-    id  24
-    terrainYOffset  false
-    selectedTerrainID  0
-
-    Camera {
-      position  -77.1 92.4 -138.1
-      target  31.6 22 167.1
-      up  0 1 0
-      roll  0
-      fov  45
-      near  0.1
-      far  10000
+    SkyAtmosphere {
+      bottomRadius  6360
+      topRadius  6460
+      groundAlbedo  0.3 0.3 0.3
+      rayleighScattering  0.005802 0.013558 0.0331
+      rayleighDensityExpScale  -0.125
+      mieScattering  0.003996
+      mieAbsorption  0.000444
+      mieAnisotropy  0.8
+      mieDensityExpScale  -0.8333
+      absorptionExtinction  0.00065 0.001881 8.5e-05
+      sunDirection  0 0.0157073 0.999877
+      sunColor  1 1 1
+      sunIntensity  20
+      sunAngularRadius  0.02
+      worldScale  0.001
+      exposure  20
+      castShadow  true
+      shadowResolution  2048
+      shadowBias  0.002
+      shadowOrthoSize  400
+      shadowNear  1
+      shadowFar  1000
+      shadowPolyFactor  1.5
+      shadowPolyUnits  4
     }
   }
 
@@ -289,8 +107,116 @@ Node "Root" EMPTY {
     }
   }
 
-  Node "spline1" CATMULLROMSPLINE {
-    id  27
+  Node "sunshadowflag" LIGHT {
+    id  6
+    terrainYOffset  true
+    selectedTerrainID  5
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    Light {
+      type  0
+      color  0.803922 0.39802 0.39802
+      intensity  54
+      radius  100
+      direction  0 -0.1 0
+      innerCutoff  0.9
+      outerCutoff  0.8
+      castShadow  false
+      shadowResolution  2048
+      shadowBias  0.002
+      shadowOrthoSize  200
+      shadowNear  1
+      shadowFar  400
+      shadowPolyFactor  1.5
+      shadowPolyUnits  4
+    }
+  }
+
+  Node "Fog" FOG {
+    id  86
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    Fog {
+      color  0.5 0.5 0.5
+      density  0.01
+      start  10
+      end  1000
+      type  0
+      enabled  true
+    }
+  }
+
+  Node "Terrain" TERRAIN {
+    id  5
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    Terrain {
+      heightmapPath  _
+      octaves  12
+      persistence  0.5
+      lacunarity  2.6
+      seed  245346144
+      mountainThreshold  9.55
+      desertThreshold  2
+      mountainHeight  900
+      desertHeight  300
+      plainsHeight  44
+      useIslandMask  false
+      islandFalloff  2
+      biomeMode  3
+      ridgeStrength  1
+      turbulence  3
+      terraceLevels  0
+      heightOffset  0
+      meshWidth  1024
+      meshDepth  1024
+      worldScale  15
+      tessInner  4
+      tessOuter  4
+      displacement  10
+      lodBias  0
+      wireframe  false
+      materialIndex  0
+      uvScale  86.6
+      enableDiffuse  true
+      enableNormal  true
+      enableARM  false
+      enableDisp  true
+      powerCurve  1
+      heightmapSource  0
+      roughness  1
+      metalness  0
+    }
+  }
+
+  Node "NikhilCam" CAMERA {
+    id  24
+    terrainYOffset  false
+    selectedTerrainID  0
+
+    Camera {
+      position  -77.1 92.4 -138.1
+      target  31.6 22 167.1
+      up  0 1 0
+      roll  0
+      fov  45
+      near  0.1
+      far  10000
+    }
+  }
+
+  Node "targetSpline" CATMULLROMSPLINE {
+    id  42
     terrainYOffset  false
     selectedTerrainID  0
     position  0 0 0
@@ -298,23 +224,475 @@ Node "Root" EMPTY {
     scale  1 1 1
 
     CatmullRomSpline {
-      tension  2.89
+      tension  0.5
+      segmentsPerCurve  20
+      isLooping  false
+      showControlPoints  true
+      color  1 0.323529 0
+    }
+    ControlPoints {
+      pointCount  5
+      p0  -24.4 -5.7 0
+      p1  -21.1 19.2 0
+      p2  2 38.8 100
+      p3  5 10.9 110
+      p4  6 0 200
+    }
+  }
+
+  Node "spline1" CATMULLROMSPLINE {
+    id  79
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    CatmullRomSpline {
+      tension  200
       segmentsPerCurve  100
       isLooping  false
       showControlPoints  true
-      color  0 0.117647 1
+      color  0.794117 0 1
     }
     ControlPoints {
-      pointCount  9
-      p0  -100 10.1 0
-      p1  -89.7 11.9 0
-      p2  -49.7 35.8 0
-      p3  -17.9 43.6 0
-      p4  0 45 0
-      p5  20 45 0
-      p6  48.1 39.1 0
-      p7  130 10.6 0
-      p8  200 0 0
+      pointCount  12
+      p0  -1989.9 700.3 1430.5
+      p1  -1603 615.9 1449.7
+      p2  -832.5 561.7 654.1
+      p3  -719.6 550.7 -594.7
+      p4  -718.6 550.7 -594.7
+      p5  -92.2 349.9 -798.8
+      p6  209.2 199.9 -388.8
+      p7  10.6 108.2 -0.4
+      p8  -18.8 85.4 -106.7
+      p9  -38 50.5 -226.8
+      p10  -45.4 55.7 -269.7
+      p11  -58.6 25.3 -605.8
+    }
+  }
+
+  Node "SubClouds" VOLUMETRIC_CLOUD {
+    id  62
+    terrainYOffset  false
+    selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    150
+      targetIndex  4
+    }
+    position  0 500 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  1 1 1
+      cloudColorBottom  0.136246 0.16492 0.205882
+      absorption  0.01
+      coverage  2
+      erosion  1
+      silverLining  1.175
+      flatBottom  false
+      cloudType  0.85
+      noiseScale  0.0013
+      detailScale  0.0118
+      noiseRes  32
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0 0.0157073 0.999877
+      sunColor  1 1 1
+      sunIntensity  20
+      ambientStrength  1.12
+      scatterG  1
+      densityScale  3.7
+      maxSteps  8192
+      stepSize  8
+      turbulence  24
+      windSpeed  12
+      localNoiseSpeed  12
+      useSceneDepth  false
+      boxSize  10000 250 10000
+      gridX  3
+      gridZ  3
+      gridSpacing  500
+      gridScale  10
+      spheresPerMin  3
+      spheresPerMax  8
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.01
+      useCircleField  false
+      circleRadius  10
+      useSphereField  true
+      planetRadius  50000
+      cloudBaseHeight  558
+      cloudThickness  345
+      domeExtent  1
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.0001
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      fogColor  0.754902 0.751201 0.751201
+      fogDensity  0
+      fogStart  0
+      useNVDF  false
+      nvdfPath  engine/effects/clouds/nvdf_textures/cloud.nvdf
+      hwModStrength  0
+      hwModScale  0.0001
+      curlStrength  0.28
+      nvdfTileScale  0.001
+      nvdfRotAngle  6.09328
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  343.051 0 153.165
+      nvdfYOffset  0
+      adaptiveFactor  0.0119
+      jitterSwitchDist  178
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
+  Node "thick Upper CLouds" VOLUMETRIC_CLOUD {
+    id  83
+    terrainYOffset  false
+    selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    150
+      targetIndex  3
+    }
+    position  0 564 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  1 1 1
+      cloudColorBottom  0.955882 0.974048 1
+      absorption  0.095
+      coverage  0.35
+      erosion  1
+      silverLining  2.624
+      flatBottom  false
+      cloudType  0.99
+      noiseScale  0.0011
+      detailScale  0.0182
+      noiseRes  64
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0 0.0157073 0.999877
+      sunColor  1 1 1
+      sunIntensity  20
+      ambientStrength  1.12
+      scatterG  1
+      densityScale  1.9
+      maxSteps  16384
+      stepSize  8
+      turbulence  62
+      windSpeed  8
+      localNoiseSpeed  8
+      useSceneDepth  false
+      boxSize  500 150 500
+      gridX  3
+      gridZ  5
+      gridSpacing  74
+      gridScale  1.95
+      spheresPerMin  3
+      spheresPerMax  8
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  true
+      planetRadius  50000
+      cloudBaseHeight  482
+      cloudThickness  1198
+      domeExtent  1
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  false
+      nvdfPath  engine/effects/clouds/nvdf_textures/cloud.nvdf
+      hwModStrength  1
+      hwModScale  0.0001
+      curlStrength  0.5
+      nvdfTileScale  0.0223
+      nvdfRotAngle  3.05582
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  527.548 0 -231.135
+      nvdfYOffset  0
+      adaptiveFactor  0.003
+      jitterSwitchDist  1000
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
+  Node "Krushna" EMPTY {
+    id  103
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  -77.8 -0.1 -326.8
+    rotation  90 14.5 0
+    scale  25 25 25
+
+    Node "Mesh_0" MODEL {
+      id  104
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0 0 0
+      rotation  0 0 0
+      scale  1 1 1
+      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user/krishna_GLB_INPOSE_TEX.glb
+      meshIndex   0
+
+      Material {
+        useDiffuseTexture  true
+        useNormalTexture  true
+        useORMTexture  true
+        useAOTexture  true
+        useEmissiveTexture  true
+        roughness  0
+        metalness  0
+      }
+    }
+  }
+
+  Node "Storm" VOLUMETRIC_CLOUD {
+    id  105
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 88.3 -266.6
+    rotation  0 0 0
+    scale  1.5 1.5 1.5
+
+    VolumetricCloud {
+      cloudColorTop  0.955882 0.87402 0.702855
+      cloudColorBottom  0.784314 0.743153 0.676663
+      absorption  0.014
+      coverage  0.5
+      erosion  0.5
+      silverLining  0.6
+      flatBottom  false
+      cloudType  0.85
+      noiseScale  0.006
+      detailScale  0.035
+      noiseRes  64
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0 0.0157073 0.999877
+      sunColor  1 1 1
+      sunIntensity  20
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  0.4
+      maxSteps  27
+      stepSize  31
+      turbulence  0.5
+      windSpeed  36
+      localNoiseSpeed  36
+      useSceneDepth  false
+      boxSize  500 261 500
+      gridX  3
+      gridZ  3
+      gridSpacing  5
+      gridScale  40
+      spheresPerMin  3
+      spheresPerMax  8
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  false
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  false
+      nvdfPath  engine/effects/clouds/nvdf_textures/ravana.nvdf
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.012
+      nvdfRotAngle  1.3609
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  -298.08 0 527.253
+      nvdfYOffset  0
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
+  Node "Bhishma" EMPTY {
+    id  106
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  36.1 14 -210.5
+    rotation  75.5 -138 0
+    scale  25 25 29.9
+
+    Node "Mesh_0" MODEL {
+      id  107
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0 0 0
+      rotation  0 0 0
+      scale  1 1 1
+      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user/bhishma.glb
+      meshIndex   0
+
+      Material {
+        useDiffuseTexture  true
+        useNormalTexture  true
+        useORMTexture  true
+        useAOTexture  true
+        useEmissiveTexture  true
+        roughness  0
+        metalness  0
+      }
+    }
+  }
+
+  Node "rath" EMPTY {
+    id  108
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  39.9 0 -208.1
+    rotation  90 -160 0
+    scale  100 100 100
+
+    Node "Mesh_0" MODEL {
+      id  109
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0 0 0
+      rotation  0 0 0
+      scale  1 1 1
+      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user/rath.glb
+      meshIndex   0
+
+      Material {
+        useDiffuseTexture  true
+        useNormalTexture  true
+        useORMTexture  true
+        useAOTexture  true
+        useEmissiveTexture  true
+        roughness  0
+        metalness  0
+      }
+    }
+  }
+
+  Node "ravana" VOLUMETRIC_CLOUD {
+    id  110
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 12.1 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  0.96 0.97 1
+      cloudColorBottom  0.55 0.6 0.7
+      absorption  0.18
+      coverage  0.5
+      erosion  0.5
+      silverLining  0.6
+      flatBottom  false
+      cloudType  0.85
+      noiseScale  0.006
+      detailScale  0.035
+      noiseRes  64
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0 0.0157073 0.999877
+      sunColor  1 1 1
+      sunIntensity  20
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  4
+      maxSteps  81922
+      stepSize  1.5
+      turbulence  0.5
+      windSpeed  0.5
+      localNoiseSpeed  0.5
+      useSceneDepth  false
+      boxSize  1000 40 1000
+      gridX  1
+      gridZ  1
+      gridSpacing  1
+      gridScale  10
+      spheresPerMin  1
+      spheresPerMax  1
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  false
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  false
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  false
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  true
+      nvdfPath  engine/effects/clouds/nvdf_textures/ravana.nvdf
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.0357143
+      nvdfRotAngle  0
+      nvdfRotX  -1.5708
+      nvdfRotZ  3.14159
+      nvdfWorldOffset  -207 0 -66
+      nvdfYOffset  0.13
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
     }
   }
 }

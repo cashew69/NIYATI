@@ -1,0 +1,37 @@
+{
+  "source_object": "Mesh_0.002",
+  "resolution": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
+  "world_bounds": {
+    "min": [
+      -0.5335180163383484,
+      -0.4041998088359833,
+      -0.1491098254919052
+    ],
+    "max": [
+      0.5338315963745117,
+      0.2973642349243164,
+      1.2817881107330322
+    ]
+  },
+  "padding_fraction": 0.10446926951408386,
+  "normalized": false,
+  "export_format": "nvdf",
+  "nvdf_format_id": 0,
+  "nvdf_format_name": "R8 uint8 density",
+  "nvdf_feather_voxels": 5.0,
+  "nvdf_feather_world": 0.02084667212329805,
+  "nvdf_density_scale": 1.0,
+  "nvdf_encoding": "0=empty, 255=full density",
+  "nvdf_gl_internal_fmt": "GL_R8",
+  "nvdf_gl_pixel_fmt": "GL_RED",
+  "nvdf_gl_pixel_type": "GL_UNSIGNED_BYTE",
+  "nvdf_wrap_s": "GL_REPEAT   (X \u2014 horizontal)",
+  "nvdf_wrap_t": "GL_REPEAT   (Y \u2014 horizontal)",
+  "nvdf_wrap_r": "GL_CLAMP_TO_EDGE  (Z \u2014 height)",
+  "engine_loader": "vcVCloud_LoadBC6HNVDF(path)  [format=0 branch]",
+  "engine_gl_upload": "glTexStorage3D(GL_TEXTURE_3D, 1, GL_R8, 256, 256, 256);\nglTexSubImage3D(GL_TEXTURE_3D, 0, 0,0,0, 256,256,256, GL_RED, GL_UNSIGNED_BYTE, data);"
+}

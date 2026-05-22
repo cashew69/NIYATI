@@ -1,0 +1,136 @@
+Node "Scene Root" EMPTY {
+  id  1
+  terrainYOffset  false
+  selectedTerrainID  0
+  position  0 0 0
+  rotation  0 0 0
+  scale  1 1 1
+
+  Node "Main Camera" CAMERA {
+    id  2
+    terrainYOffset  false
+    selectedTerrainID  0
+
+    Camera {
+      position  10 10 10
+      target  0 0 0
+      up  0 1 0
+      roll  0
+      fov  45
+      near  0.1
+      far  10000
+    }
+  }
+
+  Node "Sky Atmosphere" SKY_ATMOSPHERE {
+    id  5
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    SkyAtmosphere {
+      bottomRadius  6360
+      topRadius  6460
+      groundAlbedo  0.3 0.3 0.3
+      rayleighScattering  0.005802 0.013558 0.0331
+      rayleighDensityExpScale  -0.125
+      mieScattering  0.003996
+      mieAbsorption  0.000444
+      mieAnisotropy  0.8
+      mieDensityExpScale  -0.8333
+      absorptionExtinction  0.00065 0.001881 8.5e-05
+      sunDirection  -0.0587291 -0.139173 -0.988525
+      sunColor  1 1 1
+      sunIntensity  20
+      sunAngularRadius  0.02
+      worldScale  0.001
+      exposure  20
+      castShadow  false
+      shadowResolution  2048
+      shadowBias  0.002
+      shadowOrthoSize  200
+      shadowNear  1
+      shadowFar  400
+      shadowPolyFactor  1.5
+      shadowPolyUnits  4
+    }
+  }
+
+  Node "Ravana" VOLUMETRIC_CLOUD {
+    id  4
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 71.6 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  1 1 1
+      cloudColorBottom  1 1 1
+      absorption  0.5
+      coverage  2
+      erosion  1
+      silverLining  3
+      flatBottom  false
+      cloudType  1
+      noiseScale  0.001
+      detailScale  0.0125
+      noiseRes  128
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  -0.0587291 -0.139173 -0.988525
+      sunColor  1 1 1
+      sunIntensity  20
+      ambientStrength  0.48
+      scatterG  -1
+      densityScale  2.8
+      maxSteps  8192
+      stepSize  1.55
+      turbulence  2.97
+      windSpeed  0
+      boxSize  879 165 728
+      gridX  1
+      gridZ  1
+      gridSpacing  1
+      gridScale  10
+      spheresPerMin  1
+      spheresPerMax  1
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  false
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  false
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  false
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  true
+      nvdfPath  engine/effects/clouds/nvdf_textures/ravana.nvdf
+      hwModStrength  0.63
+      hwModScale  0.00138
+      curlStrength  0.48
+      nvdfTileScale  0.00625
+      nvdfRotAngle  0
+      nvdfWorldOffset  166 0 3
+      adaptiveFactor  0
+      jitterSwitchDist  1000
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+}

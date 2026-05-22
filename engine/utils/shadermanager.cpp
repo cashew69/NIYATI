@@ -55,6 +55,18 @@ static void cacheShaderLocations(ShaderProgram* program) {
     program->loc.view       = glGetUniformLocation(id, "view");
     program->loc.projection = glGetUniformLocation(id, "projection");
     program->loc.model      = glGetUniformLocation(id, "model");
+
+    program->loc.uFogColor   = glGetUniformLocation(id, "uFogColor");
+    program->loc.uFogDensity = glGetUniformLocation(id, "uFogDensity");
+    program->loc.uFogStart   = glGetUniformLocation(id, "uFogStart");
+    program->loc.uFogEnd     = glGetUniformLocation(id, "uFogEnd");
+    program->loc.uFogType    = glGetUniformLocation(id, "uFogType");
+    program->loc.uFogEnabled = glGetUniformLocation(id, "uFogEnabled");
+
+    program->loc.uShadowMap     = glGetUniformLocation(id, "uShadowMap");
+    program->loc.uShadowMatrix  = glGetUniformLocation(id, "uShadowMatrix");
+    program->loc.uShadowEnabled = glGetUniformLocation(id, "uShadowEnabled");
+    program->loc.uShadowBias    = glGetUniformLocation(id, "uShadowBias");
 }
 
 void InitializeShaders() {
@@ -68,6 +80,15 @@ void InitializeShaders() {
         };
         buildShaderProgramFromFiles(lineShaderFiles, 5, &lineShaderProgram, attribNames, attribIndices, 4);
         cacheShaderLocations(lineShaderProgram);
+    }
+
+    if (!iconShaderProgram) {
+        const char* iconFiles[5] = {
+            "engine/shaders/icon.vert",
+            NULL, NULL, NULL,
+            "engine/shaders/icon.frag"
+        };
+        buildShaderProgramFromFiles(iconFiles, 5, &iconShaderProgram, attribNames, attribIndices, 4);
     }
 #endif
 
@@ -115,12 +136,13 @@ void InitializeShaders() {
         cacheShaderLocations(tessellationShaderProgram);
     }
 
-    if (!iconShaderProgram) {
-        const char* iconFiles[5] = {
-            "engine/shaders/icon.vert",
+    if (!instancedShadowProgram) {
+        const char* shadowFiles[5] = {
+            "engine/shaders/shadow_instance_depth.vert",
             NULL, NULL, NULL,
-            "engine/shaders/icon.frag"
+            "engine/shaders/shadow_depth.frag"
         };
-        buildShaderProgramFromFiles(iconFiles, 5, &iconShaderProgram, attribNames, attribIndices, 4);
+        buildShaderProgramFromFiles(shadowFiles, 5, &instancedShadowProgram, attribNames, attribIndices, 4);
+        cacheShaderLocations(instancedShadowProgram);
     }
 }

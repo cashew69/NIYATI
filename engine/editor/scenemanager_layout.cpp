@@ -2,6 +2,10 @@
 // Scene Manager
 
 #include "engine/dependancies/imgui/imfilebrowser.h"
+#include "engine/effects/effects_config.h"
+
+// Global effects configuration (synced with UI)
+EffectsConfig g_EffectsConfig = g_DefaultEffectsConfig;
 
 // ---- Deferred-op state (safe to mutate outside tree traversal) ----
 static SceneNode* s_NodeToDelete    = nullptr;
@@ -24,21 +28,92 @@ static void sg_SwapChildren(SceneNode* parent, int a, int b) {
     parent->children[b] = tmp;
 }
 
-static SceneNode* sg_DuplicateShallow(SceneNode* src) {
+static SceneNode* sg_DuplicateDeep(SceneNode* src, bool topLevel) {
     if (!src) return nullptr;
-    SceneNode* copy      = sg_CreateNode(src->type, src->name);
+
+    char newName[256];
+    if (topLevel)
+        snprintf(newName, sizeof(newName), "%s (copy)", src->name ? src->name : "Node");
+    else
+        snprintf(newName, sizeof(newName), "%s", src->name ? src->name : "Node");
+
+    SceneNode* copy      = sg_CreateNode(src->type, newName);
     copy->position       = src->position;
     copy->rotation_euler = src->rotation_euler;
     copy->scale          = src->scale;
+    copy->terrainYOffset    = src->terrainYOffset;
+    copy->selectedTerrainID = src->selectedTerrainID;
+    copy->pathProgress      = src->pathProgress;
     memcpy(&copy->data, &src->data, sizeof(src->data));
     strncpy(copy->sourcePath, src->sourcePath, sizeof(copy->sourcePath));
     copy->meshIndex      = src->meshIndex;
 
-    // Special handling for instances: reset GPU resources
-    if (copy->type == ENTITY_INSTANCE) {
-        copy->data.instance.instanceVBO = 0;
-        copy->data.instance.instanceMatrices = nullptr;
-        copy->data.instance.matricesCapacity = 0;
+    if (copy->type == ENTITY_MODEL) {
+        // Preserve the customized material, reload GPU geometry fresh from file
+        Material savedMat = src->data.mesh.material;
+        sg_InitNode(copy);
+        copy->data.mesh.material = savedMat;
+    } else if (copy->type == ENTITY_TERRAIN) {
+        // Null all runtime GPU/CPU resources so sg_InitNode builds independent ones
+        TerrainNodeData* td    = &copy->data.terrain;
+        td->mesh               = nullptr;
+        td->heightmapTex       = 0;
+        td->displacementMapTex = 0;
+        td->cpuHeightMap       = nullptr;
+        td->cpuHeightMapWidth  = 0;
+        td->cpuHeightMapHeight = 0;
+        sg_InitNode(copy);
+    } else if (copy->type == ENTITY_INSTANCE) {
+        // Reset all GPU/mesh resources so sg_InitNode rebuilds them independently
+        copy->data.instance.instanceVBO       = 0;
+        copy->data.instance.instanceMatrices  = nullptr;
+        copy->data.instance.matricesCapacity  = 0;
+        copy->data.instance.instanceMeshes    = nullptr;
+        copy->data.instance.instanceMeshCount = 0;
+        copy->data.instance.instanceCount     = 0;
+        sg_InitNode(copy);
+    } else if (copy->type == ENTITY_CATMULLROMSPLINE) {
+        CatmullRomNodeData* cd = &copy->data.catmullrom;
+        // Deep-copy control points so original and copy are independent
+        if (cd->controlPoints && cd->pointCapacity > 0) {
+            vec3* pts = (vec3*)malloc(cd->pointCapacity * sizeof(vec3));
+            memcpy(pts, cd->controlPoints, cd->pointCount * sizeof(vec3));
+            cd->controlPoints = pts;
+        }
+        // Null generated curve data and unused GPU handles — sg_InitNode rebuilds them
+        cd->curvePoints        = nullptr;
+        cd->curvePointCount    = 0;
+        cd->curvePointCapacity = 0;
+        cd->vao                = 0;
+        cd->vbo                = 0;
+        sg_InitNode(copy);
+    } else if (copy->type == ENTITY_VOLUMETRIC_CLOUD) {
+        VolumetricCloudNodeData* vc = &copy->data.volumetricCloud;
+        vc->outputTex    = 0;
+        vc->sphereSSBO   = 0;
+        vc->sphereData   = nullptr;
+        vc->sphereCount  = 0;
+        vc->spheresDirty = true;
+        sg_InitNode(copy);
+    } else if (copy->type == ENTITY_SKY_ATMOSPHERE) {
+        // Reset all GPU resources — sg_InitNode will reallocate LUT textures and
+        // recompile (shared static) programs for this independent node instance.
+        SkyAtmosphereNodeData* sa = &copy->data.skyAtmosphere;
+        sa->transmittanceLUT  = 0;
+        sa->multiScatterLUT   = 0;
+        sa->skyViewLUT        = 0;
+        sa->emptyVAO          = 0;
+        sa->transmittanceProg = 0;
+        sa->multiScatterProg  = 0;
+        sa->skyViewProg       = 0;
+        sa->quadProg          = 0;
+        sa->lutsDirty         = true;
+        sg_InitNode(copy);
+    }
+
+    for (int i = 0; i < src->num_children; i++) {
+        SceneNode* childCopy = sg_DuplicateDeep(src->children[i], false);
+        if (childCopy) sg_AddChild(copy, childCopy);
     }
 
     return copy;
@@ -68,6 +143,9 @@ static const char* NodeTypeTag(NodeType t) {
         case ENTITY_TERRAIN:  return "[T]";
         case ENTITY_SKYBOX:   return "[S]";
         case ENTITY_CATMULLROMSPLINE: return "[CR]";
+        case ENTITY_VOLUMETRIC_CLOUD: return "[VC]";
+        case ENTITY_SKY_ATMOSPHERE:   return "[SA]";
+        case ENTITY_FOG:              return "[F]";
         default:              return "[ ]";
     }
 }
@@ -81,6 +159,9 @@ static ImVec4 NodeTypeColor(NodeType t) {
         case ENTITY_TERRAIN:  return ImVec4(0.40f, 0.80f, 0.30f, 1.0f);
         case ENTITY_SKYBOX:   return ImVec4(0.70f, 0.40f, 0.80f, 1.0f);
         case ENTITY_CATMULLROMSPLINE: return ImVec4(1.00f, 0.60f, 0.20f, 1.0f);
+        case ENTITY_VOLUMETRIC_CLOUD: return ImVec4(0.70f, 0.90f, 1.00f, 1.0f);
+        case ENTITY_SKY_ATMOSPHERE:   return ImVec4(0.50f, 0.75f, 1.00f, 1.0f);
+        case ENTITY_FOG:              return ImVec4(0.80f, 0.80f, 0.80f, 1.0f);
         default:              return ImVec4(0.70f, 0.70f, 0.70f, 1.0f);
     }
 }
@@ -308,6 +389,30 @@ void showSceneEditorUI()
             g_SelectedSceneNode = n;
             ImGui::CloseCurrentPopup();
         }
+        if (ImGui::Selectable("[VC] Volumetric Cloud")) {
+            extern void AddSceneVolumetricCloud(const char* name);
+            AddSceneVolumetricCloud("Volumetric Cloud");
+            ImGui::CloseCurrentPopup();
+        }
+        if (ImGui::Selectable("[SA] Sky Atmosphere")) {
+            extern void AddSceneSkyAtmosphere(const char* name);
+            AddSceneSkyAtmosphere("Sky Atmosphere");
+            ImGui::CloseCurrentPopup();
+        }
+        if (ImGui::Selectable("[F]  Fog")) {
+            if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+            SceneNode* n = sg_CreateNode(ENTITY_FOG, "Fog");
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            sg_AddChild(to, n);
+            sg_InitNode(n);
+            g_SceneSelectedType = SEL_SCENENODE;
+            g_SelectedSceneNode = n;
+            ImGui::CloseCurrentPopup();
+        }
+        if (ImGui::Selectable("[M]  Model")) {
+            modelBrowser.Open();
+            ImGui::CloseCurrentPopup();
+        }
         if (ImGui::Selectable("[ ]  Empty Node")) {
             if (!g_SceneRoot)
                 g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
@@ -316,24 +421,6 @@ void showSceneEditorUI()
             sg_AddChild(to, n);
             g_SceneSelectedType = SEL_SCENENODE;
             g_SelectedSceneNode = n;
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::Separator();
-        ImGui::Text("Model file:");
-
-        // Path input + browse button on the same row
-        float browseW = 28.0f;
-        ImGui::SetNextItemWidth(220.0f - browseW - sp);
-        ImGui::InputText("##modelpath", modelPath, sizeof(modelPath));
-        ImGui::SameLine(0, sp);
-        if (ImGui::Button("...##mdlBrowse", ImVec2(browseW, 0))) {
-            modelBrowser.Open();
-            ImGui::CloseCurrentPopup(); // close add-popup so browser can show
-        }
-
-        if (ImGui::Button("[M]  Add Model", ImVec2(-1, 0))) {
-            CreateSceneModel("Model", modelPath);
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
@@ -448,7 +535,7 @@ void showSceneEditorUI()
     if (s_NodeToDuplicate) {
         SceneNode* src    = s_NodeToDuplicate;
         s_NodeToDuplicate = nullptr;
-        SceneNode* copy   = sg_DuplicateShallow(src);
+        SceneNode* copy   = sg_DuplicateDeep(src, true);
         if (copy) {
             if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
             sg_AddChild(src->parent ? src->parent : g_SceneRoot, copy);
@@ -466,6 +553,7 @@ void showSceneEditorUI()
         strncpy(modelPath, path.c_str(), sizeof(modelPath) - 1);
         modelPath[sizeof(modelPath) - 1] = '\0';
         modelBrowser.ClearSelected();
+        CreateSceneModel("Model", modelPath);
     }
 
     saveBrowser.Display();

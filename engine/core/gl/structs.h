@@ -1,9 +1,9 @@
 #pragma once
-// Forward declaration
-//
-#include "engine.h"
-#include "camera.h"
+#include <GL/glew.h>
+#include "engine/dependancies/vmath.h"
+#include "engine/core/gl/camera.h"
 struct Transform;
+
 
 #ifndef Bool
 typedef int Bool;
@@ -137,6 +137,19 @@ typedef struct {
     GLint view;
     GLint projection;
     GLint model;
+
+    // Fog
+    GLint uFogColor;
+    GLint uFogDensity;
+    GLint uFogStart;
+    GLint uFogEnd;
+    GLint uFogType;
+    GLint uFogEnabled;
+    // Shadow
+    GLint uShadowMap;
+    GLint uShadowMatrix;
+    GLint uShadowEnabled;
+    GLint uShadowBias;
 } ShaderLocations;
 
 typedef struct {
@@ -153,6 +166,25 @@ typedef struct {
     char *varInShader;
     int count;
 } Uniform;
+
+typedef struct {
+    GLuint         fboID;
+    GLuint         depthTexID;
+    ShaderProgram* depthProgram;
+    GLint          locDepthMVP;
+    int            resolution;
+    float          orthoSize;
+    float          nearPlane;
+    float          farPlane;
+    float          bias;
+    float          polyOffsetFactor; // slope-scale for glPolygonOffset
+    float          polyOffsetUnits;  // constant units for glPolygonOffset
+    mat4           lightView;
+    mat4           lightProj;
+    mat4           sbpv;       // scale_bias * lightProj * lightView
+    vec3           debugEye;   // last computed light-eye position
+    vec3           debugTarget;// last computed light-target position
+} ShadowMap;
 
 struct boundingRect
 {
@@ -242,6 +274,8 @@ typedef struct {
     GLuint displacementMapTex;
     int    materialIndex;
     float  uvScale;
+    float  roughness;
+    float  metalness;
 
     // Toggles
     bool enableDiffuse;
@@ -262,6 +296,221 @@ typedef struct {
 } SkyboxNodeData;
 
 typedef struct {
+    // Lighting
+    vec3  sunDirection;
+    vec3  sunColor;
+    float sunIntensity;
+    float ambientStrength;
+    float scatterG;
+
+    // Appearance — the big levers for realistic vs cartoony look
+    vec3  cloudColorTop;    // lit/sun-facing color  (default: near-white)
+    vec3  cloudColorBottom; // shadowed underside color (default: blue-gray)
+    float absorption;       // cloud opacity/thickness (0.05 = thin, 0.3 = thick storm)
+    float coverage;         // coverage bias: neg=less cloud, pos=more cloud
+    float erosion;          // detail erosion strength (0.3 solid, 0.9 wispy edges)
+    float silverLining;     // back-lit edge glow intensity (0 = none, 1 = strong)
+    bool  flatBottom;       // unused (height profile now handles flat base)
+    float cloudType;        // 0=stratus, 0.5=stratocumulus, 1.0=cumulus
+    float noiseScale;       // base shape noise frequency (default 0.006)
+    float detailScale;      // edge erosion noise frequency (default 0.035)
+    int   noiseRes;         // resolution of the 3D noise texture (e.g. 128)
+    char  noiseBaseTexPath[256];
+    char  noiseDetailTexPath[256];
+
+    // Raymarching
+    float densityScale;
+    int   maxSteps;
+    float stepSize;
+
+    // Noise / wind
+    float turbulence;
+    float windSpeed;        // global drift: slides base noise + NVDF
+    float localNoiseSpeed;  // local churn: animates detail/curl noise independently
+
+    // Bounding volume (centred on node position)
+    vec3  boxSize;
+
+    // Sphere grid generation
+    int   gridX;
+    int   gridZ;
+    float gridSpacing;
+    float gridScale;
+    int   spheresPerCloudMin;
+    int   spheresPerCloudMax;
+
+    // Rendering
+    float renderScale;
+
+    // Temporal anti-aliasing
+    bool  enableTAA;
+    float taaBlend;
+
+    // NVDF (pre-baked 3D density texture) — HZD-style sampling path
+    bool  useNVDF;          // when true, raymarcher samples nvdfTex instead of full Nubis eval
+    char  nvdfPath[256];    // path to .nvdf file (relative to project root)
+    float hwModStrength;    // height-width modulation amount (0..1) — anti-repeat
+    float hwModScale;       // frequency of HW modulation field
+    float curlStrength;     // high-freq "curly alligator" erosion strength
+    float nvdfTileScale;    // XZ tile rate: 1 / worldMetersPerTile
+    float nvdfRotAngle;     // texture rotation around Y axis (radians) — "Y spin"
+    float nvdfRotX;         // texture tilt around X axis (radians)
+    float nvdfRotZ;         // texture tilt around Z axis (radians)
+    vec3  nvdfWorldOffset;  // XZ slide in world space (nvdfWorldOffset.xz used; y unused)
+    float nvdfYOffset;      // Y texture slide: shifts which height-slice maps to the cloud layer
+
+    // Circle field — masks the cloud volume to a cylinder in XZ
+    bool  useCircleField;   // replaces rectangular XZ boundary with a circular one
+    float circleRadius;     // world-space XZ radius from the box centre
+
+    // Sphere field — wraps clouds around the viewer as a spherical shell
+    bool  useSphereField;
+    float planetRadius;     // shell curvature radius (bigger = flatter horizon)
+    float cloudBaseHeight;  // world Y where cloud layer starts
+    float cloudThickness;   // outer shell - inner shell
+    float domeExtent;       // 1.0 = full sphere, 0.5 = hemisphere
+
+    // Weather map — RGBA texture: R=coverage, G=precipitation, B=cloud type, A=height scale
+    bool   useWeatherMap;
+    char   weatherMapPath[256];
+    float  weatherMapScale;
+    GLuint weatherMapTex;    // runtime only — not serialised
+    // Auto-generated procedural weather map (noise-based, covers world once)
+    bool   autoWeatherMap;       // when true: generate noise map, ignore weatherMapPath
+    float  weatherMapGridExtent; // extent to cover (0 = auto from box/sphere size)
+
+    // Aerial perspective / atmospheric fog
+    vec3  fogColor;
+    float fogDensity;        // 0 = disabled
+    float fogStart;          // metres before fog kicks in
+
+    // Scene-depth occlusion culling
+    bool  useSceneDepth;     // early-exit when terrain/geometry occludes cloud entry
+
+    // Adaptive raymarching
+    float adaptiveFactor;      // empty-step grows by (tNear+t) * this; 0 = fixed step
+    float jitterSwitchDist;    // below = animated jitter, above = static (no shimmer)
+
+    // Dual-pass split (near at low-res, far at high-res)
+    bool  useDualPass;         // enables two dispatches per frame
+    float nearFarSplit;        // metres — near pass covers [0, split), far covers [split, ∞)
+    int   nearOutputW, nearOutputH;  // resolution of near pass (default 480x270)
+    int   farOutputW,  farOutputH;   // resolution of far  pass (default 960x540)
+
+    // Cached uniform locations for the compute program (filled at init)
+    struct {
+        GLint cameraPos, view, proj, nonJitteredProj, invView, worldMatrix, time;
+        GLint sphereCount, densityScale, maxSteps, stepSize, turbulence, windSpeed, localNoiseSpeed;
+        GLint boxMin, boxMax;
+        GLint sunDir, sunColor, sunIntensity, ambientStrength, scatterG;
+        GLint cloudColorTop, cloudColorBottom, absorption, coverage, erosion;
+        GLint silverLining, flatBottom;
+        GLint cloudType, noiseScale, detailScale, noiseBase, noiseDetail;
+        GLint enableTAA, frameIndex, taaBlend;
+        GLint prevCameraPos, prevView, prevProj, historyTex;
+        GLint useNVDF, nvdfTex, hwModStrength, hwModScale, curlStrength, nvdfTileScale;
+        GLint nvdfWorldOffset, nvdfRotMat, nvdfYOffset;
+        GLint adaptiveFactor, jitterSwitchDist;
+        GLint passMode, nearFarSplit;
+        GLint useCircleField, circleRadius;
+        GLint useSphereField, planetRadius, cloudBaseHeight, cloudThickness, domeExtent;
+        GLint blueNoise;
+        GLint useWeatherMap, weatherMap, weatherMapScale, autoWeatherMap;
+        GLint fogColor, fogDensity, fogStart;
+        GLint useSceneDepth, sceneDepth;
+    } computeLoc;
+
+    // Runtime GPU resources (not serialised)
+    GLuint outputTex;     // combined (single pass) or near pass (dual pass)
+    GLuint historyTex;    // ping-pong for TAA — near pass
+    GLuint farOutputTex;  // far pass output  (only used when useDualPass)
+    GLuint farHistoryTex; // far pass TAA history
+    GLuint sphereSSBO;
+    GLuint nvdfTex;       // 3D R8 texture loaded from .nvdf file
+    GLuint noiseBaseTex;  // 3D RGBA8 base noise
+    GLuint noiseDetailTex;// 3D RGB8 detail noise
+    int    outputW;
+    int    outputH;
+    int    farFrameIndex; // separate TAA counter for far pass
+    int    frameIndex;    // incremented each rendered frame
+
+    // CPU sphere data (heap-allocated, local-space)
+    float* sphereData;
+    int    sphereCount;
+    bool   spheresDirty;
+} VolumetricCloudNodeData;
+
+typedef struct {
+    // Atmosphere parameters (km units)
+    float bottomRadius;
+    float topRadius;
+    vec3  groundAlbedo;
+
+    // Rayleigh
+    vec3  rayleighScattering;       // per km
+    float rayleighDensityExpScale;  // negative, default -0.125
+
+    // Mie
+    float mieScattering;            // per km
+    float mieAbsorption;            // per km
+    float mieAnisotropy;
+    float mieDensityExpScale;       // default -0.8333
+
+    // Ozone
+    vec3  absorptionExtinction;     // per km
+
+    // Sun
+    vec3  sunDirection;             // world-space toward sun (normalized)
+    vec3  sunColor;
+    float sunIntensity;
+    float sunAngularRadius;         // radians half-angle, default 0.00872
+
+    // Scene
+    float worldScale;               // 1 world unit = worldScale km, default 0.001
+    float exposure;                 // linear multiplier before gamma, default 10.0
+
+    // GPU (not serialized)
+    GLuint transmittanceLUT;        // 256x64 RGBA16F
+    GLuint multiScatterLUT;         // 32x32 RGBA16F
+    GLuint skyViewLUT;              // 192x108 RGBA16F
+    GLuint atmosphereCubemap;       // 64x64 cubemap baked from sky-view LUT for IBL
+    GLuint emptyVAO;
+    GLuint transmittanceProg;       // compute
+    GLuint multiScatterProg;        // compute
+    GLuint skyViewProg;             // compute
+    GLuint bakeToCubemapProg;       // compute
+    GLuint quadProg;                // fullscreen vert+frag
+    GLint  quadSkyViewLoc;
+    GLint  quadTransmittanceLoc;
+    GLint  quadInvViewProjLoc;
+    GLint  quadCamPosLoc;
+    GLint  quadSunDirLoc;
+    GLint  quadSunColorLoc;
+    GLint  quadSunIntensityLoc;
+    GLint  quadSunRadiusLoc;
+    GLint  quadExposureLoc;
+    GLint  quadBotRLoc;
+    GLint  quadTopRLoc;
+    GLint  quadCamHeightLoc;
+    bool   lutsDirty;
+    int    iblFrameCounter;
+    vec3   prevIBLSunDir;   // sun dir at last IBL bake; zero = "never baked"
+
+    // Shadow — sun acts as directional shadow light
+    bool  castShadow;
+    int   shadowResolution;
+    float shadowBias;
+    float shadowOrthoSize;
+    float shadowNear;
+    float shadowFar;
+    float shadowPolyFactor;
+    float shadowPolyUnits;
+
+    // Runtime state (not serialized)
+    ShadowMap* shadow;
+} SkyAtmosphereNodeData;
+
+typedef struct {
     vec3* controlPoints;
     int pointCount;
     int pointCapacity;
@@ -278,6 +527,15 @@ typedef struct {
 } CatmullRomNodeData;
 
 
+typedef struct {
+    vec3  color;
+    float density;
+    float start;
+    float end;
+    int   type; // 0: Linear, 1: Exp, 2: Exp2
+    bool  enabled;
+} FogNodeData;
+
 typedef enum {
     ENTITY_EMPTY,
     ENTITY_MODEL,
@@ -286,7 +544,10 @@ typedef enum {
     ENTITY_INSTANCE,
     ENTITY_TERRAIN,
     ENTITY_SKYBOX,
-    ENTITY_CATMULLROMSPLINE
+    ENTITY_CATMULLROMSPLINE,
+    ENTITY_VOLUMETRIC_CLOUD,
+    ENTITY_SKY_ATMOSPHERE,
+    ENTITY_FOG
 } NodeType;
 
 typedef enum {
@@ -303,10 +564,37 @@ typedef struct {
     vec3  direction;    // For Directional/Spot
     float innerCutoff;  // Cosine of inner angle for Spot
     float outerCutoff;  // Cosine of outer angle for Spot
-    bool  cast_shadows;
+    
+    // Shadow settings (serialized)
+    bool  castShadow;
+    int   shadowResolution;
+    float shadowBias;
+    float shadowOrthoSize;
+    float shadowNear;
+    float shadowFar;
+    float shadowPolyFactor;
+    float shadowPolyUnits;
+
+    // Runtime state (not serialized)
+    ShadowMap* shadow;
 } LightData;
 
 // Camera is defined in camera.h (included above).
+
+typedef enum RenderOrderCondition {
+    RENDER_COND_ALWAYS = 0,
+    RENDER_COND_CAMERA_ABOVE_Y,
+    RENDER_COND_CAMERA_BELOW_Y,
+    RENDER_COND_CAMERA_NEAR,
+    RENDER_COND_CAMERA_FAR,
+} RenderOrderCondition;
+
+typedef struct RenderOrderRule {
+    bool                 enabled;
+    RenderOrderCondition condition;
+    float                threshold;
+    int                  targetIndex;  // render position when fired; 0=first, -1=last
+} RenderOrderRule;
 
 typedef struct SceneNode {
     vec3 position;
@@ -330,6 +618,9 @@ typedef struct SceneNode {
         TerrainNodeData terrain;
         SkyboxNodeData skybox;
         CatmullRomNodeData catmullrom;
+        VolumetricCloudNodeData volumetricCloud;
+        SkyAtmosphereNodeData   skyAtmosphere;
+        FogNodeData             fog;
     } data;
 
     const char *name;
@@ -339,4 +630,5 @@ typedef struct SceneNode {
     bool terrainYOffset;
     int selectedTerrainID;
     float pathProgress;
+    RenderOrderRule renderRule;
 } SceneNode;

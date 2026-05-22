@@ -8,5 +8,5 @@
 //   void projectRender()
 //   void projectCleanup()
 
-#include "examples/06-Demo/project.cpp"
+#include "examples/TestSceneCreation/project.cpp"
 //#include "templates/project_template/project.cpp"

@@ -1,5 +1,10 @@
 #ifdef HAS_IMGUI
 #include "engine/dependancies/imgui/imgui.h"
+
+// Framebuffer manager and effects system implementations
+#include "engine/core/gl/framebuffer.cpp"
+#include "engine/effects/effects_manager.cpp"
+
 // Forward decls
 extern void CreateSceneModel(const char* name, const char* path);
 extern void CreateSceneQuad(const char* name);
@@ -11,7 +16,43 @@ extern void AddSceneInstance(const char* name);
 #include "engine/editor/scenemanager_layout.cpp"
 #include "engine/editor/attributemanager_layout.cpp"
 #include "engine/editor/utilbar_layout.cpp"
+#include "engine/editor/renderorder_layout.cpp"
+#include "engine/utils/scenegraph.h"
 #include <string>
+
+// --- Render Debug Panel ---
+void ShowRenderOrderPanel() {
+    if (ImGui::Begin("Render Order Visualizer")) {
+        ImGui::Text("Nodes Rendered (Last Frame): %d", g_LastFrameRenderCount);
+        ImGui::SameLine();
+        if (ImGui::Button("Clear")) g_LastFrameRenderCount = 0;
+
+        if (g_LastFrameRenderCount == 0) {
+            ImGui::TextDisabled("Enable 'Distance Sorting' on your camera to see data here.");
+        } else {
+            if (ImGui::BeginTable("RenderOrderTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY)) {
+                ImGui::TableSetupColumn("Order", ImGuiTableColumnFlags_WidthFixed, 40.0f);
+                ImGui::TableSetupColumn("Node Name");
+                ImGui::TableSetupColumn("Distance", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+                ImGui::TableHeadersRow();
+
+                for (int i = 0; i < g_LastFrameRenderCount; i++) {
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%d", i);
+                    
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::Text("%s", g_LastFrameRenderOrder[i].name);
+                    
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::Text("%.2f m", g_LastFrameRenderOrder[i].dist);
+                }
+                ImGui::EndTable();
+            }
+        }
+    }
+    ImGui::End();
+}
 
 // --- Scene Management Implementations ---
 
@@ -26,6 +67,7 @@ void CreateSceneModel(const char* name, const char* path) {
         if (loadModel(path, &meshes, &meshCount, 1.0f)) {
             // Create a parent node for the entire model
             SceneNode* modelRoot = sg_CreateNode(ENTITY_EMPTY, name);
+            strncpy(modelRoot->sourcePath, path, sizeof(modelRoot->sourcePath) - 1);
             
             for (int i = 0; i < meshCount; i++) {
                 char meshName[64];
@@ -68,7 +110,7 @@ void AddSceneLight(const char* name) {
     node->data.light.direction = vec3(0.0f, -1.0f, 0.0f);
     node->data.light.innerCutoff = 0.9f;
     node->data.light.outerCutoff = 0.8f;
-    node->data.light.cast_shadows = true;    sg_AddChild(g_SceneRoot, node);
+    sg_AddChild(g_SceneRoot, node);
 }
 
 void AddSceneReferenceObject(const char* name) {
@@ -85,16 +127,39 @@ void AddSceneInstance(const char* name) {
     sg_AddChild(g_SceneRoot, node);
 }
 
+void AddSceneVolumetricCloud(const char* name) {
+    if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* node = sg_CreateNode(ENTITY_VOLUMETRIC_CLOUD, name);
+    sg_InitNode(node);
+    sg_AddChild(g_SceneRoot, node);
+    g_SceneSelectedType = SEL_SCENENODE;
+    g_SelectedSceneNode = node;
+}
+
+void AddSceneSkyAtmosphere(const char* name) {
+    if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* node = sg_CreateNode(ENTITY_SKY_ATMOSPHERE, name);
+    sg_InitNode(node);
+    sg_AddChild(g_SceneRoot, node);
+    g_SceneSelectedType = SEL_SCENENODE;
+    g_SelectedSceneNode = node;
+}
+
 bool ReloadModelFromFile(Model* model, const char* path) {
     // This is for the legacy Model struct, might be deprecated by SceneNode later
     return true; 
 }
+
+extern void ShowNVDFGenerator();
 
 void ShowEditorLayout() {
 
     ShowEditorToolbar();
     showSceneEditorUI();
     showAttributeEditorUI();
+    ShowNVDFGenerator();
+    ShowRenderOrderPanel();
+    ShowDynamicRenderOrderPanel();
 
 }
 #endif

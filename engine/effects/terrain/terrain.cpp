@@ -57,6 +57,8 @@ bool g_enableTerrainNormalMap = true;
 bool g_enableTerrainARM = true;
 bool g_enableTerrainDisplacement = true;
 float g_terrainUVScale = 100.0f;
+float g_terrainRoughness = 1.0f;
+float g_terrainMetalness = 0.0f;
 int g_terrainMaterialIndex = 0;
 
 struct TerrainMaterialDef {
@@ -380,6 +382,9 @@ Mesh* createTerrainMesh() {
     material.useAOTexture = true;
     material.useEmissiveTexture = true;
 
+    material.roughness = g_terrainRoughness;
+    material.metalness = g_terrainMetalness;
+
     TerrainMaterialDef* matDef = &g_terrainMaterials[g_terrainMaterialIndex];
 
     loadPNGTexture(&material.diffuseTexture, const_cast<char*>(matDef->diffusePath), 1);
@@ -462,7 +467,7 @@ extern float lightIntensity;
 extern bool useIBL;
 extern float iblIntensity;
 
-void renderTerrain(GLint HeightMap, mat4 modelMatrix) {
+void renderTerrain(GLint HeightMap, mat4 modelMatrix, mat4 view, mat4 proj) {
     if (terrainMesh == NULL || tessellationShaderProgram == NULL) {
         return;
     }
@@ -474,8 +479,8 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix) {
     glUseProgram(tessellationShaderProgram->id);
     ShaderLocations& loc = tessellationShaderProgram->loc;
 
-    glUniformMatrix4fv(loc.uProjection,     1, GL_FALSE, perspectiveProjectionMatrix);
-    glUniformMatrix4fv(loc.uView,           1, GL_FALSE, viewMatrix);
+    glUniformMatrix4fv(loc.uProjection,     1, GL_FALSE, proj);
+    glUniformMatrix4fv(loc.uView,           1, GL_FALSE, view);
     glUniformMatrix4fv(loc.uModel,          1, GL_FALSE, modelMatrix);
 
     glUniform1f(loc.uTessLevelInner,    (float)g_tessellationInner);
@@ -506,6 +511,11 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix) {
     extern void setDebugUniforms(ShaderProgram* program);
     setDebugUniforms(tessellationShaderProgram);
 
+    extern void setFogUniforms(ShaderProgram* program);
+    setFogUniforms(tessellationShaderProgram);
+
+    terrainMesh->material.roughness = g_terrainRoughness;
+    terrainMesh->material.metalness = g_terrainMetalness;
     setMaterialUniforms(tessellationShaderProgram, &terrainMesh->material);
 
     // Override texture enable flags based on GUI toggles
@@ -519,9 +529,11 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix) {
 
     glUniform1f(loc.uUVScale, g_terrainUVScale);
 
-    glActiveTexture(GL_TEXTURE9);
+    // Heightmap goes on slot 11 — slot 9 is reserved for the shadow map
+    // (layout(binding = 9) in pbrFrag.glsl), and slot 10 is the displacement map.
+    glActiveTexture(GL_TEXTURE11);
     glBindTexture(GL_TEXTURE_2D, HeightMap);
-    glUniform1i(loc.uHeightMap, 9);
+    glUniform1i(loc.uHeightMap, 11);
 
     int hmW = 512;
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &hmW);
@@ -534,6 +546,30 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix) {
     }
 
     glUniform1i(loc.uHasDisplacementMap, g_enableTerrainDisplacement && g_terrainDisplacementMap != 0);
+
+    // Shadow uniforms — Bind the depth texture on slot 9 (matches the
+    // layout(binding = 9) sampler2DShadow uShadowMap in pbrFrag.glsl).
+    extern bool   g_ShadowActive;
+    extern mat4   g_ShadowSBPV;
+    extern GLuint g_ShadowDepthTexID;
+    extern float  g_ShadowBias;
+
+    if (loc.uShadowEnabled >= 0) {
+        glUniform1i(loc.uShadowEnabled, g_ShadowActive ? 1 : 0);
+    }
+    
+    if (loc.uShadowMatrix >= 0) {
+        glUniformMatrix4fv(loc.uShadowMatrix, 1, GL_FALSE, (const float*)g_ShadowSBPV);
+    }
+
+    if (g_ShadowActive && loc.uShadowMap >= 0) {
+        glActiveTexture(GL_TEXTURE9);
+        glBindTexture(GL_TEXTURE_2D, g_ShadowDepthTexID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+        glUniform1i(loc.uShadowMap, 9);
+        glUniform1f(loc.uShadowBias, g_ShadowBias);
+    }
 
     glBindVertexArray(terrainMesh->vao);
 

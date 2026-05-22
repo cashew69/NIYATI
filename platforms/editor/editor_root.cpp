@@ -11,6 +11,14 @@
 #include "engine/editor/editor_layout.cpp"
 
 // ============================================================================
+// EFFECTS MANAGER
+// ============================================================================
+
+#include "engine/effects/effects_manager.h"
+
+EffectsManager* g_EffectsManager = nullptr;
+
+// ============================================================================
 // EDITOR PROJECT
 // ============================================================================
 
@@ -23,13 +31,35 @@ void projectInit() {
         g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
     SceneNode* mainCam = sg_AddCameraNode("Main Camera");
     sg_AddChild(g_SceneRoot, mainCam);
+
+    // Initialize effects manager with fallback dimensions
+    extern int viewportWidth, viewportHeight;
+    int efxWidth = viewportWidth > 0 ? viewportWidth : 1280;
+    int efxHeight = viewportHeight > 0 ? viewportHeight : 720;
+    g_EffectsManager = effects_Create(efxWidth, efxHeight);
+    if (g_EffectsManager) {
+        LOG_I("Effects manager created: %dx%d", efxWidth, efxHeight);
+    } else {
+        LOG_E("Failed to create effects manager");
+    }
 }
 
 void projectUpdate() {}
 
 void projectRender() {
     mat4 view = GetActiveCameraViewMatrix();
-    RenderSceneModels(view, perspectiveProjectionMatrix);
+
+    // Sync config to effects
+    if (g_EffectsManager) {
+        effects_UpdateConfig(g_EffectsManager, &g_EffectsConfig);
+    }
+
+    if (g_EffectsManager && g_SceneRoot) {
+        effects_RenderAll(g_EffectsManager, g_SceneRoot, view, perspectiveProjectionMatrix);
+    } else {
+        RenderSceneModels(view, perspectiveProjectionMatrix);
+    }
+
     renderEditorPrimitives(view, perspectiveProjectionMatrix);
     RenderCustomCameraHelpers(view, perspectiveProjectionMatrix);
     extern void RenderLightHelpers(mat4 view, mat4 proj);
@@ -37,7 +67,13 @@ void projectRender() {
     RenderLightIcons(view, perspectiveProjectionMatrix);
 }
 
-void projectCleanup() {}
+void projectCleanup() {
+    if (g_EffectsManager) {
+        effects_Destroy(g_EffectsManager);
+        g_EffectsManager = nullptr;
+        LOG_I("Effects manager destroyed");
+    }
+}
 
 extern void NewFrameGUI(); // defined in imgui_setup.cpp, included after this file
 

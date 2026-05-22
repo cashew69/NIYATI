@@ -13,6 +13,8 @@ typedef struct Camera {
     float fov;
     float near;
     float far;
+    // Sorting
+    bool  useDistanceSorting;
     // Free-look (editor camera only; scene cameras leave these at defaults)
     quaternion orientation;
     bool       useQuaternion;

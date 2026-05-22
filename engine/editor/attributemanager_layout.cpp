@@ -20,6 +20,8 @@ void ShowTerrainAttributes(SceneNode* node);
 #include "terrain_attribute_layout.cpp"
 #include "skybox_attribute_layout.cpp"
 #include "catmulattributes_layout.cpp"
+#include "clouds_attribute_layout.cpp"
+#include "sky_atmosphere_layout.cpp"
 
 
 // File-scope browser for instance model selection
@@ -27,6 +29,12 @@ static ImGui::FileBrowser s_InstanceModelBrowser(
     ImGuiFileBrowserFlags_CloseOnEsc | ImGuiFileBrowserFlags_ConfirmOnEnter);
 static bool s_InstanceBrowserInited = false;
 static InstanceData* s_InstanceBrowserTarget = nullptr;
+
+// File-scope browser for model container reload
+static ImGui::FileBrowser s_ModelContainerBrowser(
+    ImGuiFileBrowserFlags_CloseOnEsc | ImGuiFileBrowserFlags_ConfirmOnEnter);
+static bool s_ModelContainerBrowserInited = false;
+static SceneNode* s_ModelContainerTarget = nullptr;
 
 void showAttributeEditorUI()
 {
@@ -63,6 +71,16 @@ void showAttributeEditorUI()
 
         s_InstanceBrowserTarget = nullptr;
         s_InstanceModelBrowser.ClearSelected();
+    }
+
+    // Display model container browser — must be called outside any Begin/End pair
+    s_ModelContainerBrowser.Display();
+    if (s_ModelContainerBrowser.HasSelected() && s_ModelContainerTarget) {
+        auto path = s_ModelContainerBrowser.GetSelected().string();
+        strncpy(s_ModelContainerTarget->sourcePath, path.c_str(),
+                sizeof(s_ModelContainerTarget->sourcePath) - 1);
+        s_ModelContainerTarget = nullptr;
+        s_ModelContainerBrowser.ClearSelected();
     }
 }
 
@@ -207,8 +225,72 @@ void ShowLightAttributes(SceneNode* node) {
                 light->outerCutoff = cosf(outerDeg * (3.14159265f / 180.0f));
             }
         }
+    }
 
-        ImGui::Checkbox("Cast Shadows", &light->cast_shadows);
+    // Shadows — directional and spot only (point needs cubemap, out of scope)
+    if (light->type != LIGHT_POINT) {
+        if (ImGui::CollapsingHeader("Shadows")) {
+            if (ImGui::Checkbox("Cast Shadow", &light->castShadow)) {
+                if (light->castShadow && !light->shadow) {
+                    if (light->shadowResolution <= 0) light->shadowResolution = 2048;
+                    light->shadow = shadow_Create(light->shadowResolution);
+                } else if (!light->castShadow && light->shadow) {
+                    shadow_Destroy(light->shadow);
+                    light->shadow = nullptr;
+                }
+            }
+
+            if (light->castShadow && light->shadow) {
+                ShadowMap* sm = light->shadow;
+
+                const char* resOpts[] = {"512", "1024", "2048", "4096"};
+                const int   resVals[] = { 512,   1024,   2048,   4096};
+                int resIdx = 2;
+                for (int i = 0; i < 4; i++) if (resVals[i] == sm->resolution) { resIdx = i; break; }
+                if (ImGui::Combo("Resolution", &resIdx, resOpts, 4)) {
+                    shadow_Destroy(light->shadow);
+                    light->shadowResolution = resVals[resIdx];
+                    light->shadow = shadow_Create(light->shadowResolution);
+                    sm = light->shadow;
+                    // Restore settings to the new shadow map
+                    sm->orthoSize = light->shadowOrthoSize;
+                    sm->nearPlane = light->shadowNear;
+                    sm->farPlane  = light->shadowFar;
+                    sm->bias      = light->shadowBias;
+                }
+
+                if (light->type == LIGHT_DIRECTIONAL) {
+                    if (ImGui::DragFloat("Ortho Size", &light->shadowOrthoSize, 0.5f, 1.0f, 2000.0f))
+                        sm->orthoSize = light->shadowOrthoSize;
+                }
+                if (ImGui::DragFloat("Near Plane", &light->shadowNear, 0.1f, 0.1f,   50.0f))
+                    sm->nearPlane = light->shadowNear;
+                if (ImGui::DragFloat("Far Plane",  &light->shadowFar,  1.0f, 10.0f, 5000.0f))
+                    sm->farPlane = light->shadowFar;
+                if (ImGui::DragFloat("Bias", &light->shadowBias, 0.0001f, 0.0f, 0.05f, "%.5f"))
+                    sm->bias = light->shadowBias;
+
+                ImGui::SeparatorText("Polygon Offset");
+                if (ImGui::DragFloat("Offset Factor##light", &light->shadowPolyFactor, 0.05f, 0.0f, 16.0f, "%.2f"))
+                    sm->polyOffsetFactor = light->shadowPolyFactor;
+                if (ImGui::DragFloat("Offset Units##light",  &light->shadowPolyUnits,  0.1f,  0.0f, 64.0f, "%.2f"))
+                    sm->polyOffsetUnits = light->shadowPolyUnits;
+                ImGui::TextDisabled("0/0 = disabled.");
+
+                ImGui::SeparatorText("Debug / Light View");
+                ImGui::Text("Eye    : %.1f %.1f %.1f", sm->debugEye[0],    sm->debugEye[1],    sm->debugEye[2]);
+                ImGui::Text("Target : %.1f %.1f %.1f", sm->debugTarget[0], sm->debugTarget[1], sm->debugTarget[2]);
+                ImGui::Text("FBO=%u  DepthTex=%u  %dx%d", sm->fboID, sm->depthTexID, sm->resolution, sm->resolution);
+
+                ImGui::SeparatorText("Depth Texture");
+                float panelW = ImGui::GetContentRegionAvail().x;
+                float side   = panelW > 32.0f ? panelW : 256.0f;
+                if (side > 512.0f) side = 512.0f;
+                ImGui::Image((ImTextureID)(intptr_t)sm->depthTexID, ImVec2(side, side),
+                             ImVec2(0,1), ImVec2(1,0));
+                ImGui::TextDisabled("Black = near to light, White = far / cleared.");
+            }
+        }
     }
 }
 
@@ -317,8 +399,10 @@ void ShowSceneNodeAttributes(SceneNode* node) {
             ImGui::DragFloat ("FOV",      &cam->fov,   0.5f,  5.0f,    160.0f,  "%.1f deg");
             ImGui::DragFloat ("Near",     &cam->near,  0.01f, 0.001f,  100.0f);
             ImGui::DragFloat ("Far",      &cam->far,   1.0f,  1.0f,    100000.0f);
-        }
-
+            ImGui::Checkbox  ("Distance Sorting", &cam->useDistanceSorting);
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Enable Front-to-Back state sorting for better occlusion handling.");
+            }
         ImGui::Spacing();
         bool isActive = (currentCameraMode == CAM_MODE_CUSTOM && g_ActiveCameraNode == node);
         if (isActive) {
@@ -410,5 +494,56 @@ void ShowSceneNodeAttributes(SceneNode* node) {
         ShowSkyboxAttributes(node);
     } else if (node->type == ENTITY_CATMULLROMSPLINE) {
         ShowCatmullRomAttributes(node);
+    } else if (node->type == ENTITY_VOLUMETRIC_CLOUD) {
+        ShowVolumetricCloudAttributes(node);
+    } else if (node->type == ENTITY_SKY_ATMOSPHERE) {
+        ShowSkyAtmosphereAttributes(node);
+    } else if (node->type == ENTITY_FOG) {
+        RenderEntitySection(node);
+    } else if (node->type == ENTITY_EMPTY && node->sourcePath[0] != '\0') {
+        if (ImGui::CollapsingHeader("Model Source", ImGuiTreeNodeFlags_DefaultOpen)) {
+            float browseW = 28.0f;
+            ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - browseW - ImGui::GetStyle().ItemSpacing.x);
+            ImGui::InputText("##containerSrc", node->sourcePath, sizeof(node->sourcePath));
+            ImGui::SameLine();
+            if (ImGui::Button("...##containerBrowse", ImVec2(browseW, 0))) {
+                if (!s_ModelContainerBrowserInited) {
+                    s_ModelContainerBrowser.SetTitle("Select Model File");
+                    s_ModelContainerBrowser.SetTypeFilters({ ".obj", ".fbx", ".gltf", ".glb", ".3ds", ".dae" });
+                    s_ModelContainerBrowserInited = true;
+                }
+                s_ModelContainerTarget = node;
+                s_ModelContainerBrowser.Open();
+            }
+            ImGui::Spacing();
+            if (ImGui::Button("Reload Model##container", ImVec2(-1, 0))) {
+                extern Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale);
+                for (int i = node->num_children - 1; i >= 0; i--) {
+                    if (node->children[i]->type == ENTITY_MODEL) {
+                        SceneNode* child = node->children[i];
+                        sg_RemoveChild(node, child);
+                        sg_FreeNode(child);
+                    }
+                }
+                if (node->sourcePath[0] != '\0') {
+                    Mesh* meshes = nullptr;
+                    int meshCount = 0;
+                    if (loadModel(node->sourcePath, &meshes, &meshCount, 1.0f)) {
+                        for (int i = 0; i < meshCount; i++) {
+                            char meshName[64];
+                            if (strlen(meshes[i].name) > 0)
+                                strncpy(meshName, meshes[i].name, sizeof(meshName) - 1);
+                            else
+                                snprintf(meshName, sizeof(meshName), "Mesh_%d", i);
+                            SceneNode* meshNode = sg_CreateNode(ENTITY_MODEL, meshName);
+                            meshNode->data.mesh = meshes[i];
+                            strncpy(meshNode->sourcePath, node->sourcePath, sizeof(meshNode->sourcePath) - 1);
+                            meshNode->meshIndex = i;
+                            sg_AddChild(node, meshNode);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

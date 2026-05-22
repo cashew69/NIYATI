@@ -1,19 +1,50 @@
+# Logs
 log.txt
-todo.list
+*.log
+
+# Build directories and artifacts
 build/
-compile_commands.json
 build-win/
+build_debug/
+bin/
+obj/
+CMakeFiles/
+CMakeCache.txt
+CMakeLists.txt.user
+cmake_install.cmake
+Makefile
+*.spv
+*.exe
+*.dll
+*.pdb
+
+# Project specific
+compile_commands.json
 examples/04-clouds/
-.cache
+tree.txt
+inputhandler.c
+vcloud
+imgui.ini
+
+# IDEs and Editors
 .vscode/
 .claude/
+.zed/
+.cache/
+.clangd/
+.idea/
+*.swp
+*.swo
+
+# Graphics/Models (Large Files)
+*.glb
+*.fbx
+*.nvdf
 *.blend
-.zed
-.cache
-.clangd
-log.txt
-inputhandler.c
-tree.txt
-window_glfw_linux
-todo.list
-tree.txt
+*.obj
+*.mtl
+*.zip
+
+# System files
+.DS_Store
+Thumbs.db
