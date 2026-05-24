@@ -512,7 +512,9 @@ void main() {
 
 // ---------------------------------------------------------------------------
 // Fullscreen triangle fragment shader
-// Samples sky-view LUT, adds sun disk, applies exposure + gamma.
+// Samples sky-view LUT, adds sun disk + corona bloom, applies tonemapping.
+// Tonemapping matches the Shadertoy reference (slSXRW):
+//   scale → pow(1.3) → sun-angle auto-exposure → Jodie-Reinhard → gamma
 // ---------------------------------------------------------------------------
 static const char* s_QuadFragSrc = R"GLSL(
 #version 430 core
@@ -526,16 +528,15 @@ uniform sampler2D uTransmittanceLUT;
 uniform vec3  uSunDir;
 uniform vec3  uSunColor;
 uniform float uSunIntensity;
-uniform float uSunAngularRadius; // half-angle, radians
+uniform float uSunAngularRadius;
 uniform float uExposure;
 uniform float uBotR;
 uniform float uTopR;
-uniform float uCamHeight; // km
+uniform float uCamHeight;
 
 const float PI     = 3.14159265358979323846;
 const float TWO_PI = 6.28318530717958647692;
 
-// Sample transmittance LUT for sun disk.
 vec3 sampleTransmittance(float viewH, float cosAngle) {
     float H   = sqrt(max(0.0, uTopR*uTopR - uBotR*uBotR));
     float rho = sqrt(max(0.0, viewH*viewH - uBotR*uBotR));
@@ -548,19 +549,11 @@ vec3 sampleTransmittance(float viewH, float cosAngle) {
     return texture(uTransmittanceLUT, vec2(u, v)).rgb;
 }
 
-// Invert the non-linear latitude mapping to get sky-view UV.
 vec2 dirToSkyViewUV(vec3 dir) {
     float lat = asin(clamp(dir.y, -1.0, 1.0));
-    float lon = atan(dir.x, dir.z);   // atan2(x, z)
+    float lon = atan(dir.x, dir.z);
     if (lon < 0.0) lon += TWO_PI;
-
     float u = lon / TWO_PI;
-
-    // Invert the non-linear latitude mapping.
-    // Below horizon: lat ∈ [-π/2, 0], v ∈ [0, 0.5]
-    //   lat = -(π/2) * t²  →  t = sqrt(-lat / (π/2)),  v = 0.5*(1 - t)
-    // Above horizon: lat ∈ [0, π/2], v ∈ [0.5, 1]
-    //   lat = (π/2) * t²   →  t = sqrt(lat / (π/2)),   v = 0.5 + 0.5*t
     float halfPi = PI * 0.5;
     float v;
     if (lat < 0.0) {
@@ -570,35 +563,58 @@ vec2 dirToSkyViewUV(vec3 dir) {
         float t = sqrt(clamp(lat / halfPi, 0.0, 1.0));
         v = 0.5 + 0.5 * t;
     }
-
     return vec2(u, v);
+}
+
+// Jodie-Reinhard: preserves color saturation at high luminance.
+// Plain Reinhard desaturates bright colors toward white; this keeps blues blue
+// and oranges orange all the way through sunrise/sunset.
+vec3 jodieReinhard(vec3 c) {
+    float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+    vec3 tc = c / (c + 1.0);
+    return mix(c / (l + 1.0), tc, tc);
 }
 
 void main() {
     vec3 dir = normalize(vRayDir);
+    vec3 lum = texture(uSkyViewLUT, dirToSkyViewUV(dir)).rgb;
 
-    // Sample sky-view LUT
-    vec2  skyUV   = dirToSkyViewUV(dir);
-    vec3  skyColor = texture(uSkyViewLUT, skyUV).rgb;
+    // Sun disk + dual-lobe corona bloom.
+    // Tight Gaussian around the disk edge + wide 1/x corona = the "powerful
+    // distant star" feel. A hard-edged disk alone looks like a sticker.
+    float minCosDisk = cos(uSunAngularRadius);
+    float cosToSun   = dot(dir, uSunDir);
+    if (cosToSun > 0.0) {
+        float camH    = max(uBotR + 0.001, uCamHeight);
+        float cosSunZ = dot(normalize(vec3(0.0, camH, 0.0)), uSunDir);
+        vec3  Tsun    = sampleTransmittance(camH, cosSunZ);
 
-    // Sun disk
-    float cosToSun  = dot(dir, uSunDir);
-    float cosDisk   = cos(uSunAngularRadius);
-    if (cosToSun > cosDisk) {
-        float camH  = max(uBotR + 0.001, uCamHeight);
-        float cosSun = dot(normalize(vec3(0.0, camH, 0.0)), uSunDir);
-        vec3 Tsun   = sampleTransmittance(camH, cosSun);
-        // Smooth limb darkening at edge of disk
-        float edge  = (cosToSun - cosDisk) / (1.0 - cosDisk);
-        skyColor   += uSunColor * uSunIntensity * Tsun * smoothstep(0.0, 0.05, edge);
+        float offset = minCosDisk - cosToSun;
+        vec3 sunShape;
+        if (cosToSun >= minCosDisk) {
+            sunShape = vec3(1.0);
+        } else {
+            float gaussian = exp(-offset * 50000.0) * 0.5;
+            float corona   = 1.0 / (0.02 + offset * 300.0) * 0.01;
+            sunShape = vec3(gaussian + corona);
+        }
+        sunShape = smoothstep(0.002, 1.0, sunShape);
+        lum += sunShape * Tsun * uSunColor * uSunIntensity;
     }
 
-    // Exposure-based tonemapping: 1 - exp(-L * exposure) keeps the sky from
-    // blowing out to white while still making the sun disk punch through.
-    vec3 mapped = vec3(1.0) - exp(-skyColor * uExposure);
-    mapped = pow(max(mapped, vec3(0.0)), vec3(1.0 / 2.2));
+    // Tonemapping chain (matches Shadertoy slSXRW):
+    //   1. Scale by exposure
+    //   2. pow(1.3) — lifts dark regions so horizon haze at low sun is visible
+    //   3. Auto-expose by sun elevation — sunset stays vivid, not just dark
+    //   4. Jodie-Reinhard — saturated colors survive tonemapping
+    //   5. Gamma
+    lum *= uExposure;
+    lum  = pow(max(lum, vec3(0.0)), vec3(1.3));
+    lum /= smoothstep(0.0, 0.2, clamp(uSunDir.y, 0.0, 1.0)) * 2.0 + 0.15;
+    lum  = jodieReinhard(lum);
+    lum  = pow(max(lum, vec3(0.0)), vec3(1.0 / 2.2));
 
-    fragColor = vec4(mapped, 1.0);
+    fragColor = vec4(lum, 1.0);
 }
 )GLSL";
 
@@ -859,7 +875,7 @@ void sg_InitSkyAtmosphereNode(SceneNode* node) {
     // Create LUT textures
     d->transmittanceLUT = sa_MakeLUT2D(256, 64);
     d->multiScatterLUT  = sa_MakeLUT2D(32,  32);
-    d->skyViewLUT       = sa_MakeLUT2D(192, 108);
+    d->skyViewLUT       = sa_MakeLUT2D(200, 200);
 
     // Cache quad uniform locations
     if (d->quadProg) {
@@ -947,7 +963,7 @@ void sg_RenderSkyAtmosphereNode(SceneNode* node, mat4 view, mat4 proj) {
         glUniform1i(glGetUniformLocation(prog, "uMultiScatterLUT"), 1);
 
         glBindImageTexture(0, d->skyViewLUT, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA16F);
-        glDispatchCompute((192 + 7) / 8, (108 + 7) / 8, 1);
+        glDispatchCompute((200 + 7) / 8, (200 + 7) / 8, 1);
         glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
     }
 
@@ -1090,7 +1106,7 @@ void sg_FreeSkyAtmosphereNode(SceneNode* node) {
 // skybox IBL takes priority and this function is a no-op.
 // ---------------------------------------------------------------------------
 extern unsigned int envCubemap;   // owned by skybox.cpp — read-only here
-extern void generateIBLMaps(unsigned int cubemap);
+extern void generateIBLMaps(unsigned int envCubemap);
 
 void sg_UpdateSkyAtmosphereIBL(SceneNode* node) {
     SkyAtmosphereNodeData* d = &node->data.skyAtmosphere;

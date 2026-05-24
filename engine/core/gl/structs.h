@@ -150,6 +150,15 @@ typedef struct {
     GLint uShadowMatrix;
     GLint uShadowEnabled;
     GLint uShadowBias;
+    // Aerial perspective
+    GLint uAerialPerspective;
+    GLint uAerialTransmittanceLUT;
+    GLint uAerialSkyViewLUT;
+    GLint uAtmBotR;
+    GLint uAtmTopR;
+    GLint uAtmCamHeight;
+    GLint uAtmWorldScale;
+    GLint uAtmExposure;
 } ShaderLocations;
 
 typedef struct {

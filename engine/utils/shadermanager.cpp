@@ -67,6 +67,15 @@ static void cacheShaderLocations(ShaderProgram* program) {
     program->loc.uShadowMatrix  = glGetUniformLocation(id, "uShadowMatrix");
     program->loc.uShadowEnabled = glGetUniformLocation(id, "uShadowEnabled");
     program->loc.uShadowBias    = glGetUniformLocation(id, "uShadowBias");
+
+    program->loc.uAerialPerspective     = glGetUniformLocation(id, "uAerialPerspective");
+    program->loc.uAerialTransmittanceLUT = glGetUniformLocation(id, "uAerialTransmittanceLUT");
+    program->loc.uAerialSkyViewLUT      = glGetUniformLocation(id, "uAerialSkyViewLUT");
+    program->loc.uAtmBotR               = glGetUniformLocation(id, "uAtmBotR");
+    program->loc.uAtmTopR               = glGetUniformLocation(id, "uAtmTopR");
+    program->loc.uAtmCamHeight          = glGetUniformLocation(id, "uAtmCamHeight");
+    program->loc.uAtmWorldScale         = glGetUniformLocation(id, "uAtmWorldScale");
+    program->loc.uAtmExposure           = glGetUniformLocation(id, "uAtmExposure");
 }
 
 void InitializeShaders() {

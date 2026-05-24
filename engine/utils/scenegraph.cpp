@@ -490,6 +490,33 @@ float g_FogEnd = 1000.0f;
 int   g_FogType = 0;
 bool  g_FogEnabled = false;
 
+// Aerial perspective globals — populated each frame from the sky atmosphere node
+static bool   g_AerialActive     = false;
+static GLuint g_AerialTransLUT   = 0;
+static GLuint g_AerialSkyViewLUT = 0;
+static float  g_AtmBotR          = 6360.0f;
+static float  g_AtmTopR          = 6420.0f;
+static float  g_AtmCamHeight     = 6360.001f;
+static float  g_AtmWorldScale    = 0.001f;
+static float  g_AtmExposure      = 10.0f;
+
+static void setAerialPerspUniforms(ShaderProgram* program) {
+    if (!program) return;
+    glUniform1i(program->loc.uAerialPerspective, g_AerialActive ? 1 : 0);
+    if (!g_AerialActive) return;
+    glActiveTexture(GL_TEXTURE10);
+    glBindTexture(GL_TEXTURE_2D, g_AerialTransLUT);
+    glUniform1i(program->loc.uAerialTransmittanceLUT, 10);
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, g_AerialSkyViewLUT);
+    glUniform1i(program->loc.uAerialSkyViewLUT, 11);
+    glUniform1f(program->loc.uAtmBotR,       g_AtmBotR);
+    glUniform1f(program->loc.uAtmTopR,       g_AtmTopR);
+    glUniform1f(program->loc.uAtmCamHeight,  g_AtmCamHeight);
+    glUniform1f(program->loc.uAtmWorldScale, g_AtmWorldScale);
+    glUniform1f(program->loc.uAtmExposure,   g_AtmExposure);
+}
+
 // Shadow globals — set each frame by the shadow pass, read by sg_DrawModelNode
 bool   g_ShadowActive     = false;
 mat4   g_ShadowSBPV;
@@ -554,6 +581,7 @@ static void sg_DrawModelNode(SceneNode* node, mat4 view, mat4 proj) {
     }
 
     setFogUniforms(program);
+    setAerialPerspUniforms(program);
 
     extern void setDebugUniforms(ShaderProgram* program);
     setDebugUniforms(program);
@@ -884,7 +912,29 @@ void RenderSceneModels(mat4 view, mat4 proj) {
     };
     SceneNode* skyNode = findSkyProvider(findSkyProvider, g_SceneRoot);
     useIBL = (irradianceMap != 0); // If we have baked IBL maps, use them.
-    // (Optional: we could also require skyNode != nullptr if we want to be strict)
+
+    // Update aerial perspective globals from atmosphere node
+    g_AerialActive = false;
+    if (skyNode && skyNode->type == ENTITY_SKY_ATMOSPHERE) {
+        SkyAtmosphereNodeData* atmo = &skyNode->data.skyAtmosphere;
+        if (atmo->transmittanceLUT && atmo->skyViewLUT) {
+            g_AerialActive     = true;
+            g_AerialTransLUT   = atmo->transmittanceLUT;
+            g_AerialSkyViewLUT = atmo->skyViewLUT;
+            g_AtmBotR          = atmo->bottomRadius;
+            g_AtmTopR          = atmo->topRadius;
+            g_AtmWorldScale    = atmo->worldScale;
+            g_AtmExposure      = atmo->exposure;
+            // Camera height in atmosphere space
+            extern SceneNode* g_ActiveCameraNode;
+            vec3 camPos = vec3(0.0f, 0.0f, 0.0f);
+            if (g_ActiveCameraNode) {
+                Camera* cam = sg_Camera(g_ActiveCameraNode);
+                if (cam) camPos = cam->position;
+            }
+            g_AtmCamHeight = atmo->bottomRadius + fmaxf(0.0f, camPos[1] * atmo->worldScale);
+        }
+    }
 
     // Sync fog from fog node if it exists
     auto findFogNode = [](auto& self, SceneNode* n) -> SceneNode* {

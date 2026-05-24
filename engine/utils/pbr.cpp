@@ -12,6 +12,7 @@
 unsigned int irradianceMap = 0;
 unsigned int prefilterMap = 0;
 unsigned int brdfLUTTexture = 0;
+static bool  s_IBLOwned = false;
 
 // IBL Generation Shaders (built lazily on first use)
 static ShaderProgram* irradianceShader = NULL;
@@ -48,11 +49,17 @@ void generateIBLMaps(unsigned int envCubemap)
 
     ensureIBLShaders();
 
-    // Delete old maps if regenerating
-    if (irradianceMap) { glDeleteTextures(1, &irradianceMap); irradianceMap = 0; }
-    if (prefilterMap)  { glDeleteTextures(1, &prefilterMap);  prefilterMap = 0; }
+    // Delete old maps if regenerating (only if we own them)
+    if (s_IBLOwned) {
+        if (irradianceMap) { glDeleteTextures(1, &irradianceMap); irradianceMap = 0; }
+        if (prefilterMap)  { glDeleteTextures(1, &prefilterMap);  prefilterMap = 0; }
+    }
+    s_IBLOwned = true;
 
     // Setup capture FBO
+    GLint prevFBO;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFBO);
+
     unsigned int captureFBO, captureRBO;
     createCaptureFBO(&captureFBO, &captureRBO, 512);
 
@@ -149,7 +156,7 @@ void generateIBLMaps(unsigned int envCubemap)
     }
 
     // Cleanup FBO
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, prevFBO);
     glDeleteFramebuffers(1, &captureFBO);
     glDeleteRenderbuffers(1, &captureRBO);
 
@@ -160,14 +167,62 @@ void generateIBLMaps(unsigned int envCubemap)
             irradianceMap, prefilterMap, brdfLUTTexture);
 }
 
-// ============================================================================
-// IBL Map Cleanup
-// ============================================================================
+void updateIBLFromTexture(unsigned int envCubemap) {
+    if (envCubemap == 0) return;
+    
+    // Cleanup old maps ONLY if we owned them
+    if (s_IBLOwned) {
+        if (irradianceMap) { glDeleteTextures(1, &irradianceMap); irradianceMap = 0; }
+        if (prefilterMap)  { glDeleteTextures(1, &prefilterMap);  prefilterMap = 0; }
+    }
+    s_IBLOwned = false; // We are now using an external texture
+    
+    // For direct use, we just use the provided cubemap for both diffuse and specular.
+    // Note: This skips convolution, making it instantaneous but less physically accurate.
+    irradianceMap = envCubemap;
+    prefilterMap  = envCubemap;
+    
+    // Ensure BRDF LUT is initialized
+    ensureIBLShaders();
+    if (!brdfLUTTexture) {
+        unsigned int fbo, rbo;
+        createCaptureFBO(&fbo, &rbo, 512);
+        
+        glGenTextures(1, &brdfLUTTexture);
+        glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, 0);
+
+        glViewport(0, 0, 512, 512);
+        glUseProgram(brdfShader->id);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        renderQuad();
+        
+        GLint prevFBO;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, prevFBO);
+        glDeleteFramebuffers(1, &fbo);
+        glDeleteRenderbuffers(1, &rbo);
+        restoreViewport();
+    }
+}
 
 void clearIBLMaps()
 {
-    if (irradianceMap) { glDeleteTextures(1, &irradianceMap); irradianceMap = 0; }
-    if (prefilterMap)  { glDeleteTextures(1, &prefilterMap);  prefilterMap = 0; }
+    if (s_IBLOwned) {
+        if (irradianceMap) { glDeleteTextures(1, &irradianceMap); irradianceMap = 0; }
+        if (prefilterMap)  { glDeleteTextures(1, &prefilterMap);  prefilterMap = 0; }
+    }
+    irradianceMap = 0;
+    prefilterMap  = 0;
+    s_IBLOwned = false;
     // brdfLUTTexture is environment-independent — keep it alive.
 }
 

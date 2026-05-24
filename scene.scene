@@ -74,20 +74,101 @@ Node "Root" EMPTY {
       mieAnisotropy  0.8
       mieDensityExpScale  -0.8333
       absorptionExtinction  0.00065 0.001881 8.5e-05
-      sunDirection  0 0.0157073 0.999877
-      sunColor  1 1 1
+      sunDirection  0.355246 0.262189 -0.89725
+      sunColor  0.990196 0.773198 0.529075
       sunIntensity  20
       sunAngularRadius  0.02
       worldScale  0.001
       exposure  20
       castShadow  true
       shadowResolution  2048
-      shadowBias  0.002
-      shadowOrthoSize  400
-      shadowNear  1
-      shadowFar  1000
-      shadowPolyFactor  1.5
-      shadowPolyUnits  4
+      shadowBias  0.0037
+      shadowOrthoSize  500
+      shadowNear  0.1
+      shadowFar  1074
+      shadowPolyFactor  16
+      shadowPolyUnits  34
+    }
+  }
+
+  Node "Coverage_clouds" VOLUMETRIC_CLOUD {
+    id  115
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  0.96 0.97 1
+      cloudColorBottom  0 0.0555556 0.166667
+      absorption  0.031
+      coverage  -2
+      erosion  0.5
+      silverLining  0.6
+      flatBottom  false
+      cloudType  0.85
+      noiseScale  0.001
+      detailScale  0.0118
+      noiseRes  2
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0.355246 0.262189 -0.89725
+      sunColor  0.990196 0.773198 0.529075
+      sunIntensity  20
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  4
+      maxSteps  8192
+      stepSize  1.5
+      turbulence  0.5
+      windSpeed  25
+      localNoiseSpeed  15
+      useSceneDepth  false
+      boxSize  500 150 500
+      gridX  3
+      gridZ  3
+      gridSpacing  20
+      gridScale  1
+      spheresPerMin  3
+      spheresPerMax  8
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  true
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  false
+      nvdfPath  _
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.002
+      nvdfRotAngle  0.963271
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  -478.155 0 493.5
+      nvdfYOffset  0
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
     }
   }
 
@@ -117,8 +198,8 @@ Node "Root" EMPTY {
 
     Light {
       type  0
-      color  0.803922 0.39802 0.39802
-      intensity  54
+      color  0.931076 0.955882 0.67474
+      intensity  2.5
       radius  100
       direction  0 -0.1 0
       innerCutoff  0.9
@@ -131,24 +212,6 @@ Node "Root" EMPTY {
       shadowFar  400
       shadowPolyFactor  1.5
       shadowPolyUnits  4
-    }
-  }
-
-  Node "Fog" FOG {
-    id  86
-    terrainYOffset  false
-    selectedTerrainID  0
-    position  0 0 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    Fog {
-      color  0.5 0.5 0.5
-      density  0.01
-      start  10
-      end  1000
-      type  0
-      enabled  true
     }
   }
 
@@ -272,185 +335,13 @@ Node "Root" EMPTY {
     }
   }
 
-  Node "SubClouds" VOLUMETRIC_CLOUD {
-    id  62
-    terrainYOffset  false
-    selectedTerrainID  0
-    RenderRule {
-      condition    2
-      threshold    150
-      targetIndex  4
-    }
-    position  0 500 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    VolumetricCloud {
-      cloudColorTop  1 1 1
-      cloudColorBottom  0.136246 0.16492 0.205882
-      absorption  0.01
-      coverage  2
-      erosion  1
-      silverLining  1.175
-      flatBottom  false
-      cloudType  0.85
-      noiseScale  0.0013
-      detailScale  0.0118
-      noiseRes  32
-      noiseBasePath  _
-      noiseDetailPath  _
-      sunDirection  0 0.0157073 0.999877
-      sunColor  1 1 1
-      sunIntensity  20
-      ambientStrength  1.12
-      scatterG  1
-      densityScale  3.7
-      maxSteps  8192
-      stepSize  8
-      turbulence  24
-      windSpeed  12
-      localNoiseSpeed  12
-      useSceneDepth  false
-      boxSize  10000 250 10000
-      gridX  3
-      gridZ  3
-      gridSpacing  500
-      gridScale  10
-      spheresPerMin  3
-      spheresPerMax  8
-      renderScale  0.5
-      enableTAA  false
-      taaBlend  0.01
-      useCircleField  false
-      circleRadius  10
-      useSphereField  true
-      planetRadius  50000
-      cloudBaseHeight  558
-      cloudThickness  345
-      domeExtent  1
-      useWeatherMap  true
-      weatherMapPath  _
-      weatherMapScale  0.0001
-      autoWeatherMap  true
-      weatherMapGridExtent  0
-      fogColor  0.754902 0.751201 0.751201
-      fogDensity  0
-      fogStart  0
-      useNVDF  false
-      nvdfPath  engine/effects/clouds/nvdf_textures/cloud.nvdf
-      hwModStrength  0
-      hwModScale  0.0001
-      curlStrength  0.28
-      nvdfTileScale  0.001
-      nvdfRotAngle  6.09328
-      nvdfRotX  0
-      nvdfRotZ  0
-      nvdfWorldOffset  343.051 0 153.165
-      nvdfYOffset  0
-      adaptiveFactor  0.0119
-      jitterSwitchDist  178
-      useDualPass  false
-      nearFarSplit  200
-      nearOutputW  480
-      nearOutputH  270
-      farOutputW  960
-      farOutputH  540
-    }
-  }
-
-  Node "thick Upper CLouds" VOLUMETRIC_CLOUD {
-    id  83
-    terrainYOffset  false
-    selectedTerrainID  0
-    RenderRule {
-      condition    2
-      threshold    150
-      targetIndex  3
-    }
-    position  0 564 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    VolumetricCloud {
-      cloudColorTop  1 1 1
-      cloudColorBottom  0.955882 0.974048 1
-      absorption  0.095
-      coverage  0.35
-      erosion  1
-      silverLining  2.624
-      flatBottom  false
-      cloudType  0.99
-      noiseScale  0.0011
-      detailScale  0.0182
-      noiseRes  64
-      noiseBasePath  _
-      noiseDetailPath  _
-      sunDirection  0 0.0157073 0.999877
-      sunColor  1 1 1
-      sunIntensity  20
-      ambientStrength  1.12
-      scatterG  1
-      densityScale  1.9
-      maxSteps  16384
-      stepSize  8
-      turbulence  62
-      windSpeed  8
-      localNoiseSpeed  8
-      useSceneDepth  false
-      boxSize  500 150 500
-      gridX  3
-      gridZ  5
-      gridSpacing  74
-      gridScale  1.95
-      spheresPerMin  3
-      spheresPerMax  8
-      renderScale  0.5
-      enableTAA  false
-      taaBlend  0.1
-      useCircleField  false
-      circleRadius  250
-      useSphereField  true
-      planetRadius  50000
-      cloudBaseHeight  482
-      cloudThickness  1198
-      domeExtent  1
-      useWeatherMap  true
-      weatherMapPath  _
-      weatherMapScale  0.002
-      autoWeatherMap  true
-      weatherMapGridExtent  0
-      fogColor  0.7 0.78 0.86
-      fogDensity  0
-      fogStart  300
-      useNVDF  false
-      nvdfPath  engine/effects/clouds/nvdf_textures/cloud.nvdf
-      hwModStrength  1
-      hwModScale  0.0001
-      curlStrength  0.5
-      nvdfTileScale  0.0223
-      nvdfRotAngle  3.05582
-      nvdfRotX  0
-      nvdfRotZ  0
-      nvdfWorldOffset  527.548 0 -231.135
-      nvdfYOffset  0
-      adaptiveFactor  0.003
-      jitterSwitchDist  1000
-      useDualPass  false
-      nearFarSplit  200
-      nearOutputW  480
-      nearOutputH  270
-      farOutputW  960
-      farOutputH  540
-    }
-  }
-
   Node "Krushna" EMPTY {
     id  103
     terrainYOffset  false
     selectedTerrainID  0
-    position  -77.8 -0.1 -326.8
+    position  -77.8 0.4 -625.1
     rotation  90 14.5 0
-    scale  25 25 25
+    scale  30 30 30
 
     Node "Mesh_0" MODEL {
       id  104
@@ -474,94 +365,13 @@ Node "Root" EMPTY {
     }
   }
 
-  Node "Storm" VOLUMETRIC_CLOUD {
-    id  105
-    terrainYOffset  false
-    selectedTerrainID  0
-    position  0 88.3 -266.6
-    rotation  0 0 0
-    scale  1.5 1.5 1.5
-
-    VolumetricCloud {
-      cloudColorTop  0.955882 0.87402 0.702855
-      cloudColorBottom  0.784314 0.743153 0.676663
-      absorption  0.014
-      coverage  0.5
-      erosion  0.5
-      silverLining  0.6
-      flatBottom  false
-      cloudType  0.85
-      noiseScale  0.006
-      detailScale  0.035
-      noiseRes  64
-      noiseBasePath  _
-      noiseDetailPath  _
-      sunDirection  0 0.0157073 0.999877
-      sunColor  1 1 1
-      sunIntensity  20
-      ambientStrength  1.2
-      scatterG  0.35
-      densityScale  0.4
-      maxSteps  27
-      stepSize  31
-      turbulence  0.5
-      windSpeed  36
-      localNoiseSpeed  36
-      useSceneDepth  false
-      boxSize  500 261 500
-      gridX  3
-      gridZ  3
-      gridSpacing  5
-      gridScale  40
-      spheresPerMin  3
-      spheresPerMax  8
-      renderScale  0.5
-      enableTAA  false
-      taaBlend  0.1
-      useCircleField  false
-      circleRadius  250
-      useSphereField  false
-      planetRadius  6000
-      cloudBaseHeight  500
-      cloudThickness  800
-      domeExtent  0.5
-      useWeatherMap  true
-      weatherMapPath  _
-      weatherMapScale  0.002
-      autoWeatherMap  true
-      weatherMapGridExtent  0
-      fogColor  0.7 0.78 0.86
-      fogDensity  0
-      fogStart  300
-      useNVDF  false
-      nvdfPath  engine/effects/clouds/nvdf_textures/ravana.nvdf
-      hwModStrength  0.6
-      hwModScale  0.0025
-      curlStrength  0.4
-      nvdfTileScale  0.012
-      nvdfRotAngle  1.3609
-      nvdfRotX  0
-      nvdfRotZ  0
-      nvdfWorldOffset  -298.08 0 527.253
-      nvdfYOffset  0
-      adaptiveFactor  0.003
-      jitterSwitchDist  200
-      useDualPass  false
-      nearFarSplit  200
-      nearOutputW  480
-      nearOutputH  270
-      farOutputW  960
-      farOutputH  540
-    }
-  }
-
   Node "Bhishma" EMPTY {
     id  106
     terrainYOffset  false
     selectedTerrainID  0
-    position  36.1 14 -210.5
+    position  36.1 23.1 -334.5
     rotation  75.5 -138 0
-    scale  25 25 29.9
+    scale  30 30 30
 
     Node "Mesh_0" MODEL {
       id  107
@@ -589,9 +399,9 @@ Node "Root" EMPTY {
     id  108
     terrainYOffset  false
     selectedTerrainID  0
-    position  39.9 0 -208.1
+    position  39.9 0 -339.6
     rotation  90 -160 0
-    scale  100 100 100
+    scale  125 125 125
 
     Node "Mesh_0" MODEL {
       id  109
@@ -615,45 +425,45 @@ Node "Root" EMPTY {
     }
   }
 
-  Node "ravana" VOLUMETRIC_CLOUD {
-    id  110
+  Node "Volumetric Cloud" VOLUMETRIC_CLOUD {
+    id  111
     terrainYOffset  false
     selectedTerrainID  0
-    position  0 12.1 0
+    position  -793.7 647.1 417.9
     rotation  0 0 0
     scale  1 1 1
 
     VolumetricCloud {
       cloudColorTop  0.96 0.97 1
-      cloudColorBottom  0.55 0.6 0.7
-      absorption  0.18
-      coverage  0.5
-      erosion  0.5
-      silverLining  0.6
+      cloudColorBottom  0 0 0
+      absorption  0.01
+      coverage  2
+      erosion  1
+      silverLining  3
       flatBottom  false
-      cloudType  0.85
-      noiseScale  0.006
-      detailScale  0.035
+      cloudType  1
+      noiseScale  0.001
+      detailScale  0.005
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0 0.0157073 0.999877
-      sunColor  1 1 1
+      sunDirection  0.355246 0.262189 -0.89725
+      sunColor  0.990196 0.773198 0.529075
       sunIntensity  20
       ambientStrength  1.2
       scatterG  0.35
-      densityScale  4
-      maxSteps  81922
-      stepSize  1.5
+      densityScale  9.1
+      maxSteps  8192
+      stepSize  1
       turbulence  0.5
-      windSpeed  0.5
-      localNoiseSpeed  0.5
+      windSpeed  4.92
+      localNoiseSpeed  10
       useSceneDepth  false
-      boxSize  1000 40 1000
+      boxSize  588 343 535
       gridX  1
       gridZ  1
       gridSpacing  1
-      gridScale  10
+      gridScale  25
       spheresPerMin  1
       spheresPerMax  1
       renderScale  0.5
@@ -666,25 +476,268 @@ Node "Root" EMPTY {
       cloudBaseHeight  500
       cloudThickness  800
       domeExtent  0.5
-      useWeatherMap  false
+      useWeatherMap  true
       weatherMapPath  _
       weatherMapScale  0.002
-      autoWeatherMap  false
+      autoWeatherMap  true
       weatherMapGridExtent  0
       fogColor  0.7 0.78 0.86
       fogDensity  0
       fogStart  300
       useNVDF  true
-      nvdfPath  engine/effects/clouds/nvdf_textures/ravana.nvdf
+      nvdfPath  engine/effects/clouds/nvdf_textures/cloud.nvdf
       hwModStrength  0.6
       hwModScale  0.0025
       curlStrength  0.4
-      nvdfTileScale  0.0357143
-      nvdfRotAngle  0
-      nvdfRotX  -1.5708
-      nvdfRotZ  3.14159
-      nvdfWorldOffset  -207 0 -66
-      nvdfYOffset  0.13
+      nvdfTileScale  0.00344828
+      nvdfRotAngle  6.26232
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  -256.5 0 -402.5
+      nvdfYOffset  -0.015
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
+  Node "VC2" VOLUMETRIC_CLOUD {
+    id  112
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  -631.6 444.5 -2000
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  0.96 0.97 1
+      cloudColorBottom  0 0 0
+      absorption  0.01
+      coverage  2
+      erosion  1
+      silverLining  3
+      flatBottom  false
+      cloudType  1
+      noiseScale  0.001
+      detailScale  0.005
+      noiseRes  64
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0.355246 0.262189 -0.89725
+      sunColor  0.990196 0.773198 0.529075
+      sunIntensity  20
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  9.1
+      maxSteps  8192
+      stepSize  1
+      turbulence  0.5
+      windSpeed  4.92
+      localNoiseSpeed  10
+      useSceneDepth  false
+      boxSize  588 343 535
+      gridX  1
+      gridZ  1
+      gridSpacing  1
+      gridScale  25
+      spheresPerMin  1
+      spheresPerMax  1
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  false
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  true
+      nvdfPath  engine/effects/clouds/nvdf_textures/round_cloud.nvdf
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.00344828
+      nvdfRotAngle  6.26232
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  99.5 0 -588.5
+      nvdfYOffset  -0.06
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
+  Node "VC3" VOLUMETRIC_CLOUD {
+    id  113
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  600 444.5 -2000
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  0.96 0.97 1
+      cloudColorBottom  0 0 0
+      absorption  0.01
+      coverage  2
+      erosion  1
+      silverLining  3
+      flatBottom  false
+      cloudType  1
+      noiseScale  0.001
+      detailScale  0.005
+      noiseRes  64
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0.355246 0.262189 -0.89725
+      sunColor  0.990196 0.773198 0.529075
+      sunIntensity  20
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  9.1
+      maxSteps  8192
+      stepSize  8
+      turbulence  0.5
+      windSpeed  4.92
+      localNoiseSpeed  10
+      useSceneDepth  false
+      boxSize  588 343 535
+      gridX  1
+      gridZ  1
+      gridSpacing  1
+      gridScale  25
+      spheresPerMin  1
+      spheresPerMax  1
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  false
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  true
+      nvdfPath  engine/effects/clouds/nvdf_textures/round_cloud.nvdf
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.00344828
+      nvdfRotAngle  6.26232
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  99.5 0 -588.5
+      nvdfYOffset  -0.06
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
+  Node "VC4" VOLUMETRIC_CLOUD {
+    id  114
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  204.9 486.2 -1012.1
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  0.96 0.97 1
+      cloudColorBottom  0 0 0
+      absorption  0.01
+      coverage  2
+      erosion  1
+      silverLining  3
+      flatBottom  false
+      cloudType  1
+      noiseScale  0.001
+      detailScale  0.005
+      noiseRes  64
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  0.355246 0.262189 -0.89725
+      sunColor  0.990196 0.773198 0.529075
+      sunIntensity  20
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  9.1
+      maxSteps  8192
+      stepSize  8
+      turbulence  0.5
+      windSpeed  4.92
+      localNoiseSpeed  10
+      useSceneDepth  false
+      boxSize  588 343 535
+      gridX  1
+      gridZ  1
+      gridSpacing  1
+      gridScale  25
+      spheresPerMin  1
+      spheresPerMax  1
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  false
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  true
+      nvdfPath  engine/effects/clouds/nvdf_textures/round_cloud.nvdf
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.00344828
+      nvdfRotAngle  6.26232
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  99.5 0 -588.5
+      nvdfYOffset  -0.06
       adaptiveFactor  0.003
       jitterSwitchDist  200
       useDualPass  false
