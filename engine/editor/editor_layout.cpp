@@ -6,12 +6,12 @@
 #include "engine/effects/effects_manager.cpp"
 
 // Forward decls
-extern void CreateSceneModel(const char* name, const char* path);
+extern void CreateSceneModel(const char* name, const char* path, SceneNode* parent);
 extern void CreateSceneQuad(const char* name);
 extern bool ReloadModelFromFile(Model* model, const char* path);
-extern void AddSceneLight(const char* name);
-extern void AddSceneReferenceObject(const char* name);
-extern void AddSceneInstance(const char* name);
+extern void AddSceneLight(const char* name, SceneNode* parent);
+extern void AddSceneReferenceObject(const char* name, SceneNode* parent);
+extern void AddSceneInstance(const char* name, SceneNode* parent);
 
 #include "engine/editor/scenemanager_layout.cpp"
 #include "engine/editor/attributemanager_layout.cpp"
@@ -58,8 +58,9 @@ void ShowRenderOrderPanel() {
 
 extern Bool loadModel(const char* filename, Mesh** meshes, int* meshCount, float scale);
 
-void CreateSceneModel(const char* name, const char* path) {
+void CreateSceneModel(const char* name, const char* path, SceneNode* parent = nullptr) {
     if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* targetParent = parent ? parent : g_SceneRoot;
     
     if (path && path[0] != '\0') {
         Mesh* meshes = nullptr;
@@ -83,7 +84,7 @@ void CreateSceneModel(const char* name, const char* path) {
                 meshNode->meshIndex = i;
                 sg_AddChild(modelRoot, meshNode);
             }
-            sg_AddChild(g_SceneRoot, modelRoot);
+            sg_AddChild(targetParent, modelRoot);
             LOG_I("Loaded model '%s' with %d meshes", path, meshCount);
         } else {
             LOG_E("Failed to load model from path: %s", path);
@@ -91,7 +92,7 @@ void CreateSceneModel(const char* name, const char* path) {
     } else {
         // Create an empty node if no path provided
         SceneNode* node = sg_CreateNode(ENTITY_EMPTY, name);
-        sg_AddChild(g_SceneRoot, node);
+        sg_AddChild(targetParent, node);
     }
 }
 
@@ -99,8 +100,9 @@ void CreateSceneQuad(const char* name) {
     // Legacy stub, could be implemented with primitive generation
 }
 
-void AddSceneLight(const char* name) {
+void AddSceneLight(const char* name, SceneNode* parent = nullptr) {
     if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* targetParent = parent ? parent : g_SceneRoot;
     SceneNode* node = sg_CreateNode(ENTITY_LIGHT, name);
     // Initialize light data
     node->data.light.type = LIGHT_POINT;
@@ -110,37 +112,41 @@ void AddSceneLight(const char* name) {
     node->data.light.direction = vec3(0.0f, -1.0f, 0.0f);
     node->data.light.innerCutoff = 0.9f;
     node->data.light.outerCutoff = 0.8f;
-    sg_AddChild(g_SceneRoot, node);
+    sg_AddChild(targetParent, node);
 }
 
-void AddSceneReferenceObject(const char* name) {
+void AddSceneReferenceObject(const char* name, SceneNode* parent = nullptr) {
     if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* targetParent = parent ? parent : g_SceneRoot;
     SceneNode* node = sg_CreateNode(ENTITY_EMPTY, name);
-    sg_AddChild(g_SceneRoot, node);
+    sg_AddChild(targetParent, node);
 }
 
-void AddSceneInstance(const char* name) {
+void AddSceneInstance(const char* name, SceneNode* parent = nullptr) {
     extern void instance_Init(InstanceData* inst);
     if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* targetParent = parent ? parent : g_SceneRoot;
     SceneNode* node = sg_CreateNode(ENTITY_INSTANCE, name);
     instance_Init(&node->data.instance);
-    sg_AddChild(g_SceneRoot, node);
+    sg_AddChild(targetParent, node);
 }
 
-void AddSceneVolumetricCloud(const char* name) {
+void AddSceneVolumetricCloud(const char* name, SceneNode* parent = nullptr) {
     if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* targetParent = parent ? parent : g_SceneRoot;
     SceneNode* node = sg_CreateNode(ENTITY_VOLUMETRIC_CLOUD, name);
     sg_InitNode(node);
-    sg_AddChild(g_SceneRoot, node);
+    sg_AddChild(targetParent, node);
     g_SceneSelectedType = SEL_SCENENODE;
     g_SelectedSceneNode = node;
 }
 
-void AddSceneSkyAtmosphere(const char* name) {
+void AddSceneSkyAtmosphere(const char* name, SceneNode* parent = nullptr) {
     if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* targetParent = parent ? parent : g_SceneRoot;
     SceneNode* node = sg_CreateNode(ENTITY_SKY_ATMOSPHERE, name);
     sg_InitNode(node);
-    sg_AddChild(g_SceneRoot, node);
+    sg_AddChild(targetParent, node);
     g_SceneSelectedType = SEL_SCENENODE;
     g_SelectedSceneNode = node;
 }

@@ -352,11 +352,13 @@ void showSceneEditorUI()
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::Selectable("[L]  Light")) {
-            AddSceneLight("Light");
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            AddSceneLight("Light", to);
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::Selectable("[I]  Instance")) {
-            AddSceneInstance("Instance");
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            AddSceneInstance("Instance", to);
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::Selectable("[T]  Terrain")) {
@@ -390,13 +392,15 @@ void showSceneEditorUI()
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::Selectable("[VC] Volumetric Cloud")) {
-            extern void AddSceneVolumetricCloud(const char* name);
-            AddSceneVolumetricCloud("Volumetric Cloud");
+            extern void AddSceneVolumetricCloud(const char* name, SceneNode* parent);
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            AddSceneVolumetricCloud("Volumetric Cloud", to);
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::Selectable("[SA] Sky Atmosphere")) {
-            extern void AddSceneSkyAtmosphere(const char* name);
-            AddSceneSkyAtmosphere("Sky Atmosphere");
+            extern void AddSceneSkyAtmosphere(const char* name, SceneNode* parent);
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            AddSceneSkyAtmosphere("Sky Atmosphere", to);
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::Selectable("[F]  Fog")) {
@@ -553,7 +557,9 @@ void showSceneEditorUI()
         strncpy(modelPath, path.c_str(), sizeof(modelPath) - 1);
         modelPath[sizeof(modelPath) - 1] = '\0';
         modelBrowser.ClearSelected();
-        CreateSceneModel("Model", modelPath);
+        
+        SceneNode* to = (g_SceneSelectedType == SEL_SCENENODE && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+        CreateSceneModel("Model", modelPath, to);
     }
 
     saveBrowser.Display();
