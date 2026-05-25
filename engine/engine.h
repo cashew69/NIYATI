@@ -139,3 +139,5 @@ bool g_wireframeMode = false;
 #include "effects/vclouds/nvdf_compressor.cpp"
 #include "effects/vclouds/nvdf_editor_v2.cpp"
 #include "effects/atmospheric_Scattering/sky_atmosphere_node.cpp"
+#include "effects/ocean/ocean.cpp"
+#include "utils/ocean_node.cpp"

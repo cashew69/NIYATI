@@ -6,20 +6,18 @@ in vec4 ShadowCoord;
 
 layout(location = 0) out vec4 FragColor;
 
-// Material Uniforms (matching modelloading.cpp + PBR extensions)
+// Material Uniforms
 uniform vec3 uDiffuseColor;
 uniform bool uHasDiffuseTexture;
 uniform sampler2D uDiffuseTexture;
 
 uniform bool uHasNormalTexture;
-uniform sampler2D uNormalTexture; // In slot 1
+uniform sampler2D uNormalTexture;
 
-// uniform vec3 uSpecularColor;
 uniform float uShininess;
 uniform float uOpacity;
 uniform bool uIsEmissive;
 
-// PBR specific (future proofing, not currently set by C++)
 uniform sampler2D uMetallicMap;
 uniform sampler2D uRoughnessMap;
 uniform sampler2D uAOMap;
@@ -43,13 +41,13 @@ uniform float uInnerCutoff;
 uniform float uOuterCutoff;
 
 // IBL Uniforms
-uniform samplerCube irradianceMap; // For Diffuse IBL
-uniform samplerCube prefilterMap; // For Specular IBL (MIP-mapped)
-uniform sampler2D brdfLUT; // For Specular IBL (2D Look-up Table)
-uniform bool uHasIBL; // Toggle for environment lighting
-uniform float uIBLIntensity; // Intensity for environment lighting
-uniform float uRoughness; // Fallback roughness
-uniform float uMetalness; // Fallback metalness
+uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
+uniform bool uHasIBL;
+uniform float uIBLIntensity;
+uniform float uRoughness;
+uniform float uMetalness;
 
 // Debug Overrides
 uniform bool uDebugDisableDiffuseTex;
@@ -78,6 +76,12 @@ layout(binding = 9) uniform sampler2DShadow uShadowMap;
 uniform bool uShadowEnabled;
 uniform float uShadowBias;
 
+// Stochastic Tiling
+uniform bool  uEnableStochastic;
+uniform float uStochasticContrast;
+uniform float uStochasticScale;
+uniform float uUVScale;
+
 // Aerial perspective
 uniform bool      uAerialPerspective;
 uniform sampler2D uAerialTransmittanceLUT;
@@ -102,31 +106,63 @@ float calculateFog(float dist) {
 
 const float PI = 3.14159265359;
 
-// ----------------------------------------------------------------------------
-// TBN Calculation without pre-computed tangents
-// http://www.thetenthplanet.de/archives/1180
+// Stochastic Tiling Helpers
+vec4 hash_v4(vec2 p) {
+    return fract(sin(vec4(dot(p, vec2(127.1, 311.7)), 
+                         dot(p, vec2(269.5, 183.3)), 
+                         dot(p, vec2(419.2, 371.9)), 
+                         dot(p, vec2(231.7, 124.5))) ) * 43758.5453);
+}
+
+vec3 textureStochastic(sampler2D tex, vec2 uv, float contrast) {
+    vec2 p = floor(uv);
+    vec2 f = fract(uv);
+
+    vec3 color = vec3(0.0);
+    float totalWeight = 0.0;
+
+    for(int j=0; j<=1; j++) {
+        for(int i=0; i<=1; i++) {
+            vec2 b = vec2(float(i), float(j));
+            vec4 h = hash_v4(p + b);
+            
+            float angle = h.z * 6.2831;
+            float cosA = cos(angle);
+            float sinA = sin(angle);
+            mat2 rot = mat2(cosA, -sinA, sinA, cosA);
+            
+            vec2 offset = h.xy * 123.4;
+            vec2 sampledUV = rot * uv + offset;
+            
+            float weight = smoothstep(1.0, 0.0, length(f - b));
+            weight = pow(weight, contrast); 
+
+            color += texture(tex, sampledUV).rgb * weight;
+            totalWeight += weight;
+        }
+    }
+    return color / max(totalWeight, 0.0001);
+}
+
 mat3 getTBN(vec3 N, vec3 p, vec2 uv)
 {
-    // get edge vectors of the pixel triangle
     vec3 dp1 = dFdx(p);
     vec3 dp2 = dFdy(p);
     vec2 duv1 = dFdx(uv);
     vec2 duv2 = dFdy(uv);
 
-    // solve the linear system
     vec3 dp2perp = cross(dp2, N);
     vec3 dp1perp = cross(N, dp1);
     vec3 T = dp2perp * duv1.x + dp1perp * duv2.x;
     vec3 B = dp2perp * duv1.y + dp1perp * duv2.y;
 
-    // construct a scale-invariant frame
     float magSq = max(dot(T, T), dot(B, B));
     if (magSq < 1e-10) return mat3(vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), N);
 
     float invmax = inversesqrt(magSq);
     return mat3(T * invmax, B * invmax, N);
 }
-// ----------------------------------------------------------------------------
+
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a = roughness * roughness;
@@ -138,20 +174,20 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
     denom = PI * denom * denom;
 
-    return nom / max(denom, 0.0000001); // avoid divide by zero
+    return nom / max(denom, 0.0000001);
 }
-// ----------------------------------------------------------------------------
+
 float GeometrySchlickGGX(float NdotV, float roughness)
 {
     float r = (roughness + 1.0);
-    float k = (r * r) + 1 / 2.0; // for IBL /2 for direction will do /8
+    float k = (r * r) / 8.0;
 
     float nom = NdotV;
     float denom = NdotV * (1.0 - k) + k;
 
     return nom / max(denom, 0.0000001);
 }
-// ----------------------------------------------------------------------------
+
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
     float NdotV = max(dot(N, V), 0.0);
@@ -161,14 +197,12 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
     return ggx1 * ggx2;
 }
-// ----------------------------------------------------------------------------
+
 vec3 fresnelSchlick(float cosTheta, vec3 F0, float roughness)
 {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
-// ----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
 vec3 atm_sampleTransmittance(float viewH, float cosAngle) {
     float H    = sqrt(max(0.0, uAtmTopR*uAtmTopR - uAtmBotR*uAtmBotR));
     float rho  = sqrt(max(0.0, viewH*viewH - uAtmBotR*uAtmBotR));
@@ -198,27 +232,44 @@ vec2 atm_dirToSkyUV(vec3 dir) {
     }
     return vec2(u, v);
 }
-// ----------------------------------------------------------------------------
 
 void main()
 {
+    float stochContrast = uStochasticContrast > 0.0 ? uStochasticContrast : 8.0;
+    float stochScale = uStochasticScale > 0.0 ? uStochasticScale : 1.0;
+    
+    vec2 uv_base = TexCoord;
+    vec2 uv_stoch = uv_base * stochScale;
+
     vec4 albedoSample = vec4(uDiffuseColor, 1.0);
     if (uHasDiffuseTexture && !uDebugDisableDiffuseTex) {
-        albedoSample = texture(uDiffuseTexture, TexCoord);
+        if (uEnableStochastic) {
+            albedoSample = vec4(textureStochastic(uDiffuseTexture, uv_stoch, stochContrast), 1.0);
+        } else {
+            albedoSample = texture(uDiffuseTexture, uv_base);
+        }
     }
 
     vec3 N = length(Normal) > 0.001 ? normalize(Normal) : vec3(0.0, 1.0, 0.0);
     if (uHasNormalTexture && !uDebugDisableNormalTex) {
-        vec3 tangentNormal = texture(uNormalTexture, TexCoord).xyz * 2.0 - 1.0;
-        mat3 TBN = getTBN(N, FragPos, TexCoord);
+        vec3 tangentNormal;
+        if (uEnableStochastic) {
+            tangentNormal = textureStochastic(uNormalTexture, uv_stoch, stochContrast) * 2.0 - 1.0;
+        } else {
+            tangentNormal = texture(uNormalTexture, uv_base).xyz * 2.0 - 1.0;
+        }
+        mat3 TBN = getTBN(N, FragPos, uv_base);
         vec3 tn = TBN * tangentNormal;
         N = length(tn) > 0.001 ? normalize(tn) : N;
     }
 
-    // 3. Metallic / Roughness
     float metallic = uMetalness;
     if (uHasMetallicMap && !uDebugDisableMetallicTex) {
-        metallic *= texture(uMetallicMap, TexCoord).b;
+        if (uEnableStochastic) {
+            metallic *= textureStochastic(uMetallicMap, uv_stoch, stochContrast).b;
+        } else {
+            metallic *= texture(uMetallicMap, uv_base).b;
+        }
     }
     if (uDebugOverrideMetallic) {
         metallic = uDebugMetallic;
@@ -226,13 +277,16 @@ void main()
 
     float roughness = uRoughness;
     if (uHasRoughnessMap && !uDebugDisableRoughnessTex) {
-        roughness *= texture(uRoughnessMap, TexCoord).g;
+        if (uEnableStochastic) {
+            roughness *= textureStochastic(uRoughnessMap, uv_stoch, stochContrast).g;
+        } else {
+            roughness *= texture(uRoughnessMap, uv_base).g;
+        }
     }
     if (uDebugOverrideRoughness) {
         roughness = uDebugRoughness;
     }
 
-    // Fallback for legacy models with 0 roughness
     if (roughness <= 0.001 && !uHasRoughnessMap && !uDebugOverrideRoughness) {
         roughness = sqrt(2.0 / (max(uShininess, 0.001) + 2.0));
     }
@@ -250,16 +304,11 @@ void main()
         vec3 lightToFrag = uLightPos - FragPos;
         float distance = length(lightToFrag);
         L = normalize(lightToFrag);
-
-        // Quadratic attenuation with range limit
         attenuation = 1.0 / (distance * distance + 0.0001);
-
-        // Smoothly fade out at radius
         if (uLightRadius > 0.0) {
             float distFactor = distance / uLightRadius;
             attenuation *= clamp(1.0 - distFactor * distFactor, 0.0, 1.0);
         }
-
         if (uLightType == 2) { // Spot Light
             float theta = dot(L, normalize(-uLightDir));
             float epsilon = uInnerCutoff - uOuterCutoff;
@@ -268,20 +317,15 @@ void main()
         }
     }
 
-    // Calculate F0
     vec3 albedo = pow(max(albedoSample.rgb, 0.0001), vec3(2.2));
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallic);
 
-    // Reflectance equation
     vec3 Lo = vec3(0.0);
-
     vec3 halfDir = V + L;
     vec3 H = length(halfDir) > 0.001 ? normalize(halfDir) : vec3(0.0, 1.0, 0.0);
-
     vec3 radiance = uLightColor * attenuation * uLightIntensity;
 
-    // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);
     float G = GeometrySmith(N, V, L, roughness);
     vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0, roughness);
@@ -297,7 +341,6 @@ void main()
     float NdotL = max(dot(N, L), 0.0);
     Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 
-    // Shadow — attenuates direct lighting only, ambient is unaffected
     float shadow = 1.0;
     if (uShadowEnabled) {
         vec4 sc = ShadowCoord;
@@ -308,10 +351,15 @@ void main()
     }
     Lo *= shadow;
 
-    // 4. AO (Temporarily disabled for stability)
     float ao = 1.0;
+    if (uHasAOMap && !uDebugDisableAOTex) {
+        if (uEnableStochastic) {
+            ao *= textureStochastic(uAOMap, uv_stoch, stochContrast).r;
+        } else {
+            ao *= texture(uAOMap, uv_base).r;
+        }
+    }
 
-    // 5. Ambient / IBL
     vec3 ambient = vec3(0.03) * albedo * ao;
     if (uHasIBL) {
         vec3 F_ibl = fresnelSchlick(max(dot(N, V), 0.0), F0, roughness);
@@ -328,40 +376,34 @@ void main()
         ambient = (kD_ibl * diffuseIBL + specularIBL) * ao * uIBLIntensity;
     }
 
-    // Emissive
     vec3 emissive = vec3(0.0);
     if (uHasEmissiveMap && !uDebugDisableEmissiveTex) {
-        emissive = texture(uEmissiveMap, TexCoord).rgb * (uDebugEmissiveIntensity > 0.0 ? uDebugEmissiveIntensity : 5.0);
+        if (uEnableStochastic) {
+            emissive = textureStochastic(uEmissiveMap, uv_stoch, stochContrast).rgb * (uDebugEmissiveIntensity > 0.0 ? uDebugEmissiveIntensity : 5.0);
+        } else {
+            emissive = texture(uEmissiveMap, uv_base).rgb * (uDebugEmissiveIntensity > 0.0 ? uDebugEmissiveIntensity : 5.0);
+        }
     } else if (uIsEmissive) {
         emissive = albedo * 2.0;
     }
 
     vec3 hdrColor = ambient + Lo + emissive;
-
-    // Tone mapping and gamma correction
     vec3 color = hdrColor / (hdrColor + vec3(1.0));
     color = pow(max(color, 0.0001), vec3(1.0 / 2.2));
 
-    // Aerial perspective — physically-based atmospheric haze
     if (uAerialPerspective) {
-        vec3  viewDir  = normalize(FragPos - uViewPos);
+        vec3  viewDirAP  = normalize(FragPos - uViewPos);
         float distKm   = length(FragPos - uViewPos) * uAtmWorldScale;
-        // No effect below 0.5 km, full effect above 20 km
         float distFade = smoothstep(0.5, 20.0, distKm);
-
         if (distFade > 0.001) {
             float fragH = max(uAtmBotR + 0.001, uAtmBotR + FragPos.y * uAtmWorldScale);
-            // abs() avoids ground-blocked zero in the LUT for downward-looking rays
-            float cosV  = abs(viewDir.y);
-
+            float cosV  = abs(viewDirAP.y);
             vec3 T_cam  = atm_sampleTransmittance(uAtmCamHeight, cosV);
             vec3 T_frag = atm_sampleTransmittance(fragH, cosV);
             vec3 T_seg  = clamp(T_cam / max(T_frag, vec3(0.001)), 0.0, 1.0);
-
-            vec3 skyL     = texture(uAerialSkyViewLUT, atm_dirToSkyUV(viewDir)).rgb;
+            vec3 skyL     = texture(uAerialSkyViewLUT, atm_dirToSkyUV(viewDirAP)).rgb;
             vec3 skyHDR   = skyL * uAtmExposure;
             vec3 skyToned = pow(max(skyHDR / (skyHDR + vec3(1.0)), vec3(0.0)), vec3(1.0 / 2.2));
-
             vec3 aerialColor = color * T_seg + skyToned * (vec3(1.0) - T_seg);
             color = mix(color, aerialColor, distFade);
         }
@@ -370,7 +412,7 @@ void main()
     if (uFogEnabled) {
         float dist = length(uViewPos - FragPos);
         float fogFactor = calculateFog(dist);
-        color = mix(color, pow(max(uFogColor, 0.0), vec3(1.0 / 2.2)), fogFactor);
+        color = mix(color, pow(max(uFogColor, 0.0), vec3(1.0/2.2)), fogFactor);
     }
 
     float alpha = uOpacity;

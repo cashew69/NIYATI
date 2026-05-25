@@ -40,6 +40,7 @@ Material*        sg_Material(SceneNode* node);
 InstanceData*    sg_Instance(SceneNode* node);
 TerrainNodeData* sg_Terrain(SceneNode* node);
 CatmullRomNodeData* sg_CatmullRom(SceneNode* node);
+OceanNodeData*   sg_Ocean(SceneNode* node);
 
 // ---- Camera helpers for project code ---------------------------------------
 // Returns the Camera for a camera node — edit position/target/fov directly.

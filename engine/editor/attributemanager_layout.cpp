@@ -16,12 +16,14 @@ static void CollectTerrainNodes(SceneNode* node, std::vector<SceneNode*>& terrai
 void ShowModelAttributes(Model* model);
 void ShowSceneNodeAttributes(SceneNode* node);
 void ShowTerrainAttributes(SceneNode* node);
+void ShowOceanAttributes(SceneNode* node);
 
 #include "terrain_attribute_layout.cpp"
 #include "skybox_attribute_layout.cpp"
 #include "catmulattributes_layout.cpp"
 #include "clouds_attribute_layout.cpp"
 #include "sky_atmosphere_layout.cpp"
+#include "ocean_attribute_layout.cpp"
 
 
 // File-scope browser for instance model selection
@@ -498,6 +500,8 @@ void ShowSceneNodeAttributes(SceneNode* node) {
         ShowVolumetricCloudAttributes(node);
     } else if (node->type == ENTITY_SKY_ATMOSPHERE) {
         ShowSkyAtmosphereAttributes(node);
+    } else if (node->type == ENTITY_OCEAN) {
+        ShowOceanAttributes(node);
     } else if (node->type == ENTITY_FOG) {
         RenderEntitySection(node);
     } else if (node->type == ENTITY_EMPTY && node->sourcePath[0] != '\0') {

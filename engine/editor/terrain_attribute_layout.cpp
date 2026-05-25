@@ -1,10 +1,29 @@
 #include "engine/core/gl/structs.h"
 #include "engine/dependancies/imgui/imgui.h"
+#include "engine/dependancies/imgui/imfilebrowser.h"
 #include <stdio.h>
+#include <string>
 
 void ShowTerrainAttributes(SceneNode* node) {
     if (!node || node->type != ENTITY_TERRAIN) return;
     TerrainNodeData* data = &node->data.terrain;
+
+    static ImGui::FileBrowser diffuseBrowser(ImGuiFileBrowserFlags_CloseOnEsc);
+    static ImGui::FileBrowser normalBrowser(ImGuiFileBrowserFlags_CloseOnEsc);
+    static ImGui::FileBrowser armBrowser(ImGuiFileBrowserFlags_CloseOnEsc);
+    static ImGui::FileBrowser dispBrowser(ImGuiFileBrowserFlags_CloseOnEsc);
+    static bool browsersInited = false;
+    if (!browsersInited) {
+        diffuseBrowser.SetTitle("Select Diffuse Texture");
+        diffuseBrowser.SetTypeFilters({ ".png", ".jpg", ".tga", ".bmp" });
+        normalBrowser.SetTitle("Select Normal Map");
+        normalBrowser.SetTypeFilters({ ".png", ".jpg", ".tga", ".bmp" });
+        armBrowser.SetTitle("Select ARM Map");
+        armBrowser.SetTypeFilters({ ".png", ".jpg", ".tga", ".bmp" });
+        dispBrowser.SetTitle("Select Displacement Map");
+        dispBrowser.SetTypeFilters({ ".png", ".jpg", ".tga", ".bmp" });
+        browsersInited = true;
+    }
 
     if (ImGui::CollapsingHeader("Seed", ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::InputInt("Seed Value", &data->seed);
@@ -89,13 +108,63 @@ void ShowTerrainAttributes(SceneNode* node) {
     }
 
     if (ImGui::CollapsingHeader("PBR Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
-        const char* materialNames[] = { "Aerial Beach", "Gray Rocks" };
-        ImGui::Combo("Material", &data->materialIndex, materialNames, 2);
+        const char* materialNames[] = { "Aerial Beach", "Gray Rocks", "Red Mud Stones", "Custom" };
+        int currentIdx = data->materialIndex;
+        if (currentIdx == -1) currentIdx = 3; // "Custom"
+        
+        if (ImGui::Combo("Material", &currentIdx, materialNames, 4)) {
+            if (currentIdx == 3) data->materialIndex = -1;
+            else data->materialIndex = currentIdx;
+            
+            extern void switchTerrainMaterial(int materialIndex);
+            switchTerrainMaterial(data->materialIndex);
+        }
+        
+        if (data->materialIndex == -1) {
+            ImGui::Indent();
+            ImGui::Text("Custom Textures:");
+            
+            auto pathSelector = [](const char* label, char* buffer, ImGui::FileBrowser& browser) {
+                ImGui::Text("%s:", label);
+                ImGui::SameLine(100);
+                ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 35);
+                ImGui::InputText((std::string("##") + label).c_str(), buffer, 256);
+                ImGui::SameLine();
+                if (ImGui::Button((std::string("...##") + label).c_str())) {
+                    browser.Open();
+                }
+                
+                browser.Display();
+                if (browser.HasSelected()) {
+                    strncpy(buffer, browser.GetSelected().string().c_str(), 256);
+                    browser.ClearSelected();
+                }
+            };
+            
+            pathSelector("Diffuse", data->diffusePath, diffuseBrowser);
+            pathSelector("Normal",  data->normalPath,  normalBrowser);
+            pathSelector("ARM",     data->armPath,     armBrowser);
+            pathSelector("Disp",    data->dispPath,    dispBrowser);
+            
+            if (ImGui::Button("Apply Custom Textures", ImVec2(-1, 25))) {
+                extern void switchTerrainMaterial(int materialIndex);
+                switchTerrainMaterial(-1);
+            }
+            ImGui::Unindent();
+            ImGui::Spacing();
+        }
         
         ImGui::Checkbox("Diffuse Map",                    &data->enableDiffuse);
         ImGui::Checkbox("Normal Map",                     &data->enableNormal);
         ImGui::Checkbox("ARM Map (AO/Roughness/Metallic)",&data->enableARM);
         ImGui::Checkbox("Displacement Map",               &data->enableDisplacement);
+        ImGui::Checkbox("Stochastic Tiling (No Repeat)",  &data->enableStochastic);
+        if (data->enableStochastic) {
+            ImGui::Indent();
+            ImGui::SliderFloat("Stoch. Contrast", &data->stochasticContrast, 1.0f, 32.0f, "%.1f");
+            ImGui::SliderFloat("Stoch. Scale",    &data->stochasticScale,    0.1f, 10.0f, "%.2f");
+            ImGui::Unindent();
+        }
         
         ImGui::SliderFloat("Roughness", &data->roughness, 0.0f, 1.0f);
         ImGui::SliderFloat("Metalness", &data->metalness, 0.0f, 1.0f);

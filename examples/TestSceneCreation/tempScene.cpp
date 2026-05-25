@@ -20,9 +20,14 @@ void scene1Init(void)
     camera = sg_FindByName("NikhilCam");
     spline1 = sg_FindByName("spline1");
     targetspline = spline1;//sg_FindByName("spline2");
-    krushna = sg_FindById(9);
+    krushna = sg_FindById(103);
+
+    if (!camera) { printf("ERROR: NikhilCam not found\n"); return; }
+    if (!spline1) { printf("ERROR: spline1 not found\n"); return; }
+    if (!krushna) { printf("ERROR: Krushna not found\n"); return; }
 
     nikhilcam = sg_Camera(camera);
+    if (!nikhilcam) { printf("ERROR: NikhilCam is not a camera node\n"); return; }
 
     printf("%f, %f, %f \n", nikhilcam->position[0], nikhilcam->position[1], nikhilcam->position[2]);
 
@@ -45,6 +50,7 @@ static float t = 0.0f;
 
 void scene1Update(void)
 {
+    if (!nikhilcam || !spline1 || !krushna) return;
     t += g_DeltaTime;
     // Krushna position change
     //krushna->position = sg_GetSplinePoint(targetspline, t/6.0f);

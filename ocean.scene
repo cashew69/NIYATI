@@ -1,29 +1,22 @@
 Node "Scene Root" EMPTY {
-  id  1
+  id  5
   terrainYOffset  false
   selectedTerrainID  0
   position  0 0 0
   rotation  0 0 0
   scale  1 1 1
 
-  Node "Main Camera" CAMERA {
-    id  2
+  Node "Node" EMPTY {
+    id  6
     terrainYOffset  false
     selectedTerrainID  0
-
-    Camera {
-      position  10 10 10
-      target  0 0 0
-      up  0 1 0
-      roll  0
-      fov  45
-      near  0.1
-      far  10000
-    }
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
   }
 
   Node "Sky Atmosphere" SKY_ATMOSPHERE {
-    id  5
+    id  7
     terrainYOffset  false
     selectedTerrainID  0
     position  0 0 0
@@ -41,7 +34,7 @@ Node "Scene Root" EMPTY {
       mieAnisotropy  0.8
       mieDensityExpScale  -0.8333
       absorptionExtinction  0.00065 0.001881 8.5e-05
-      sunDirection  -0.0587291 -0.139173 -0.988525
+      sunDirection  0 -0.0244322 0.999701
       sunColor  1 1 1
       sunIntensity  20
       sunAngularRadius  0.02
@@ -58,50 +51,27 @@ Node "Scene Root" EMPTY {
     }
   }
 
-  Node "Terrain" TERRAIN {
-    id  7
+  Node "Ocean" OCEAN {
+    id  8
     terrainYOffset  false
     selectedTerrainID  0
     position  0 0 0
     rotation  0 0 0
-    scale  1 1 1
+    scale  8.1 8.1 8.1
 
-    Terrain {
-      heightmapPath  _
-      octaves  12
-      persistence  0.5
-      lacunarity  2
-      seed  0
-      mountainThreshold  0.3
-      desertThreshold  -0.2
-      mountainHeight  50
-      desertHeight  600
-      plainsHeight  20
-      useIslandMask  false
-      islandFalloff  2
-      biomeMode  2
-      ridgeStrength  1
-      turbulence  0
-      terraceLevels  0
-      heightOffset  0
-      meshWidth  256
-      meshDepth  256
-      worldScale  10
-      tessInner  4
-      tessOuter  4
-      displacement  20
-      lodBias  0
-      wireframe  false
-      materialIndex  0
-      uvScale  100
-      enableDiffuse  true
-      enableNormal  true
-      enableARM  true
-      enableDisp  true
-      powerCurve  1
-      heightmapSource  0
-      roughness  1
-      metalness  0
+    Ocean {
+      waveHeight  1
+      waveSpeed  0.01
+      waveRadius  8.35
+      wavePointy  0.83
+      stormIntensity  0.31
+      deepColor  0.01 0.05 0.12
+      shallowColor  0.05 0.25 0.3
+      foamColor  1 1 1
+      roughness  0.1
+      fresnelF0  0.02
+      foamStrength  0
+      normalMapPath  _
     }
   }
 }

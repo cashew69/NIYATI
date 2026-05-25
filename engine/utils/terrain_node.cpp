@@ -58,6 +58,9 @@ extern bool g_enableTerrainDiffuse;
 extern bool g_enableTerrainNormalMap;
 extern bool g_enableTerrainARM;
 extern bool g_enableTerrainDisplacement;
+extern bool g_enableTerrainStochastic;
+extern float g_stochasticContrast;
+extern float g_stochasticScale;
 extern float g_terrainUVScale;
 extern float g_terrainRoughness;
 extern float g_terrainMetalness;
@@ -66,6 +69,11 @@ extern int g_perlinSeed;
 extern float g_turbulence;
 extern int g_terraceLevels;
 extern float g_powerCurve;
+
+extern char g_terrainDiffusePath[256];
+extern char g_terrainNormalPath[256];
+extern char g_terrainARMPath[256];
+extern char g_terrainDispPath[256];
 
 static void SyncNodeToGlobals(TerrainNodeData* data) {
     g_terrainOctaves = data->octaves;
@@ -96,10 +104,17 @@ static void SyncNodeToGlobals(TerrainNodeData* data) {
     g_enableTerrainNormalMap = data->enableNormal;
     g_enableTerrainARM = data->enableARM;
     g_enableTerrainDisplacement = data->enableDisplacement;
+    g_enableTerrainStochastic = data->enableStochastic;
+    g_stochasticContrast = data->stochasticContrast;
+    g_stochasticScale = data->stochasticScale;
     g_terrainUVScale = data->uvScale;
     g_terrainRoughness = data->roughness;
     g_terrainMetalness = data->metalness;
     g_terrainMaterialIndex = data->materialIndex;
+    strncpy(g_terrainDiffusePath, data->diffusePath, 256);
+    strncpy(g_terrainNormalPath,  data->normalPath,  256);
+    strncpy(g_terrainARMPath,     data->armPath,     256);
+    strncpy(g_terrainDispPath,    data->dispPath,    256);
     g_perlinSeed = data->seed;
     g_turbulence = data->turbulence;
     g_terraceLevels = data->terraceLevels;
@@ -140,10 +155,17 @@ static void SyncGlobalsToNode(TerrainNodeData* data) {
     data->enableNormal = g_enableTerrainNormalMap;
     data->enableARM = g_enableTerrainARM;
     data->enableDisplacement = g_enableTerrainDisplacement;
+    data->enableStochastic = g_enableTerrainStochastic;
+    data->stochasticContrast = g_stochasticContrast;
+    data->stochasticScale = g_stochasticScale;
     data->uvScale = g_terrainUVScale;
     data->roughness = g_terrainRoughness;
     data->metalness = g_terrainMetalness;
     data->materialIndex = g_terrainMaterialIndex;
+    strncpy(data->diffusePath, g_terrainDiffusePath, 256);
+    strncpy(data->normalPath,  g_terrainNormalPath,  256);
+    strncpy(data->armPath,     g_terrainARMPath,     256);
+    strncpy(data->dispPath,    g_terrainDispPath,    256);
     data->seed = g_perlinSeed;
     data->turbulence = g_turbulence;
     data->terraceLevels = g_terraceLevels;
@@ -185,6 +207,9 @@ void sg_InitTerrainNode(SceneNode* node) {
         data->enableNormal = true;
         data->enableARM = true;
         data->enableDisplacement = true;
+        data->enableStochastic = false;
+        data->stochasticContrast = 8.0f;
+        data->stochasticScale = 1.0f;
         data->powerCurve = 1.0f;
     }
 

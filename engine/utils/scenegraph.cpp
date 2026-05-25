@@ -491,14 +491,14 @@ int   g_FogType = 0;
 bool  g_FogEnabled = false;
 
 // Aerial perspective globals — populated each frame from the sky atmosphere node
-static bool   g_AerialActive     = false;
-static GLuint g_AerialTransLUT   = 0;
-static GLuint g_AerialSkyViewLUT = 0;
-static float  g_AtmBotR          = 6360.0f;
-static float  g_AtmTopR          = 6420.0f;
-static float  g_AtmCamHeight     = 6360.001f;
-static float  g_AtmWorldScale    = 0.001f;
-static float  g_AtmExposure      = 10.0f;
+bool   g_AerialActive     = false;
+GLuint g_AerialTransLUT   = 0;
+GLuint g_AerialSkyViewLUT = 0;
+float  g_AtmBotR          = 6360.0f;
+float  g_AtmTopR          = 6420.0f;
+float  g_AtmCamHeight     = 6360.001f;
+float  g_AtmWorldScale    = 0.001f;
+float  g_AtmExposure      = 10.0f;
 
 static void setAerialPerspUniforms(ShaderProgram* program) {
     if (!program) return;
@@ -550,6 +550,10 @@ static void sg_DrawModelNode(SceneNode* node, mat4 view, mat4 proj) {
     glUniformMatrix4fv(program->loc.uProjection, 1, GL_FALSE, proj);
     glUniformMatrix4fv(program->loc.uView,       1, GL_FALSE, view);
     glUniformMatrix4fv(program->loc.uModel,      1, GL_FALSE, node->world_matrix);
+
+    // Set default UV scale for models to 1.0 to avoid invisible textures
+    glUniform1f(program->loc.uUVScale, 1.0f);
+    glUniform1i(program->loc.uEnableStochastic, 0); // Always off for standard models
 
     vec3 viewPos = GetActiveCameraPosition();
     glUniform3fv(program->loc.uViewPos,    1, (float*)&viewPos);
@@ -695,6 +699,10 @@ void sg_DrawNode(SceneNode* node, mat4 view, mat4 proj, int* nodesDrawn) {
     } else if (node->type == ENTITY_SKY_ATMOSPHERE) {
         extern void sg_RenderSkyAtmosphereNode(SceneNode* node, mat4 view, mat4 proj);
         sg_RenderSkyAtmosphereNode(node, view, proj);
+        if (nodesDrawn) (*nodesDrawn)++;
+    } else if (node->type == ENTITY_OCEAN) {
+        extern void sg_DrawOceanNode(SceneNode* node, mat4 view, mat4 proj);
+        sg_DrawOceanNode(node, view, proj);
         if (nodesDrawn) (*nodesDrawn)++;
     }
     sg_DrawChildrenOrdered(node, view, proj, nodesDrawn);
@@ -1147,6 +1155,8 @@ void RenderSceneModels(mat4 view, mat4 proj) {
             } else if (n->type == ENTITY_INSTANCE || n->type == ENTITY_TERRAIN ||
                        n->type == ENTITY_CATMULLROMSPLINE) {
                 opaqueItems.push_back({n, d2});
+            } else if (n->type == ENTITY_OCEAN) {
+                transparentItems.push_back({n, d2});
             }
 
             for (int i = 0; i < n->num_children; i++) self(self, n->children[i]);
@@ -1190,6 +1200,9 @@ void RenderSceneModels(mat4 view, mat4 proj) {
                 sg_RenderVolumetricCloudNode(n, view, proj);
             } else if (n->type == ENTITY_CATMULLROMSPLINE) {
                 sg_RenderCatmullRomNode(n, view, proj);
+            } else if (n->type == ENTITY_OCEAN) {
+                extern void sg_DrawOceanNode(SceneNode* node, mat4 view, mat4 proj);
+                sg_DrawOceanNode(n, view, proj);
             }
         };
 
@@ -1291,6 +1304,18 @@ void RenderSceneModels(mat4 view, mat4 proj) {
                 for (int i = 0; i < n->num_children; i++) self(self, n->children[i]);
             };
             drawAtmo(drawAtmo, g_SceneRoot);
+        }
+
+        // Ocean is not in BVH — walk the tree and render all ocean nodes
+        {
+            extern void sg_DrawOceanNode(SceneNode* node, mat4 view, mat4 proj);
+            auto drawOceans = [&](auto& self, SceneNode* n) -> void {
+                if (!n) return;
+                if (n->type == ENTITY_OCEAN)
+                    sg_DrawOceanNode(n, view, proj);
+                for (int i = 0; i < n->num_children; i++) self(self, n->children[i]);
+            };
+            drawOceans(drawOceans, g_SceneRoot);
         }
 
         int totalBVHModels = 0;
@@ -1434,6 +1459,9 @@ void sg_InitNode(SceneNode* node) {
         fd->end = 1000.0f;
         fd->type = 0;
         fd->enabled = true;
+    } else if (node->type == ENTITY_OCEAN) {
+        extern void sg_InitOceanNode(SceneNode* node);
+        sg_InitOceanNode(node);
     }
 
     for (int i = 0; i < node->num_children; i++) {
@@ -1475,6 +1503,7 @@ Mesh*            sg_Mesh(SceneNode* n)     { return (n && n->type == ENTITY_MODE
 Material*        sg_Material(SceneNode* n) { return (n && n->type == ENTITY_MODEL)     ? &n->data.mesh.material  : nullptr; }
 InstanceData*    sg_Instance(SceneNode* n) { return (n && n->type == ENTITY_INSTANCE)  ? &n->data.instance       : nullptr; }
 TerrainNodeData* sg_Terrain(SceneNode* n)  { return (n && n->type == ENTITY_TERRAIN)   ? &n->data.terrain        : nullptr; }
+OceanNodeData*   sg_Ocean(SceneNode* n)   { return (n && n->type == ENTITY_OCEAN)     ? &n->data.ocean          : nullptr; }
 
 // Returns Camera* for a camera node — edit position/target/fov directly.
 Camera* sg_GetCamera(SceneNode* n) {

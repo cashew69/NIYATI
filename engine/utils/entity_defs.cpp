@@ -98,6 +98,15 @@ static const AttrDesc kTerrain[] = {
     { "heightmapSource", ATTR_INT,    (int)offsetof(TerrainNodeData, heightmapSource),     1.0f,  0,     1,     0   },
     { "roughness",       ATTR_FLOAT,  (int)offsetof(TerrainNodeData, roughness),           0.01f, 0,     1,     0   },
     { "metalness",       ATTR_FLOAT,  (int)offsetof(TerrainNodeData, metalness),           0.01f, 0,     1,     0   },
+    
+    // NEW FIELDS (Added at end)
+    { "enableStoch",     ATTR_BOOL,   (int)offsetof(TerrainNodeData, enableStochastic),    0,     0,     0,     0   },
+    { "stochContrast",   ATTR_FLOAT,  (int)offsetof(TerrainNodeData, stochasticContrast), 0.1f,  1,     32,    0   },
+    { "stochScale",      ATTR_FLOAT,  (int)offsetof(TerrainNodeData, stochasticScale),    0.01f, 0.1f,  10,    0   },
+    { "diffusePath",     ATTR_STRING, (int)offsetof(TerrainNodeData, diffusePath),         0,     0,     0,     256 },
+    { "normalPath",      ATTR_STRING, (int)offsetof(TerrainNodeData, normalPath),          0,     0,     0,     256 },
+    { "armPath",         ATTR_STRING, (int)offsetof(TerrainNodeData, armPath),             0,     0,     0,     256 },
+    { "dispPath",        ATTR_STRING, (int)offsetof(TerrainNodeData, dispPath),            0,     0,     0,     256 },
 };
 
 // ---- Skybox ---------------------------------------------------------------
@@ -229,6 +238,22 @@ static const AttrDesc kSkyAtmosphere[] = {
     { "shadowPolyUnits",         ATTR_FLOAT,  (int)offsetof(SkyAtmosphereNodeData, shadowPolyUnits),        0.1f,    0,        64,     0 },
 };
 
+// ---- Ocean -----------------------------------------------------------------
+static const AttrDesc kOcean[] = {
+    { "waveHeight",    ATTR_FLOAT,  (int)offsetof(OceanNodeData, waveHeight),    0.05f, 0.01f, 20.0f, 0   },
+    { "waveSpeed",     ATTR_FLOAT,  (int)offsetof(OceanNodeData, waveSpeed),     0.05f, 0.01f, 10.0f, 0   },
+    { "waveRadius",    ATTR_FLOAT,  (int)offsetof(OceanNodeData, waveRadius),    0.05f, 0.05f, 10.0f, 0   },
+    { "wavePointy",    ATTR_FLOAT,  (int)offsetof(OceanNodeData, wavePointiness),0.05f, 0.1f,  4.0f,  0   },
+    { "stormIntensity",ATTR_FLOAT,  (int)offsetof(OceanNodeData, stormIntensity),0.01f, 0.0f,  1.0f,  0   },
+    { "deepColor",     ATTR_COLOR3, (int)offsetof(OceanNodeData, deepColor),     0.01f, 0,     0,     0   },
+    { "shallowColor",  ATTR_COLOR3, (int)offsetof(OceanNodeData, shallowColor),  0.01f, 0,     0,     0   },
+    { "foamColor",     ATTR_COLOR3, (int)offsetof(OceanNodeData, foamColor),     0.01f, 0,     0,     0   },
+    { "roughness",     ATTR_FLOAT,  (int)offsetof(OceanNodeData, roughness),     0.01f, 0.01f, 1.0f,  0   },
+    { "fresnelF0",     ATTR_FLOAT,  (int)offsetof(OceanNodeData, fresnelF0),     0.005f,0.001f,0.5f,  0   },
+    { "foamStrength",  ATTR_FLOAT,  (int)offsetof(OceanNodeData, foamStrength),  0.01f, 0.0f,  1.0f,  0   },
+    { "normalMapPath", ATTR_STRING, (int)offsetof(OceanNodeData, normalMapPath), 0,     0,     0,     256 },
+};
+
 // ---- Fog -------------------------------------------------------------------
 static const AttrDesc kFog[] = {
     { "color",   ATTR_COLOR3, (int)offsetof(FogNodeData, color),   0.01f, 0,    0,    0 },
@@ -254,6 +279,7 @@ const EntityDesc g_EntityTable[] = {
     { ENTITY_VOLUMETRIC_CLOUD,   "VOLUMETRIC_CLOUD",   "VolumetricCloud",   kVolumetricCloud,  NELEM(kVolumetricCloud),  offsetof(SceneNode, data.volumetricCloud)  },
     { ENTITY_SKY_ATMOSPHERE,    "SKY_ATMOSPHERE",     "SkyAtmosphere",     kSkyAtmosphere,    NELEM(kSkyAtmosphere),    offsetof(SceneNode, data.skyAtmosphere)    },
     { ENTITY_FOG,               "FOG",                "Fog",               kFog,              NELEM(kFog),             offsetof(SceneNode, data.fog)              },
+    { ENTITY_OCEAN,             "OCEAN",              "Ocean",             kOcean,            NELEM(kOcean),           offsetof(SceneNode, data.ocean)            },
 };
 const int g_EntityTableCount = NELEM(g_EntityTable);
 

@@ -320,12 +320,14 @@ Bool buildShaderProgram(const GLchar **SourceCodes, GLenum* shaderTypes, int sha
             fprintf(gpFile, "Error: Failed to compile %s shader\n", getShaderTypeName(shaderTypes[i]));
             
             freeThyShaderProgram(*program);
+            *program = NULL;
             return False;
         }
     }
 
     if (!shaderLink(shaders, shaderCount, *program, attribNames, attribIndices, attribCount)) {
         freeThyShaderProgram(*program);
+        *program = NULL;
         return False;
     }
 

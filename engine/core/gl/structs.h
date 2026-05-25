@@ -159,6 +159,11 @@ typedef struct {
     GLint uAtmCamHeight;
     GLint uAtmWorldScale;
     GLint uAtmExposure;
+
+    // NEW FIELDS (Added at end)
+    GLint uEnableStochastic;
+    GLint uStochasticContrast;
+    GLint uStochasticScale;
 } ShaderLocations;
 
 typedef struct {
@@ -281,7 +286,7 @@ typedef struct {
     GLuint heightmapTex;
     GLuint normalMapTex;
     GLuint displacementMapTex;
-    int    materialIndex;
+    int    materialIndex; // 0..N for presets, -1 for custom
     float  uvScale;
     float  roughness;
     float  metalness;
@@ -297,6 +302,15 @@ typedef struct {
     float* cpuHeightMap;
     int cpuHeightMapWidth;
     int cpuHeightMapHeight;
+
+    // NEW FIELDS (Added at end to preserve offsets of critical pointers above)
+    bool  enableStochastic;
+    float stochasticContrast;
+    float stochasticScale;
+    char  diffusePath[256];
+    char  normalPath[256];
+    char  armPath[256];
+    char  dispPath[256];
 } TerrainNodeData;
 
 typedef struct {
@@ -545,6 +559,32 @@ typedef struct {
     bool  enabled;
 } FogNodeData;
 
+typedef struct {
+    // Wave (serialized)
+    float waveHeight;
+    float waveSpeed;
+    float waveRadius;
+    float wavePointiness;
+    float stormIntensity;   // 0..1 — multiplies toward storm on top of base params
+
+    // Colors (serialized)
+    float deepColor[3];
+    float shallowColor[3];
+    float foamColor[3];
+
+    // Material (serialized)
+    float roughness;
+    float fresnelF0;
+    float foamStrength;
+
+    // Texture path (serialized)
+    char  normalMapPath[256];
+
+    // Runtime only — not serialized
+    GLuint normalMapTex;
+    void*  oceanObj;       // Ocean* — heap-allocated on first draw
+} OceanNodeData;
+
 typedef enum {
     ENTITY_EMPTY,
     ENTITY_MODEL,
@@ -556,7 +596,8 @@ typedef enum {
     ENTITY_CATMULLROMSPLINE,
     ENTITY_VOLUMETRIC_CLOUD,
     ENTITY_SKY_ATMOSPHERE,
-    ENTITY_FOG
+    ENTITY_FOG,
+    ENTITY_OCEAN
 } NodeType;
 
 typedef enum {
@@ -630,6 +671,7 @@ typedef struct SceneNode {
         VolumetricCloudNodeData volumetricCloud;
         SkyAtmosphereNodeData   skyAtmosphere;
         FogNodeData             fog;
+        OceanNodeData           ocean;
     } data;
 
     const char *name;

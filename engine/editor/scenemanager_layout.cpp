@@ -109,6 +109,11 @@ static SceneNode* sg_DuplicateDeep(SceneNode* src, bool topLevel) {
         sa->quadProg          = 0;
         sa->lutsDirty         = true;
         sg_InitNode(copy);
+    } else if (copy->type == ENTITY_OCEAN) {
+        OceanNodeData* od = &copy->data.ocean;
+        od->normalMapTex = 0;
+        od->oceanObj     = nullptr;
+        sg_InitNode(copy);
     }
 
     for (int i = 0; i < src->num_children; i++) {
@@ -146,6 +151,7 @@ static const char* NodeTypeTag(NodeType t) {
         case ENTITY_VOLUMETRIC_CLOUD: return "[VC]";
         case ENTITY_SKY_ATMOSPHERE:   return "[SA]";
         case ENTITY_FOG:              return "[F]";
+        case ENTITY_OCEAN:            return "[OC]";
         default:              return "[ ]";
     }
 }
@@ -162,6 +168,7 @@ static ImVec4 NodeTypeColor(NodeType t) {
         case ENTITY_VOLUMETRIC_CLOUD: return ImVec4(0.70f, 0.90f, 1.00f, 1.0f);
         case ENTITY_SKY_ATMOSPHERE:   return ImVec4(0.50f, 0.75f, 1.00f, 1.0f);
         case ENTITY_FOG:              return ImVec4(0.80f, 0.80f, 0.80f, 1.0f);
+        case ENTITY_OCEAN:            return ImVec4(0.20f, 0.60f, 0.90f, 1.0f);
         default:              return ImVec4(0.70f, 0.70f, 0.70f, 1.0f);
     }
 }
@@ -280,6 +287,9 @@ void showSceneEditorUI()
     static char loadPath[512]  = "scene.scene";
     static int  saveStatus     = 0;
     static int  loadStatus     = 0;
+    static bool s_ReopenSave   = false;
+    static bool s_ReopenLoad   = false;
+    static bool s_DoLoad       = false;
 
     // File browsers — one for each use-case
     static ImGui::FileBrowser modelBrowser(
@@ -301,6 +311,11 @@ void showSceneEditorUI()
     }
 
     ImGui::Begin("Scene Manager");
+
+    // Reopen modals after file browser closes (browser Display() runs after End(),
+    // so flags are used to call OpenPopup from within the correct window context).
+    if (s_ReopenSave) { s_ReopenSave = false; ImGui::OpenPopup("Save Scene##dialog"); }
+    if (s_ReopenLoad) { s_ReopenLoad = false; ImGui::OpenPopup("Load Scene##dialog"); }
 
     float avail = ImGui::GetContentRegionAvail().x;
     float sp    = ImGui::GetStyle().ItemSpacing.x;
@@ -403,6 +418,14 @@ void showSceneEditorUI()
             AddSceneSkyAtmosphere("Sky Atmosphere", to);
             ImGui::CloseCurrentPopup();
         }
+        if (ImGui::Selectable("[OC] Ocean")) {
+            extern SceneNode* AddSceneOcean(const char* name, SceneNode* parent);
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            SceneNode* n  = AddSceneOcean("Ocean", to);
+            g_SceneSelectedType = SEL_SCENENODE;
+            g_SelectedSceneNode = n;
+            ImGui::CloseCurrentPopup();
+        }
         if (ImGui::Selectable("[F]  Fog")) {
             if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
             SceneNode* n = sg_CreateNode(ENTITY_FOG, "Fog");
@@ -445,20 +468,44 @@ void showSceneEditorUI()
         ImGui::Spacing();
         float hw = (ImGui::GetContentRegionAvail().x - sp) * 0.5f;
         if (ImGui::Button("Save", ImVec2(hw, 28))) {
-            saveStatus = (g_SceneRoot && sg_SaveScene(g_SceneRoot, savePath)) ? 1 : -1;
-            if (saveStatus == 1) { ImGui::CloseCurrentPopup(); saveStatus = 0; }
+            FILE* chk = fopen(savePath, "rb");
+            if (chk) {
+                fclose(chk);
+                ImGui::OpenPopup("Overwrite?##confirm");
+            } else {
+                saveStatus = (g_SceneRoot && sg_SaveScene(g_SceneRoot, savePath)) ? 1 : -1;
+            }
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel##save", ImVec2(hw, 28))) { saveStatus = 0; ImGui::CloseCurrentPopup(); }
         if (saveStatus == -1)
             ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Save failed — check path or scene is empty.");
+        if (saveStatus == 1) { saveStatus = 0; ImGui::CloseCurrentPopup(); }
+
+        // Overwrite confirmation — nested popup, opened when file already exists
+        ImGui::SetNextWindowSize(ImVec2(380, 0), ImGuiCond_Always);
+        if (ImGui::BeginPopupModal("Overwrite?##confirm", NULL, ImGuiWindowFlags_NoResize)) {
+            ImGui::TextWrapped("'%s' already exists. Overwrite it?", savePath);
+            ImGui::Spacing();
+            float cw = (ImGui::GetContentRegionAvail().x - sp) * 0.5f;
+            if (ImGui::Button("Overwrite", ImVec2(cw, 28))) {
+                saveStatus = (g_SceneRoot && sg_SaveScene(g_SceneRoot, savePath)) ? 1 : -1;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel##owcancel", ImVec2(cw, 28)))
+                ImGui::CloseCurrentPopup();
+            if (saveStatus == -1)
+                ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Save failed.");
+            ImGui::EndPopup();
+        }
+
         ImGui::EndPopup();
     }
 
     // ---- Load Modal ----
     ImGui::SetNextWindowSize(ImVec2(440, 0), ImGuiCond_Always);
     if (ImGui::BeginPopupModal("Load Scene##dialog", NULL, ImGuiWindowFlags_NoResize)) {
-        ImGui::TextColored(ImVec4(1, 0.8f, 0.2f, 1), "Current scene will be replaced.");
         ImGui::Text("File path:");
         float browseW = 28.0f;
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - browseW - sp);
@@ -471,9 +518,43 @@ void showSceneEditorUI()
         ImGui::Spacing();
         float hw = (ImGui::GetContentRegionAvail().x - sp) * 0.5f;
         if (ImGui::Button("Load", ImVec2(hw, 28))) {
-            // Free old scene FIRST so g_CustomCameras[] is empty before
-            // sg_LoadScene rebuilds it. Loading after freeing ensures camera
-            // indices start from 0 and never collide with stale entries.
+            if (g_SceneRoot)
+                ImGui::OpenPopup("Load Scene?##warn");
+            else
+                s_DoLoad = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel##load", ImVec2(hw, 28))) { loadStatus = 0; ImGui::CloseCurrentPopup(); }
+        if (loadStatus == -1)
+            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Load failed — file not found or invalid format.");
+
+        // Warn before discarding current scene
+        ImGui::SetNextWindowSize(ImVec2(380, 0), ImGuiCond_Always);
+        if (ImGui::BeginPopupModal("Load Scene?##warn", NULL, ImGuiWindowFlags_NoResize)) {
+            ImGui::TextColored(ImVec4(1.0f, 0.75f, 0.2f, 1.0f), "Unsaved changes will be lost!");
+            ImGui::Spacing();
+            ImGui::TextWrapped("Load '%s'?", loadPath);
+            ImGui::Spacing();
+            float cw = (ImGui::GetContentRegionAvail().x - sp * 2.0f) / 3.0f;
+            if (ImGui::Button("Load", ImVec2(cw, 28))) {
+                s_DoLoad = true;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Save & Load", ImVec2(cw, 28))) {
+                if (g_SceneRoot) sg_SaveScene(g_SceneRoot, savePath);
+                s_DoLoad = true;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel##warncancel", ImVec2(cw, 28)))
+                ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
+
+        // Deferred load — executes in load modal scope after warning popup closes
+        if (s_DoLoad) {
+            s_DoLoad = false;
             if (g_SceneRoot) {
                 SceneNode* old = g_SceneRoot;
                 g_SceneRoot = nullptr;
@@ -481,22 +562,18 @@ void showSceneEditorUI()
             }
             g_SelectedSceneNode = nullptr;
             g_SceneSelectedType = SEL_NONE;
-
             SceneNode* loaded = sg_LoadScene(loadPath);
             if (loaded) {
                 g_SceneRoot = loaded;
-                loadStatus  = 0;
+                strncpy(savePath, loadPath, sizeof(savePath));
+                loadStatus = 0;
                 ImGui::CloseCurrentPopup();
             } else {
-                // Load failed — restore an empty root so the editor isn't broken
                 g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
                 loadStatus  = -1;
             }
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel##load", ImVec2(hw, 28))) { loadStatus = 0; ImGui::CloseCurrentPopup(); }
-        if (loadStatus == -1)
-            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Load failed — file not found or invalid format.");
+
         ImGui::EndPopup();
     }
 
@@ -568,8 +645,7 @@ void showSceneEditorUI()
         strncpy(savePath, path.c_str(), sizeof(savePath) - 1);
         savePath[sizeof(savePath) - 1] = '\0';
         saveBrowser.ClearSelected();
-        // Immediately try to re-open the save modal so user can confirm
-        ImGui::OpenPopup("Save Scene##dialog");
+        s_ReopenSave = true;
     }
 
     loadBrowser.Display();
@@ -578,7 +654,6 @@ void showSceneEditorUI()
         strncpy(loadPath, path.c_str(), sizeof(loadPath) - 1);
         loadPath[sizeof(loadPath) - 1] = '\0';
         loadBrowser.ClearSelected();
-        // Re-open the load modal so user can confirm
-        ImGui::OpenPopup("Load Scene##dialog");
+        s_ReopenLoad = true;
     }
 }

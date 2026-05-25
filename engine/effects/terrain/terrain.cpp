@@ -56,10 +56,18 @@ bool g_enableTerrainDiffuse = true;
 bool g_enableTerrainNormalMap = true;
 bool g_enableTerrainARM = true;
 bool g_enableTerrainDisplacement = true;
+bool g_enableTerrainStochastic = false;
+float g_stochasticContrast = 8.0f;
+float g_stochasticScale = 1.0f;
 float g_terrainUVScale = 100.0f;
 float g_terrainRoughness = 1.0f;
 float g_terrainMetalness = 0.0f;
 int g_terrainMaterialIndex = 0;
+
+char g_terrainDiffusePath[256] = "";
+char g_terrainNormalPath[256] = "";
+char g_terrainARMPath[256] = "";
+char g_terrainDispPath[256] = "";
 
 struct TerrainMaterialDef {
     const char* name;
@@ -72,6 +80,7 @@ struct TerrainMaterialDef {
 TerrainMaterialDef g_terrainMaterials[] = {
     {"Aerial Beach", "user/models/moon_assets/aerial_beach_01_diff_1k.png", "user/models/moon_assets/aerial_beach_01_nor_gl_1k.png", "user/models/moon_assets/aerial_beach_01_arm_1k.png", "user/models/moon_assets/aerial_beach_01_disp_1k.png"},
     {"Gray Rocks", "user/models/khadbad/gray_rocks_diff_1k.png", "user/models/khadbad/gray_rocks_nor_gl_1k.png", "user/models/khadbad/gray_rocks_arm_1k.png", "user/models/khadbad/gray_rocks_disp_1k.png"},
+    {"Red Mud Stones", "user/models/Kurukshetra/red_mud_stones_diff_2k.png", "user/models/Kurukshetra/red_mud_stones_nor_gl_2k.png", "user/models/Kurukshetra/red_mud_stones_arm_2k.png", "user/models/Kurukshetra/red_mud_stones_disp_2k.png"},
 };
 int g_terrainMaterialCount = sizeof(g_terrainMaterials) / sizeof(g_terrainMaterials[0]);
 
@@ -385,12 +394,29 @@ Mesh* createTerrainMesh() {
     material.roughness = g_terrainRoughness;
     material.metalness = g_terrainMetalness;
 
-    TerrainMaterialDef* matDef = &g_terrainMaterials[g_terrainMaterialIndex];
+    const char* dPath = "";
+    const char* nPath = "";
+    const char* aPath = "";
+    const char* sPath = "";
 
-    loadPNGTexture(&material.diffuseTexture, const_cast<char*>(matDef->diffusePath), 1);
-    loadPNGTexture(&material.normalTexture, const_cast<char*>(matDef->normalPath), 1);
-    loadPNGTexture(&material.metallicRoughnessTexture, const_cast<char*>(matDef->armPath), 1);
-    loadPNGTexture(&g_terrainDisplacementMap, const_cast<char*>(matDef->dispPath), 1);
+    if (g_terrainMaterialIndex == -1) {
+        dPath = g_terrainDiffusePath;
+        nPath = g_terrainNormalPath;
+        aPath = g_terrainARMPath;
+        sPath = g_terrainDispPath;
+    } else {
+        TerrainMaterialDef* matDef = &g_terrainMaterials[g_terrainMaterialIndex];
+        dPath = matDef->diffusePath;
+        nPath = matDef->normalPath;
+        aPath = matDef->armPath;
+        sPath = matDef->dispPath;
+    }
+
+    if (dPath[0]) loadPNGTexture(&material.diffuseTexture, const_cast<char*>(dPath), 1);
+    if (nPath[0]) loadPNGTexture(&material.normalTexture, const_cast<char*>(nPath), 1);
+    if (aPath[0]) loadPNGTexture(&material.metallicRoughnessTexture, const_cast<char*>(aPath), 1);
+    if (sPath[0]) loadPNGTexture(&g_terrainDisplacementMap, const_cast<char*>(sPath), 1);
+    
     LOG_I("Terrain textures loaded: diffuse=%u normal=%u ARM=%u disp=%u",
           material.diffuseTexture, material.normalTexture,
           material.metallicRoughnessTexture, g_terrainDisplacementMap);
@@ -433,23 +459,45 @@ void regenerateTerrainMesh() {
 }
 
 void switchTerrainMaterial(int materialIndex) {
-    if (materialIndex < 0 || materialIndex >= g_terrainMaterialCount) return;
+    if (materialIndex < -1 || materialIndex >= g_terrainMaterialCount) return;
     if (terrainMesh == NULL) return;
 
     g_terrainMaterialIndex = materialIndex;
-    TerrainMaterialDef* matDef = &g_terrainMaterials[materialIndex];
+
+    const char* dPath = "";
+    const char* nPath = "";
+    const char* aPath = "";
+    const char* sPath = "";
+
+    if (materialIndex == -1) {
+        dPath = g_terrainDiffusePath;
+        nPath = g_terrainNormalPath;
+        aPath = g_terrainARMPath;
+        sPath = g_terrainDispPath;
+    } else {
+        TerrainMaterialDef* matDef = &g_terrainMaterials[materialIndex];
+        dPath = matDef->diffusePath;
+        nPath = matDef->normalPath;
+        aPath = matDef->armPath;
+        sPath = matDef->dispPath;
+    }
 
     if (terrainMesh->material.diffuseTexture) glDeleteTextures(1, &terrainMesh->material.diffuseTexture);
     if (terrainMesh->material.normalTexture) glDeleteTextures(1, &terrainMesh->material.normalTexture);
     if (terrainMesh->material.metallicRoughnessTexture) glDeleteTextures(1, &terrainMesh->material.metallicRoughnessTexture);
     if (g_terrainDisplacementMap) glDeleteTextures(1, &g_terrainDisplacementMap);
 
-    loadPNGTexture(&terrainMesh->material.diffuseTexture, const_cast<char*>(matDef->diffusePath), 1);
-    loadPNGTexture(&terrainMesh->material.normalTexture, const_cast<char*>(matDef->normalPath), 1);
-    loadPNGTexture(&terrainMesh->material.metallicRoughnessTexture, const_cast<char*>(matDef->armPath), 1);
-    loadPNGTexture(&g_terrainDisplacementMap, const_cast<char*>(matDef->dispPath), 1);
+    terrainMesh->material.diffuseTexture = 0;
+    terrainMesh->material.normalTexture = 0;
+    terrainMesh->material.metallicRoughnessTexture = 0;
+    g_terrainDisplacementMap = 0;
 
-    LOG_I("Switched terrain material to: %s", matDef->name);
+    if (dPath[0]) loadPNGTexture(&terrainMesh->material.diffuseTexture, const_cast<char*>(dPath), 1);
+    if (nPath[0]) loadPNGTexture(&terrainMesh->material.normalTexture, const_cast<char*>(nPath), 1);
+    if (aPath[0]) loadPNGTexture(&terrainMesh->material.metallicRoughnessTexture, const_cast<char*>(aPath), 1);
+    if (sPath[0]) loadPNGTexture(&g_terrainDisplacementMap, const_cast<char*>(sPath), 1);
+
+    LOG_I("Switched terrain material to: %s", (materialIndex == -1) ? "Custom" : g_terrainMaterials[materialIndex].name);
 }
 
 // ============================================================================
@@ -546,6 +594,10 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix, mat4 view, mat4 proj) {
     }
 
     glUniform1i(loc.uHasDisplacementMap, g_enableTerrainDisplacement && g_terrainDisplacementMap != 0);
+    glUniform1i(loc.uEnableStochastic, g_enableTerrainStochastic ? 1 : 0);
+    glUniform1f(loc.uStochasticContrast, g_stochasticContrast > 0.0f ? g_stochasticContrast : 8.0f);
+    glUniform1f(loc.uStochasticScale, g_stochasticScale > 0.0f ? g_stochasticScale : 1.0f);
+    glUniform1f(loc.uUVScale, g_terrainUVScale > 0.0f ? g_terrainUVScale : 100.0f);
 
     // Shadow uniforms — Bind the depth texture on slot 9 (matches the
     // layout(binding = 9) sampler2DShadow uShadowMap in pbrFrag.glsl).

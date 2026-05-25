@@ -68,26 +68,26 @@ Node "Root" EMPTY {
       topRadius  6460
       groundAlbedo  0.3 0.3 0.3
       rayleighScattering  0.005802 0.013558 0.0331
-      rayleighDensityExpScale  -0.125
+      rayleighDensityExpScale  -1
       mieScattering  0.003996
       mieAbsorption  0.000444
       mieAnisotropy  0.8
       mieDensityExpScale  -0.8333
       absorptionExtinction  0.00065 0.001881 8.5e-05
-      sunDirection  0.355246 0.262189 -0.89725
-      sunColor  0.990196 0.773198 0.529075
+      sunDirection  0.659901 -0.0174524 0.75115
+      sunColor  1 1 1
       sunIntensity  20
       sunAngularRadius  0.02
       worldScale  0.001
       exposure  20
       castShadow  true
       shadowResolution  2048
-      shadowBias  0.0037
-      shadowOrthoSize  500
+      shadowBias  0.0026
+      shadowOrthoSize  1000
       shadowNear  0.1
-      shadowFar  1074
-      shadowPolyFactor  16
-      shadowPolyUnits  34
+      shadowFar  5000
+      shadowPolyFactor  0
+      shadowPolyUnits  0.2
     }
   }
 
@@ -113,8 +113,8 @@ Node "Root" EMPTY {
       noiseRes  2
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.355246 0.262189 -0.89725
-      sunColor  0.990196 0.773198 0.529075
+      sunDirection  0.659901 -0.0174524 0.75115
+      sunColor  1 1 1
       sunIntensity  20
       ambientStrength  1.2
       scatterG  0.35
@@ -246,19 +246,26 @@ Node "Root" EMPTY {
       worldScale  15
       tessInner  4
       tessOuter  4
-      displacement  10
-      lodBias  0
+      displacement  85
+      lodBias  5
       wireframe  false
-      materialIndex  0
-      uvScale  86.6
+      materialIndex  2
+      uvScale  500
       enableDiffuse  true
       enableNormal  true
-      enableARM  false
+      enableARM  true
       enableDisp  true
       powerCurve  1
       heightmapSource  0
       roughness  1
-      metalness  0
+      metalness  0.004
+      enableStoch  true
+      stochContrast  1
+      stochScale  0.9
+      diffusePath  _
+      normalPath  _
+      armPath  _
+      dispPath  _
     }
   }
 
@@ -339,8 +346,8 @@ Node "Root" EMPTY {
     id  103
     terrainYOffset  false
     selectedTerrainID  0
-    position  -77.8 0.4 -625.1
-    rotation  90 14.5 0
+    position  -77.8 2.4 -627.5
+    rotation  90 -10.5 0
     scale  30 30 30
 
     Node "Mesh_0" MODEL {
@@ -361,6 +368,36 @@ Node "Root" EMPTY {
         useEmissiveTexture  true
         roughness  0
         metalness  0
+      }
+    }
+
+    Node "Model" EMPTY {
+      id  132
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  -0.18 0.2 -1.14
+      rotation  -99.5 0 0
+      scale  0.401 0.401 0.401
+
+      Node "mesh_rep_0_ori_repair" MODEL {
+        id  133
+        terrainYOffset  false
+        selectedTerrainID  0
+        position  0 0 0
+        rotation  0 0 0
+        scale  1 1 1
+        sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user/wheel.glb
+        meshIndex   0
+
+        Material {
+          useDiffuseTexture  true
+          useNormalTexture  true
+          useORMTexture  true
+          useAOTexture  true
+          useEmissiveTexture  true
+          roughness  0
+          metalness  0
+        }
       }
     }
   }
@@ -429,6 +466,11 @@ Node "Root" EMPTY {
     id  111
     terrainYOffset  false
     selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    100
+      targetIndex  2
+    }
     position  -793.7 647.1 417.9
     rotation  0 0 0
     scale  1 1 1
@@ -447,8 +489,8 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.355246 0.262189 -0.89725
-      sunColor  0.990196 0.773198 0.529075
+      sunDirection  0.659901 -0.0174524 0.75115
+      sunColor  1 1 1
       sunIntensity  20
       ambientStrength  1.2
       scatterG  0.35
@@ -510,6 +552,11 @@ Node "Root" EMPTY {
     id  112
     terrainYOffset  false
     selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    100
+      targetIndex  2
+    }
     position  -631.6 444.5 -2000
     rotation  0 0 0
     scale  1 1 1
@@ -528,8 +575,8 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.355246 0.262189 -0.89725
-      sunColor  0.990196 0.773198 0.529075
+      sunDirection  0.659901 -0.0174524 0.75115
+      sunColor  1 1 1
       sunIntensity  20
       ambientStrength  1.2
       scatterG  0.35
@@ -591,6 +638,11 @@ Node "Root" EMPTY {
     id  113
     terrainYOffset  false
     selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    100
+      targetIndex  2
+    }
     position  600 444.5 -2000
     rotation  0 0 0
     scale  1 1 1
@@ -609,8 +661,8 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.355246 0.262189 -0.89725
-      sunColor  0.990196 0.773198 0.529075
+      sunDirection  0.659901 -0.0174524 0.75115
+      sunColor  1 1 1
       sunIntensity  20
       ambientStrength  1.2
       scatterG  0.35
@@ -672,6 +724,11 @@ Node "Root" EMPTY {
     id  114
     terrainYOffset  false
     selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    100
+      targetIndex  2
+    }
     position  204.9 486.2 -1012.1
     rotation  0 0 0
     scale  1 1 1
@@ -690,8 +747,8 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.355246 0.262189 -0.89725
-      sunColor  0.990196 0.773198 0.529075
+      sunDirection  0.659901 -0.0174524 0.75115
+      sunColor  1 1 1
       sunIntensity  20
       ambientStrength  1.2
       scatterG  0.35
