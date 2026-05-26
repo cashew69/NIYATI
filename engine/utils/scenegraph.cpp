@@ -522,6 +522,7 @@ bool   g_ShadowActive     = false;
 mat4   g_ShadowSBPV;
 GLuint g_ShadowDepthTexID = 0;
 float  g_ShadowBias       = 0.002f;
+float  g_ShadowMinLight   = 0.15f;
 
 void setFogUniforms(ShaderProgram* program) {
     if (!program) return;
@@ -606,6 +607,8 @@ static void sg_DrawModelNode(SceneNode* node, mat4 view, mat4 proj) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
             glUniform1i(program->loc.uShadowMap, 9);
             glUniform1f(program->loc.uShadowBias, g_ShadowBias);
+            if (program->loc.uShadowMinLight >= 0)
+                glUniform1f(program->loc.uShadowMinLight, g_ShadowMinLight);
 
             static int s_dbgDraws = 0;
             if (s_dbgDraws < 2) {
@@ -921,6 +924,12 @@ void RenderSceneModels(mat4 view, mat4 proj) {
     SceneNode* skyNode = findSkyProvider(findSkyProvider, g_SceneRoot);
     useIBL = (irradianceMap != 0); // If we have baked IBL maps, use them.
 
+    // Sun params captured from atmosphere; used as additive pass when explicit lights are present.
+    bool  hasSunLight       = false;
+    vec3  sunLightDir       = vec3(0.0f, -1.0f, 0.0f);
+    vec3  sunLightColor     = vec3(1.0f, 1.0f, 1.0f);
+    float sunLightIntensity = 1.0f;
+
     // Update aerial perspective globals from atmosphere node
     g_AerialActive = false;
     if (skyNode && skyNode->type == ENTITY_SKY_ATMOSPHERE) {
@@ -981,6 +990,24 @@ void RenderSceneModels(mat4 view, mat4 proj) {
             for (int i = 0; i < n->num_children; i++) self(self, n->children[i]);
         };
         syncClouds(syncClouds, g_SceneRoot);
+
+        // Compute world-space sun direction (sunDirection points toward sun; negate for light-travel dir).
+        vec3 sd  = atmo->sunDirection;
+        float len = sqrtf(sd[0]*sd[0] + sd[1]*sd[1] + sd[2]*sd[2]);
+        if (len > 1e-5f) { sd[0] /= len; sd[1] /= len; sd[2] /= len; }
+        sunLightDir       = vec3(-sd[0], -sd[1], -sd[2]);
+        sunLightColor     = atmo->sunColor;
+        sunLightIntensity = atmo->sunIntensity;
+        hasSunLight       = true;
+        // Only take over the primary light slot when no explicit light node is present.
+        // When lights exist the sun is composited as an additive directional pass so
+        // Point/Spot/Directional nodes and the atmosphere sun can coexist.
+        if (sceneLightCount == 0) {
+            lightType      = 0;
+            lightDir       = sunLightDir;
+            lightColor     = sunLightColor;
+            lightIntensity = sunLightIntensity;
+        }
     }
 
     // Shadow pass — render depth from light's POV before main camera pass
@@ -1343,8 +1370,10 @@ void RenderSceneModels(mat4 view, mat4 proj) {
         sg_DrawNode(g_SceneRoot, view, proj, &g_VisibleModelCount);
     }
 
-    // Additive passes for each extra light (lights[1..N])
-    if (sceneLightCount > 1) {
+    // Additive passes: extra explicit lights (lights[1..N]) + atmosphere sun when explicit lights exist.
+    // The sun is only additive here; when no explicit lights exist it was already set as the primary.
+    bool needSunPass = hasSunLight && sceneLightCount > 0;
+    if (sceneLightCount > 1 || needSunPass) {
         bool savedIBL = useIBL;
         useIBL = false;
         g_forceAdditiveBlend = true;
@@ -1354,6 +1383,13 @@ void RenderSceneModels(mat4 view, mat4 proj) {
         glDepthMask(GL_FALSE);
         for (int li = 1; li < sceneLightCount; li++) {
             syncLightGlobals(sceneLights[li]);
+            sg_DrawLitGeo(g_SceneRoot, view, proj);
+        }
+        if (needSunPass) {
+            lightType      = 0;
+            lightDir       = sunLightDir;
+            lightColor     = sunLightColor;
+            lightIntensity = sunLightIntensity;
             sg_DrawLitGeo(g_SceneRoot, view, proj);
         }
         g_forceAdditiveBlend = false;

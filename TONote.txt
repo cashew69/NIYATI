@@ -4,3 +4,7 @@
 4. studypbrpipeline and glsl shader
 5. NVDFV Generation
 6. Studying Noise generation algorithms in detail
+7. PCSS and PCF shadows
+8. Henyey-Greenstein phase function
+9. Oren-Nayar BRDF
+10. Hapke full and simplified BRDF

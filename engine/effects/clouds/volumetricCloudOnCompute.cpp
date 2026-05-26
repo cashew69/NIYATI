@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <time.h>
 #include <math.h>
+// stb_image_write implementation lives in terrain.cpp (unity build).
+extern int stbi_write_png(const char*, int, int, int, const void*, int);
 
 // ---- Engine externs --------------------------------------------------------
 extern FILE*       gpFile;
@@ -40,6 +42,13 @@ static struct {
 
 static struct {
     GLint width, height, seed;
+    GLint patternType;
+    GLint centerX, centerY;
+    GLint arms;
+    GLint tightness, falloffRadius;
+    GLint bandAngle, bandWidth, bandSpacing, bandTurbulence;
+    GLint noiseFreq, coverageScale;
+    GLint coverageMin, coverageMax;
 } s_WeatherGenLoc;
 
 // Noise textures are expensive to generate and identical across all cloud nodes,
@@ -72,12 +81,45 @@ static void vcCloud_BakeDetailNoiseGPU(GLuint tex, int N) {
     glUseProgram(0);
 }
 
-static void vcCloud_BakeWeatherMapGPU(GLuint tex, int w, int h, unsigned seed) {
+static void vcCloud_BakeWeatherMapGPU(GLuint tex, int w, int h, unsigned seed,
+                                      VolumetricCloudNodeData* c) {
     if (!s_WeatherGenProg) return;
     glUseProgram(s_WeatherGenProg);
-    glUniform1i(s_WeatherGenLoc.width, w);
-    glUniform1i(s_WeatherGenLoc.height, h);
-    glUniform1ui(s_WeatherGenLoc.seed, seed);
+    glUniform1i (s_WeatherGenLoc.width,  w);
+    glUniform1i (s_WeatherGenLoc.height, h);
+    glUniform1ui(s_WeatherGenLoc.seed,   seed);
+
+    // Pattern parameters — use defaults if no node data supplied
+    int   patternType   = c ? c->weatherGen.patternType   : 0;
+    float centerX       = c ? c->weatherGen.centerX       : 0.5f;
+    float centerY       = c ? c->weatherGen.centerY       : 0.5f;
+    int   arms          = c ? c->weatherGen.arms          : 2;
+    float tightness     = c ? c->weatherGen.tightness     : 5.0f;
+    float falloffRadius = c ? c->weatherGen.falloffRadius : 0.4f;
+    float bandAngle     = c ? c->weatherGen.bandAngle     : 0.0f;
+    float bandWidth     = c ? c->weatherGen.bandWidth     : 0.4f;
+    float bandSpacing   = c ? c->weatherGen.bandSpacing   : 0.15f;
+    float bandTurbulence= c ? c->weatherGen.bandTurbulence: 0.05f;
+    float noiseFreq     = c ? c->weatherGen.noiseFreq     : 1.0f;
+    float coverageScale = c ? c->weatherGen.coverageScale : 0.6f;
+    float coverageMin   = c ? c->weatherGen.coverageMin   : 0.0f;
+    float coverageMax   = c ? c->weatherGen.coverageMax   : 1.0f;
+
+    glUniform1i (s_WeatherGenLoc.patternType,    patternType);
+    glUniform1f (s_WeatherGenLoc.centerX,        centerX);
+    glUniform1f (s_WeatherGenLoc.centerY,        centerY);
+    glUniform1i (s_WeatherGenLoc.arms,           arms);
+    glUniform1f (s_WeatherGenLoc.tightness,      tightness);
+    glUniform1f (s_WeatherGenLoc.falloffRadius,  falloffRadius);
+    glUniform1f (s_WeatherGenLoc.bandAngle,      bandAngle);
+    glUniform1f (s_WeatherGenLoc.bandWidth,      bandWidth);
+    glUniform1f (s_WeatherGenLoc.bandSpacing,    bandSpacing);
+    glUniform1f (s_WeatherGenLoc.bandTurbulence, bandTurbulence);
+    glUniform1f (s_WeatherGenLoc.noiseFreq,      noiseFreq);
+    glUniform1f (s_WeatherGenLoc.coverageScale,  coverageScale);
+    glUniform1f (s_WeatherGenLoc.coverageMin,    coverageMin);
+    glUniform1f (s_WeatherGenLoc.coverageMax,    coverageMax);
+
     glBindImageTexture(0, tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
     glDispatchCompute((w + 7) / 8, (h + 7) / 8, 1);
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -410,7 +452,8 @@ static GLuint vcCloud_GenBlueNoise()
 //   sphere mode → UV centered on camera,   extent = planetRadius
 // ============================================================================
 
-static GLuint vcCloud_GenProceduralWeatherMap(int width, int height, unsigned seed)
+static GLuint vcCloud_GenProceduralWeatherMap(int width, int height, unsigned seed,
+                                              VolumetricCloudNodeData* c = nullptr)
 {
     GLuint id;
     glGenTextures(1, &id);
@@ -418,8 +461,9 @@ static GLuint vcCloud_GenProceduralWeatherMap(int width, int height, unsigned se
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
 
     if (s_WeatherGenProg) {
-        LOG_I("vcCloud: Baking weather map on GPU (seed=%u)...", seed);
-        vcCloud_BakeWeatherMapGPU(id, width, height, seed);
+        LOG_I("vcCloud: Baking weather map on GPU (seed=%u, pattern=%d)...",
+              seed, c ? c->weatherGen.patternType : 0);
+        vcCloud_BakeWeatherMapGPU(id, width, height, seed, c);
     } else {
         LOG_W("vcCloud: Weather gen shader not ready, falling back to CPU baking.");
         unsigned char* data = (unsigned char*)malloc((size_t)width * height * 4);
@@ -467,9 +511,12 @@ static void vcCloud_RebuildAutoWeatherMap(SceneNode* node)
     VolumetricCloudNodeData* c = &node->data.volumetricCloud;
     if (!c->autoWeatherMap) return;
     if (c->weatherMapTex) { glDeleteTextures(1, &c->weatherMapTex); c->weatherMapTex = 0; }
-    // Seed from node address so every node gets a different pattern.
+    // Seed from node address so every node gets a different base pattern.
     unsigned seed = (unsigned)(uintptr_t)(void*)node;
-    c->weatherMapTex = vcCloud_GenProceduralWeatherMap(256, 256, seed);
+    int res = 256;
+    if (c->weatherGen.texResolution == 1) res = 512;
+    else if (c->weatherGen.texResolution == 2) res = 1024;
+    c->weatherMapTex = vcCloud_GenProceduralWeatherMap(res, res, seed, c);
     c->useWeatherMap = true;
 }
 
@@ -560,9 +607,23 @@ static bool vcCloud_InitShaders()
         s_WeatherGenProg = vcCloud_BuildComputeProg(
             "engine/effects/clouds/weather_gen.comp.glsl");
         if (!s_WeatherGenProg) return false;
-        s_WeatherGenLoc.width  = glGetUniformLocation(s_WeatherGenProg, "uWidth");
-        s_WeatherGenLoc.height = glGetUniformLocation(s_WeatherGenProg, "uHeight");
-        s_WeatherGenLoc.seed   = glGetUniformLocation(s_WeatherGenProg, "uSeed");
+        s_WeatherGenLoc.width        = glGetUniformLocation(s_WeatherGenProg, "uWidth");
+        s_WeatherGenLoc.height       = glGetUniformLocation(s_WeatherGenProg, "uHeight");
+        s_WeatherGenLoc.seed         = glGetUniformLocation(s_WeatherGenProg, "uSeed");
+        s_WeatherGenLoc.patternType  = glGetUniformLocation(s_WeatherGenProg, "uPatternType");
+        s_WeatherGenLoc.centerX      = glGetUniformLocation(s_WeatherGenProg, "uCenterX");
+        s_WeatherGenLoc.centerY      = glGetUniformLocation(s_WeatherGenProg, "uCenterY");
+        s_WeatherGenLoc.arms         = glGetUniformLocation(s_WeatherGenProg, "uArms");
+        s_WeatherGenLoc.tightness    = glGetUniformLocation(s_WeatherGenProg, "uTightness");
+        s_WeatherGenLoc.falloffRadius= glGetUniformLocation(s_WeatherGenProg, "uFalloffRadius");
+        s_WeatherGenLoc.bandAngle    = glGetUniformLocation(s_WeatherGenProg, "uBandAngle");
+        s_WeatherGenLoc.bandWidth    = glGetUniformLocation(s_WeatherGenProg, "uBandWidth");
+        s_WeatherGenLoc.bandSpacing  = glGetUniformLocation(s_WeatherGenProg, "uBandSpacing");
+        s_WeatherGenLoc.bandTurbulence=glGetUniformLocation(s_WeatherGenProg, "uBandTurbulence");
+        s_WeatherGenLoc.noiseFreq    = glGetUniformLocation(s_WeatherGenProg, "uNoiseFreq");
+        s_WeatherGenLoc.coverageScale= glGetUniformLocation(s_WeatherGenProg, "uCoverageScale");
+        s_WeatherGenLoc.coverageMin  = glGetUniformLocation(s_WeatherGenProg, "uCoverageMin");
+        s_WeatherGenLoc.coverageMax  = glGetUniformLocation(s_WeatherGenProg, "uCoverageMax");
     }
 
     if (!s_QuadProg) {
@@ -807,6 +868,27 @@ void sg_InitVolumetricCloudNode(SceneNode* node)
         c->weatherMapTex        = 0;
         c->autoWeatherMap       = true;   // on by default; provides placement + variety
         c->weatherMapGridExtent = 0.0f;   // 0 = auto-derive from box/sphere size in shader
+        c->weatherGen.patternType    = 0;
+        c->weatherGen.centerX        = 0.5f;
+        c->weatherGen.centerY        = 0.5f;
+        c->weatherGen.arms           = 2;
+        c->weatherGen.tightness      = 5.0f;
+        c->weatherGen.falloffRadius  = 0.4f;
+        c->weatherGen.bandAngle      = 0.0f;
+        c->weatherGen.bandWidth      = 0.4f;
+        c->weatherGen.bandSpacing    = 0.15f;
+        c->weatherGen.bandTurbulence = 0.05f;
+        c->weatherGen.noiseFreq      = 1.0f;
+        c->weatherGen.coverageScale  = 0.6f;
+        c->weatherGen.coverageMin    = 0.0f;
+        c->weatherGen.coverageMax    = 1.0f;
+        c->useBaseNoise     = true;
+        c->useWorleyErosion = true;
+        c->useDetailNoise   = true;
+        c->weatherGen.texResolution  = 0;        // 0=256
+        c->weatherGen.followCamera   = true;
+        c->weatherGen.worldAnchorX   = 0.0f;
+        c->weatherGen.worldAnchorZ   = 0.0f;
         // Atmospheric fog
         c->fogColor   = vec3(0.70f, 0.78f, 0.86f);
         c->fogDensity = 0.0f;
@@ -939,11 +1021,16 @@ void sg_InitVolumetricCloudNode(SceneNode* node)
     L.cloudThickness  = glGetUniformLocation(p, "u_cloudThickness");
     L.domeExtent      = glGetUniformLocation(p, "u_domeExtent");
     L.blueNoise       = glGetUniformLocation(p, "u_blueNoise");
-    L.useWeatherMap   = glGetUniformLocation(p, "u_useWeatherMap");
-    L.weatherMap      = glGetUniformLocation(p, "u_weatherMap");
-    L.weatherMapScale = glGetUniformLocation(p, "u_weatherMapScale");
-    L.autoWeatherMap  = glGetUniformLocation(p, "u_autoWeatherMap");
-    L.fogColor        = glGetUniformLocation(p, "u_fogColor");
+    L.useWeatherMap        = glGetUniformLocation(p, "u_useWeatherMap");
+    L.weatherMap           = glGetUniformLocation(p, "u_weatherMap");
+    L.weatherMapScale      = glGetUniformLocation(p, "u_weatherMapScale");
+    L.autoWeatherMap       = glGetUniformLocation(p, "u_autoWeatherMap");
+    L.weatherMapAnchor     = glGetUniformLocation(p, "u_weatherMapAnchor");
+    L.weatherMapGridExtent = glGetUniformLocation(p, "u_weatherMapGridExtent");
+    L.useBaseNoise         = glGetUniformLocation(p, "u_useBaseNoise");
+    L.useWorleyErosion     = glGetUniformLocation(p, "u_useWorleyErosion");
+    L.useDetailNoise       = glGetUniformLocation(p, "u_useDetailNoise");
+    L.fogColor             = glGetUniformLocation(p, "u_fogColor");
     L.fogDensity      = glGetUniformLocation(p, "u_fogDensity");
     L.fogStart        = glGetUniformLocation(p, "u_fogStart");
 
@@ -1145,6 +1232,18 @@ void sg_RenderVolumetricCloudNode(SceneNode* node, mat4 view, mat4 proj)
     glUniform1i(L.weatherMap,      4);
     glUniform1f(L.weatherMapScale, c->weatherMapScale);
     glUniform1i(L.autoWeatherMap,  (wmReady && c->autoWeatherMap) ? 1 : 0);
+
+    // Weather map anchor: camera-follow or fixed world XZ position.
+    float anchorX = (c->autoWeatherMap && !c->weatherGen.followCamera)
+                    ? c->weatherGen.worldAnchorX : camPos[0];
+    float anchorZ = (c->autoWeatherMap && !c->weatherGen.followCamera)
+                    ? c->weatherGen.worldAnchorZ : camPos[2];
+    glUniform2f(L.weatherMapAnchor, anchorX, anchorZ);
+    glUniform1f(L.weatherMapGridExtent, c->weatherMapGridExtent);
+
+    glUniform1i(L.useBaseNoise,      c->useBaseNoise      ? 1 : 0);
+    glUniform1i(L.useWorleyErosion,  c->useWorleyErosion  ? 1 : 0);
+    glUniform1i(L.useDetailNoise,    c->useDetailNoise    ? 1 : 0);
 
     // Atmospheric fog
     glUniform3fv(L.fogColor, 1, (float*)&c->fogColor);
@@ -1420,6 +1519,26 @@ void vcCloud_RegenerateSpheres(SceneNode* node)
     if (!node || node->type != ENTITY_VOLUMETRIC_CLOUD) return;
     vcCloud_GenerateSpheres(node);
     vcCloud_UploadSpheres(&node->data.volumetricCloud);
+}
+
+// Save the current weather map texture to a PNG file.
+void vcCloud_SaveWeatherMap(SceneNode* node, const char* path) {
+    VolumetricCloudNodeData* c = vcCloud_GetData(node);
+    if (!c || !c->weatherMapTex) { LOG_W("vcCloud: no weather map to save"); return; }
+
+    const int W = 256, H = 256;
+    unsigned char* pixels = (unsigned char*)malloc((size_t)W * H * 4);
+    if (!pixels) { LOG_E("vcCloud: OOM saving weather map"); return; }
+
+    glBindTexture(GL_TEXTURE_2D, c->weatherMapTex);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    if (stbi_write_png(path, W, H, 4, pixels, W * 4))
+        LOG_I("vcCloud: weather map saved to %s", path);
+    else
+        LOG_E("vcCloud: failed to write %s", path);
+    free(pixels);
 }
 
 // Rebuild the procedural weather map for a node (call after toggling autoWeatherMap

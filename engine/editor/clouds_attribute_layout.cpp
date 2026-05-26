@@ -5,6 +5,7 @@
 
 extern void vcCloud_RegenerateSpheres(SceneNode* node);
 extern void vcCloud_RegenerateWeatherMap(SceneNode* node);
+extern void vcCloud_SaveWeatherMap(SceneNode* node, const char* path);
 extern void vcCloud_SetRenderScale(SceneNode* node, float scale);
 extern void vcCloud_SetTAA(SceneNode* node, bool enable, float blend);
 extern bool vcCloud_LoadNVDF(SceneNode* node, const char* path);
@@ -37,6 +38,20 @@ void ShowVolumetricCloudAttributes(SceneNode* node)
         ImGui::SliderFloat("Detail Scale", &c->detailScale, 0.005f, 0.1f,
                            "%.4f  (higher=finer edge erosion)");
         
+        ImGui::SeparatorText("Noise Layers");
+        ImGui::Checkbox("Base Noise (PW presence)", &c->useBaseNoise);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("ON: Perlin-Worley remap creates individual cloud cells (natural cellular look).\n"
+                              "OFF: coverage / weather map IS the density — no cell grid, shape follows map exactly.");
+        ImGui::Checkbox("Worley Erosion (GBA channels)", &c->useWorleyErosion);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("ON: erodes the cloud surface with 3 octaves of Worley noise.\n"
+                              "OFF: smoother, rounder cloud masses.");
+        ImGui::Checkbox("Detail Noise (fine erosion)", &c->useDetailNoise);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("ON: high-frequency detail texture adds wispy tendrils at cloud base.\n"
+                              "OFF: cleaner silhouette, cheaper to render.");
+
         ImGui::SeparatorText("3D Noise Textures");
         ImGui::DragInt("Noise Resolution", &c->noiseRes, 1.0f, 16, 256,
                        "%d^3  (high = slow to generate)");
@@ -218,11 +233,188 @@ void ShowVolumetricCloudAttributes(SceneNode* node)
             ImGui::SameLine();
             ImGui::TextDisabled(c->weatherMapTex ? "(id=%u)" : "(not generated)",
                                 c->weatherMapTex);
-            if (ImGui::Button("Regenerate##auto", ImVec2(-1, 0)))
+
+            // ---- Pattern selector -------------------------------------------
+            ImGui::Spacing();
+            ImGui::SeparatorText("Generator");
+
+            static const char* s_PatternNames[] = {
+                "FBM Noise", "Spiral", "Cyclone", "Bands", "Cellular"
+            };
+            bool changed = false;
+            if (ImGui::BeginCombo("Pattern", s_PatternNames[c->weatherGen.patternType])) {
+                for (int i = 0; i < 5; i++) {
+                    bool sel = (c->weatherGen.patternType == i);
+                    if (ImGui::Selectable(s_PatternNames[i], sel)) {
+                        c->weatherGen.patternType = i;
+                        changed = true;
+                    }
+                    if (sel) ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+
+            // Global parameters shown for all patterns
+            changed |= ImGui::SliderFloat("Coverage##wgen", &c->weatherGen.coverageScale,
+                                          0.1f, 1.0f, "%.2f");
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Overall cloud density — scales pattern output before remapping.");
+
+            // Coverage remapping
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.48f);
+            changed |= ImGui::SliderFloat("Min##covMin", &c->weatherGen.coverageMin,
+                                          0.0f, 0.9f, "%.2f");
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Lifts the dark end — raises minimum coverage across the map.");
+            ImGui::SameLine();
+            changed |= ImGui::SliderFloat("Max##covMax", &c->weatherGen.coverageMax,
+                                          0.1f, 1.0f, "%.2f");
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Caps the bright end — limits maximum coverage density.");
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+            ImGui::TextDisabled("Cov range");
+
+            // ---- Per-pattern parameters -------------------------------------
+            ImGui::Indent(8.0f);
+            int pt = c->weatherGen.patternType;
+
+            if (pt == 0) { // FBM Noise
+                changed |= ImGui::SliderFloat("Frequency##wgen", &c->weatherGen.noiseFreq,
+                                              0.2f, 4.0f, "%.2f");
+            }
+            else if (pt == 1 || pt == 2) { // Spiral / Cyclone
+                changed |= ImGui::SliderFloat("Center X##wgen", &c->weatherGen.centerX,
+                                              0.0f, 1.0f, "%.2f");
+                changed |= ImGui::SliderFloat("Center Y##wgen", &c->weatherGen.centerY,
+                                              0.0f, 1.0f, "%.2f");
+                changed |= ImGui::SliderInt ("Arms##wgen",     &c->weatherGen.arms,
+                                              1, 5);
+                changed |= ImGui::SliderFloat("Tightness##wgen", &c->weatherGen.tightness,
+                                              0.5f, 15.0f, "%.1f");
+                changed |= ImGui::SliderFloat("Radius##wgen", &c->weatherGen.falloffRadius,
+                                              0.05f, 0.9f, "%.2f");
+                if (pt == 1)
+                    ImGui::TextDisabled("Archimedean spiral — tightness = winding rate");
+                else
+                    ImGui::TextDisabled("Cyclone — dense eye wall + curving rain bands");
+            }
+            else if (pt == 3) { // Bands
+                float deg = c->weatherGen.bandAngle * (180.0f / 3.14159265f);
+                if (ImGui::SliderFloat("Angle##wgen", &deg, 0.0f, 180.0f, "%.0f deg")) {
+                    c->weatherGen.bandAngle = deg * (3.14159265f / 180.0f);
+                    changed = true;
+                }
+                changed |= ImGui::SliderFloat("Width##wgen",     &c->weatherGen.bandWidth,
+                                              0.05f, 0.95f, "%.2f");
+                changed |= ImGui::SliderFloat("Spacing##wgen",   &c->weatherGen.bandSpacing,
+                                              0.03f, 0.5f,  "%.3f");
+                changed |= ImGui::SliderFloat("Turbulence##wgen",&c->weatherGen.bandTurbulence,
+                                              0.0f, 0.3f, "%.3f");
+                ImGui::TextDisabled("Frontal cloud streets — angle rotates band direction");
+            }
+            else if (pt == 4) { // Cellular
+                changed |= ImGui::SliderFloat("Cell Scale##wgen", &c->weatherGen.noiseFreq,
+                                              0.3f, 6.0f, "%.2f");
+                ImGui::TextDisabled("Scattered cumulus fields — larger scale = fewer cells");
+            }
+            ImGui::Unindent(8.0f);
+
+            // ---- World placement -------------------------------------------
+            ImGui::Spacing();
+            ImGui::SeparatorText("World Placement");
+
+            if (ImGui::Checkbox("Follow Camera##wgen", &c->weatherGen.followCamera))
+                changed = true;
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("ON: map centre tracks the camera (default).\n"
+                                  "OFF: map is anchored at the fixed world XZ below.");
+
+            if (!c->weatherGen.followCamera) {
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.48f);
+                if (ImGui::DragFloat("Anchor X##wgen", &c->weatherGen.worldAnchorX, 10.0f, -1e6f, 1e6f, "%.0f m"))
+                    changed = true;
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("World X coordinate that maps to the pattern centre (UV 0.5,0.5).");
+                ImGui::SameLine();
+                if (ImGui::DragFloat("Anchor Z##wgen", &c->weatherGen.worldAnchorZ, 10.0f, -1e6f, 1e6f, "%.0f m"))
+                    changed = true;
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("World Z coordinate that maps to the pattern centre (UV 0.5,0.5).");
+                ImGui::PopItemWidth();
+            }
+
+            // ---- Coverage extent (fixes tiling at large planet radius) -------
+            ImGui::SeparatorText("Coverage Extent");
+            if (ImGui::DragFloat("Grid Extent##wgen", &c->weatherMapGridExtent, 100.0f, 0.0f, 1000000.0f, "%.0f m"))
+                changed = true;
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("World-space radius the weather map covers.\n"
+                                  "0 = auto (uses planetRadius).\n"
+                                  "Decrease to zoom in and eliminate repetition at large planet radius.\n"
+                                  "e.g. 5000 m makes the pattern cover a 5 km circle instead of the full shell.");
+
+            // ---- Texture resolution ----------------------------------------
+            ImGui::SeparatorText("Texture Quality");
+            static const char* s_ResNames[] = { "256 x 256 (fast)", "512 x 512", "1024 x 1024 (slow)" };
+            int oldRes = c->weatherGen.texResolution;
+            if (ImGui::BeginCombo("Resolution##wgen", s_ResNames[c->weatherGen.texResolution])) {
+                for (int i = 0; i < 3; i++) {
+                    bool sel = (c->weatherGen.texResolution == i);
+                    if (ImGui::Selectable(s_ResNames[i], sel)) {
+                        c->weatherGen.texResolution = i;
+                        if (oldRes != i) changed = true;
+                    }
+                    if (sel) ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Higher resolution preserves fine pattern detail.\n"
+                                  "512 is a good balance; 1024 adds ~4× bake time.");
+
+            // Auto-rebake on any parameter change
+            if (changed) vcCloud_RegenerateWeatherMap(node);
+
+            // ---- Texture preview -------------------------------------------
+            if (c->weatherMapTex) {
+                ImGui::Spacing();
+                ImGui::SeparatorText("Preview  (R=coverage  G=precip  B=type  A=height)");
+                float avail = ImGui::GetContentRegionAvail().x;
+                float sz    = avail < 180.0f ? avail : 180.0f;
+                ImGui::Image((ImTextureID)(uintptr_t)c->weatherMapTex, ImVec2(sz, sz));
+            }
+
+            // ---- Actions ---------------------------------------------------
+            ImGui::Spacing();
+            if (ImGui::Button("Regenerate##auto", ImVec2(110, 0)))
                 vcCloud_RegenerateWeatherMap(node);
-            ImGui::TextDisabled("UV mode: %s",
-                c->useSphereField ? "camera-centred  (sphere extent = planetRadius)"
-                                  : "box-centred  (extent = box XZ size)");
+            ImGui::SameLine();
+            if (ImGui::Button("Save PNG##auto", ImVec2(110, 0))) {
+                static char s_SavePath[320] = "engine/effects/clouds/weather_maps/generated.png";
+                ImGui::OpenPopup("SaveWeatherMap##popup");
+            }
+            if (ImGui::BeginPopup("SaveWeatherMap##popup")) {
+                static char s_SavePath[320] = "engine/effects/clouds/weather_maps/generated.png";
+                ImGui::SetNextItemWidth(320.0f);
+                ImGui::InputText("Path##save", s_SavePath, sizeof(s_SavePath));
+                if (ImGui::Button("Save##doSave")) {
+                    vcCloud_SaveWeatherMap(node, s_SavePath);
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel##save")) ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
+            }
+
+            if (c->useSphereField) {
+                float ext = c->weatherMapGridExtent > 0.0f ? c->weatherMapGridExtent : c->planetRadius;
+                ImGui::TextDisabled("Sphere mode — extent: %.0f m  anchor: %s",
+                    ext,
+                    c->weatherGen.followCamera ? "camera" : "fixed world XZ");
+            } else {
+                ImGui::TextDisabled("Box mode — extent = box XZ size");
+            }
             ImGui::Spacing();
         }
 

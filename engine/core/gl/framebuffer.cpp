@@ -631,7 +631,9 @@ void fb_ClearColor(Framebuffer* fb, float r, float g, float b, float a) {
 void fb_ClearColorIndexed(Framebuffer* fb, int colorIndex, float r, float g, float b, float a) {
     if (!fb) return;
     glBindFramebuffer(GL_FRAMEBUFFER, fb->fboID);
-    glClearBufferfv(GL_COLOR, colorIndex, (float[]){r, g, b, a});
+    //glClearBufferfv(GL_COLOR, colorIndex, (float[]){r, g, b, a});
+
+    glClearColor(r, g, b, a);
 }
 
 // ============================================================================

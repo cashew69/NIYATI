@@ -63,10 +63,12 @@ static void cacheShaderLocations(ShaderProgram* program) {
     program->loc.uFogType    = glGetUniformLocation(id, "uFogType");
     program->loc.uFogEnabled = glGetUniformLocation(id, "uFogEnabled");
 
-    program->loc.uShadowMap     = glGetUniformLocation(id, "uShadowMap");
-    program->loc.uShadowMatrix  = glGetUniformLocation(id, "uShadowMatrix");
-    program->loc.uShadowEnabled = glGetUniformLocation(id, "uShadowEnabled");
-    program->loc.uShadowBias    = glGetUniformLocation(id, "uShadowBias");
+    program->loc.uShadowMap      = glGetUniformLocation(id, "uShadowMap");
+    program->loc.uShadowMatrix   = glGetUniformLocation(id, "uShadowMatrix");
+    program->loc.uShadowEnabled  = glGetUniformLocation(id, "uShadowEnabled");
+    program->loc.uShadowBias     = glGetUniformLocation(id, "uShadowBias");
+    program->loc.uShadowMinLight = glGetUniformLocation(id, "uShadowMinLight");
+    program->loc.uUseOrenNayar   = glGetUniformLocation(id, "uUseOrenNayar");
 
     program->loc.uAerialPerspective      = glGetUniformLocation(id, "uAerialPerspective");
     program->loc.uAerialTransmittanceLUT  = glGetUniformLocation(id, "uAerialTransmittanceLUT");
@@ -81,6 +83,9 @@ static void cacheShaderLocations(ShaderProgram* program) {
     program->loc.uEnableStochastic   = glGetUniformLocation(id, "uEnableStochastic");
     program->loc.uStochasticContrast = glGetUniformLocation(id, "uStochasticContrast");
     program->loc.uStochasticScale    = glGetUniformLocation(id, "uStochasticScale");
+
+    program->loc.uOverlayTexture     = glGetUniformLocation(id, "uOverlayTexture");
+    program->loc.uHasOverlayTexture  = glGetUniformLocation(id, "uHasOverlayTexture");
 }
 
 void InitializeShaders() {

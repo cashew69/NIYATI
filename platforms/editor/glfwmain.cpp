@@ -84,7 +84,7 @@ int main(void) {
   // File Create
   Logger_Init(gszLogFileName);
 
-  glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+  //glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
   // Initialize GLFW
   if (!glfwInit()) {
     LOG_E("glfwInit() failed");

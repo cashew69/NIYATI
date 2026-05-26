@@ -594,6 +594,7 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix, mat4 view, mat4 proj) {
     }
 
     glUniform1i(loc.uHasDisplacementMap, g_enableTerrainDisplacement && g_terrainDisplacementMap != 0);
+    glUniform1i(loc.uUseOrenNayar,     1);
     glUniform1i(loc.uEnableStochastic, g_enableTerrainStochastic ? 1 : 0);
     glUniform1f(loc.uStochasticContrast, g_stochasticContrast > 0.0f ? g_stochasticContrast : 8.0f);
     glUniform1f(loc.uStochasticScale, g_stochasticScale > 0.0f ? g_stochasticScale : 1.0f);
@@ -621,6 +622,23 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix, mat4 view, mat4 proj) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
         glUniform1i(loc.uShadowMap, 9);
         glUniform1f(loc.uShadowBias, g_ShadowBias);
+        extern float g_ShadowMinLight;
+        if (loc.uShadowMinLight >= 0)
+            glUniform1f(loc.uShadowMinLight, g_ShadowMinLight);
+    }
+
+    // Terrain overlay (footprint normal map) — slot 12
+    extern GLuint terrain_overlay_GetTexture();
+    GLuint overlayTex = terrain_overlay_GetTexture();
+    if (loc.uHasOverlayTexture >= 0) {
+        if (overlayTex) {
+            glActiveTexture(GL_TEXTURE12);
+            glBindTexture(GL_TEXTURE_2D, overlayTex);
+            glUniform1i(loc.uOverlayTexture,    12);
+            glUniform1i(loc.uHasOverlayTexture,  1);
+        } else {
+            glUniform1i(loc.uHasOverlayTexture, 0);
+        }
     }
 
     glBindVertexArray(terrainMesh->vao);

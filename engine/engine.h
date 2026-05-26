@@ -59,6 +59,7 @@ extern bool   g_ShadowActive;
 extern mat4   g_ShadowSBPV;
 extern GLuint g_ShadowDepthTexID;
 extern float  g_ShadowBias;
+extern float  g_ShadowMinLight;
 
 #include "core/logger.h"
 
@@ -111,6 +112,7 @@ bool g_wireframeMode = false;
 #include "core/gl/modelloading.cpp"
 #include "effects/noise/perlin.c"
 #include "effects/terrain/terrain.cpp"
+#include "effects/terrain/terrain_overlay.cpp"
 #include "transform.cpp"
 #include "editor/model_controller.h"
 #include "utils/editor_utils.h"

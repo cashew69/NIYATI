@@ -93,6 +93,13 @@ uniform int       u_useWeatherMap;
 uniform sampler2D u_weatherMap;
 uniform float     u_weatherMapScale;   // p.xz * scale → UV  (manual mode only)
 uniform int       u_autoWeatherMap;    // 1 = procedural auto map; UV is box/sphere-relative
+uniform vec2      u_weatherMapAnchor;      // world XZ of map centre (camera pos or fixed world pt)
+uniform float     u_weatherMapGridExtent;  // >0: overrides planetRadius as coverage extent
+
+// Noise layer toggles — disable individual layers to isolate contributions
+uniform int u_useBaseNoise;      // 1 = PW remap creates cellular cloud presence; 0 = coverage IS density
+uniform int u_useWorleyErosion;  // 1 = erode with Worley GBA channels from base noise texture
+uniform int u_useDetailNoise;    // 1 = erode with high-freq detail texture (fine surface churn)
 
 // Atmospheric fog (aerial perspective)
 uniform vec3  u_fogColor;
@@ -199,17 +206,20 @@ vec3 uvwJitter(vec3 p) {
 vec2 weatherMapUV(vec2 xz) {
     if (u_autoWeatherMap != 0) {
         if (u_useSphereField != 0) {
-            // Sphere: centre on camera, scale so the entire visible shell hemisphere
-            // fits in [0,1].  planetRadius is the inner-shell radius, which equals
-            // the maximum XZ reach visible at the shell horizon.
-            float extent = max(u_planetRadius, 1.0);
-            return (xz - u_cameraPos.xz) / extent * 0.5 + 0.5;
+            // Sphere: map exactly the visible cloud dome to UV [0,1].
+            // The dome's XZ half-width is planetRadius * domeExtent.
+            // u_weatherMapGridExtent overrides this when > 0 (zoom in to eliminate
+            // tiling from the noise's own spatial frequency).
+            float extent = (u_weatherMapGridExtent > 0.0)
+                           ? u_weatherMapGridExtent
+                           : max(u_planetRadius * max(u_domeExtent, 0.01), 1.0);
+            return (xz - u_weatherMapAnchor) / extent * 0.5 + 0.5;
         }
-        // Box: centre on the box, full box XZ extent → [0,1]
-        vec2  boxCentre = (u_boxMin.xz + u_boxMax.xz) * 0.5;
-        float extent    = max(max(u_boxMax.x - u_boxMin.x,
-                                  u_boxMax.z - u_boxMin.z), 1.0);
-        return (xz - boxCentre) / extent + 0.5;
+        // Box: map each axis independently so the pattern fills the box without
+        // distortion from non-square boxes.
+        vec2  boxCentre  = (u_boxMin.xz + u_boxMax.xz) * 0.5;
+        vec2  halfExtent = max((u_boxMax.xz - u_boxMin.xz) * 0.5, vec2(1.0));
+        return (xz - boxCentre) / halfExtent * 0.5 + 0.5;
     }
     return xz * u_weatherMapScale;
 }
@@ -417,46 +427,67 @@ float cloudDensity(vec3 p) {
     float layerDensity = cloudLayerDensity(h, effCloudType);
     if (layerDensity < 0.001) return 0.0;
 
-    // 2. Coverage: sphere footprints (XZ) biased by u_coverage * weather map R
-    //    Skydome (sphere field) skips cluster footprints — the skydome is
-    //    inherently global and shouldn't be cut up by 3×3 grid spheres.
+    // 2. Coverage.
+    //
+    // Weather-map mode: wmCoverage IS the coverage signal.  The pattern in the
+    // weather map directly determines where clouds exist.  Setting covBase=1 means
+    // the Nubis remap threshold is (1-wmCoverage) instead of (1 - u_coverage * wmCoverage),
+    // so white map areas show ALL of the 3D noise (solid mass) and dark areas show none.
+    // Without a weather map, u_coverage drives coverage as before.
+    //
+    // Skydome (sphere field) skips cluster footprints — the skydome is inherently
+    // global and should not be cut up by 3×3 grid spheres.
     vec3 wind     = vec3(u_windSpeed, 0.0, u_windSpeed * 0.4) * u_time;
     float covBase;
-    if (u_useSphereField != 0 || u_sphereCount == 0) {
+    if (u_useWeatherMap != 0) {
+        // Let the weather map control presence; u_coverage biases the whole map up/down.
+        covBase = 1.0;
+    } else if (u_useSphereField != 0 || u_sphereCount == 0) {
         covBase = clamp(u_coverage, 0.0, 1.0);
     } else {
         float spCov = sphereCoverage(p);
         covBase = clamp(spCov * (1.0 + u_coverage * 0.6), 0.0, 1.0);
     }
-    float coverage = clamp(covBase * wmCoverage, 0.0, 1.0);
+    // With weather map: coverage = wmCoverage (adjusted by global u_coverage bias)
+    float wmBias   = (u_useWeatherMap != 0) ? clamp(u_coverage * 0.15, -0.5, 0.5) : 0.0;
+    float coverage = clamp(covBase * wmCoverage + wmBias, 0.0, 1.0);
     if (coverage < 0.001) return 0.0;
 
-    // 3. Base shape: sample 3D Perlin-Worley texture
-    //    R = Perlin-Worley (main cloud mass)
-    //    G,B,A = Worley octaves (erosion channels)
-    vec4 bn    = texture(u_noiseBase,   (p + wind) * u_noiseScale + uvwJitter(p));
-    float pw   = bn.r;   // Perlin-Worley composite
+    // 3. Base shape: sample 3D noise texture (always needed for erosion channels even
+    //    when base noise is off, since G/B/A are the Worley erosion octaves).
+    //    R = Perlin-Worley (cloud mass presence)
+    //    G,B,A = Worley at 3 increasing frequencies (surface erosion)
+    vec4 bn  = texture(u_noiseBase, (p + wind) * u_noiseScale + uvwJitter(p));
 
-    // Remap Perlin-Worley against coverage: sky areas (low coverage) erode away,
-    // covered areas keep their full cloud shape.
-    float base  = remapC(pw, 1.0 - coverage, 1.0, 0.0, 1.0);
-    base       *= layerDensity;
+    // Layer 1 — Perlin-Worley base presence.
+    // ON:  PW remap against coverage threshold → cellular cloud masses.
+    // OFF: coverage value IS the density → weather map shape directly, no cell grid.
+    float base;
+    if (u_useBaseNoise != 0) {
+        base = remapC(bn.r, 1.0 - coverage, 1.0, 0.0, 1.0);
+    } else {
+        base = coverage;
+    }
+    base *= layerDensity;
     if (base < 0.001) return 0.0;
 
-    // 4. Erode with multi-octave Worley to break up the surface
-    //    GBA channels = Worley at 3 increasing frequencies
-    float erosion = bn.g * 0.625 + bn.b * 0.25 + bn.a * 0.125;
-    base = remapC(base, erosion, 1.0, 0.0, 1.0);
-    if (base < 0.001) return 0.0;
+    // Layer 2 — Worley multi-octave erosion (GBA channels).
+    // Breaks up the cloud surface into natural bumps and recesses.
+    if (u_useWorleyErosion != 0) {
+        float erosion = bn.g * 0.625 + bn.b * 0.25 + bn.a * 0.125;
+        base = remapC(base, erosion, 1.0, 0.0, 1.0);
+        if (base < 0.001) return 0.0;
+    }
 
-    // 5. Detail erosion: high-frequency Worley from the detail texture.
-    //    Inverted at cloud base (wispy tendrils hang down), normal at top.
-    //    Uses localNoiseSpeed — surface churn is independent of global wind.
-    vec3  localWind = vec3(u_localNoiseSpeed, 0.0, u_localNoiseSpeed * 0.4) * u_time;
-    vec4 dn     = texture(u_noiseDetail, (p + localWind * 1.6) * u_detailScale + uvwJitter(p) * 0.5);
-    float det   = dn.r * 0.625 + dn.g * 0.25 + dn.b * 0.125;
-    det         = mix(1.0 - det, det, clamp(h * 6.0, 0.0, 1.0));
-    base        = remapC(base, det * u_erosion, 1.0, 0.0, 1.0);
+    // Layer 3 — high-frequency detail erosion from the detail texture.
+    // Inverted at cloud base (wispy tendrils), normal at top.
+    if (u_useDetailNoise != 0) {
+        vec3  localWind = vec3(u_localNoiseSpeed, 0.0, u_localNoiseSpeed * 0.4) * u_time;
+        vec4  dn  = texture(u_noiseDetail, (p + localWind * 1.6) * u_detailScale + uvwJitter(p) * 0.5);
+        float det = dn.r * 0.625 + dn.g * 0.25 + dn.b * 0.125;
+        det       = mix(1.0 - det, det, clamp(h * 6.0, 0.0, 1.0));
+        base      = remapC(base, det * u_erosion, 1.0, 0.0, 1.0);
+    }
 
     return base * u_densityScale * wmPrecipMul;
 }
@@ -489,21 +520,33 @@ float cloudDensityFast(vec3 p) {
 
     vec3  wind    = vec3(u_windSpeed, 0.0, u_windSpeed * 0.4) * u_time;
     float covBase;
-    if (u_useSphereField != 0 || u_sphereCount == 0) {
+    if (u_useWeatherMap != 0) {
+        covBase = 1.0;  // weather map drives presence directly
+    } else if (u_useSphereField != 0 || u_sphereCount == 0) {
         covBase = clamp(u_coverage, 0.0, 1.0);
     } else {
         float spCov = sphereCoverage(p);
         covBase = clamp(spCov * (1.0 + u_coverage * 0.6), 0.0, 1.0);
     }
-    float coverage = clamp(covBase * wmCoverage, 0.0, 1.0);
+    float wmBias   = (u_useWeatherMap != 0) ? clamp(u_coverage * 0.15, -0.5, 0.5) : 0.0;
+    float coverage = clamp(covBase * wmCoverage + wmBias, 0.0, 1.0);
     if (coverage < 0.001) return 0.0;
 
-    // textureLod(... , 1.0) — light march only needs the cached mip 1 to escape
-    // the cloud volume. Saves bandwidth vs sampling full-res 3D texture.
-    vec4  bn     = textureLod(u_noiseBase, (p + wind) * u_noiseScale, 1.0);
-    float base   = remapC(bn.r, 1.0 - coverage, 1.0, 0.0, 1.0) * layerDensity;
-    float erosion = bn.g * 0.625 + bn.b * 0.25 + bn.a * 0.125;
-    return remapC(base, erosion, 1.0, 0.0, 1.0) * u_densityScale * wmPrecipMul;
+    // textureLod(... , 1.0) — light march only needs mip 1; skip detail noise.
+    vec4  bn = textureLod(u_noiseBase, (p + wind) * u_noiseScale, 1.0);
+
+    float base;
+    if (u_useBaseNoise != 0) {
+        base = remapC(bn.r, 1.0 - coverage, 1.0, 0.0, 1.0);
+    } else {
+        base = coverage;
+    }
+    base *= layerDensity;
+    if (u_useWorleyErosion != 0) {
+        float erosion = bn.g * 0.625 + bn.b * 0.25 + bn.a * 0.125;
+        base = remapC(base, erosion, 1.0, 0.0, 1.0);
+    }
+    return base * u_densityScale * wmPrecipMul;
 }
 
 // ============================================================

@@ -74,101 +74,20 @@ Node "Root" EMPTY {
       mieAnisotropy  0.8
       mieDensityExpScale  -0.8333
       absorptionExtinction  0.00065 0.001881 8.5e-05
-      sunDirection  0.659901 -0.0174524 0.75115
+      sunDirection  -0.912358 0.241922 0.330269
       sunColor  1 1 1
-      sunIntensity  20
+      sunIntensity  10
       sunAngularRadius  0.02
       worldScale  0.001
       exposure  20
       castShadow  true
       shadowResolution  2048
-      shadowBias  0.0026
-      shadowOrthoSize  1000
+      shadowBias  0
+      shadowOrthoSize  500
       shadowNear  0.1
-      shadowFar  5000
+      shadowFar  3601
       shadowPolyFactor  0
       shadowPolyUnits  0.2
-    }
-  }
-
-  Node "Coverage_clouds" VOLUMETRIC_CLOUD {
-    id  115
-    terrainYOffset  false
-    selectedTerrainID  0
-    position  0 0 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    VolumetricCloud {
-      cloudColorTop  0.96 0.97 1
-      cloudColorBottom  0 0.0555556 0.166667
-      absorption  0.031
-      coverage  -2
-      erosion  0.5
-      silverLining  0.6
-      flatBottom  false
-      cloudType  0.85
-      noiseScale  0.001
-      detailScale  0.0118
-      noiseRes  2
-      noiseBasePath  _
-      noiseDetailPath  _
-      sunDirection  0.659901 -0.0174524 0.75115
-      sunColor  1 1 1
-      sunIntensity  20
-      ambientStrength  1.2
-      scatterG  0.35
-      densityScale  4
-      maxSteps  8192
-      stepSize  1.5
-      turbulence  0.5
-      windSpeed  25
-      localNoiseSpeed  15
-      useSceneDepth  false
-      boxSize  500 150 500
-      gridX  3
-      gridZ  3
-      gridSpacing  20
-      gridScale  1
-      spheresPerMin  3
-      spheresPerMax  8
-      renderScale  0.5
-      enableTAA  false
-      taaBlend  0.1
-      useCircleField  false
-      circleRadius  250
-      useSphereField  true
-      planetRadius  6000
-      cloudBaseHeight  500
-      cloudThickness  800
-      domeExtent  0.5
-      useWeatherMap  true
-      weatherMapPath  _
-      weatherMapScale  0.002
-      autoWeatherMap  true
-      weatherMapGridExtent  0
-      fogColor  0.7 0.78 0.86
-      fogDensity  0
-      fogStart  300
-      useNVDF  false
-      nvdfPath  _
-      hwModStrength  0.6
-      hwModScale  0.0025
-      curlStrength  0.4
-      nvdfTileScale  0.002
-      nvdfRotAngle  0.963271
-      nvdfRotX  0
-      nvdfRotZ  0
-      nvdfWorldOffset  -478.155 0 493.5
-      nvdfYOffset  0
-      adaptiveFactor  0.003
-      jitterSwitchDist  200
-      useDualPass  false
-      nearFarSplit  200
-      nearOutputW  480
-      nearOutputH  270
-      farOutputW  960
-      farOutputH  540
     }
   }
 
@@ -185,33 +104,6 @@ Node "Root" EMPTY {
       fov  45
       near  0.1
       far  10000
-    }
-  }
-
-  Node "sunshadowflag" LIGHT {
-    id  6
-    terrainYOffset  true
-    selectedTerrainID  5
-    position  0 0 0
-    rotation  0 0 0
-    scale  1 1 1
-
-    Light {
-      type  0
-      color  0.931076 0.955882 0.67474
-      intensity  2.5
-      radius  100
-      direction  0 -0.1 0
-      innerCutoff  0.9
-      outerCutoff  0.8
-      castShadow  false
-      shadowResolution  2048
-      shadowBias  0.002
-      shadowOrthoSize  200
-      shadowNear  1
-      shadowFar  400
-      shadowPolyFactor  1.5
-      shadowPolyUnits  4
     }
   }
 
@@ -246,7 +138,7 @@ Node "Root" EMPTY {
       worldScale  15
       tessInner  4
       tessOuter  4
-      displacement  85
+      displacement  5
       lodBias  5
       wireframe  false
       materialIndex  2
@@ -406,7 +298,7 @@ Node "Root" EMPTY {
     id  106
     terrainYOffset  false
     selectedTerrainID  0
-    position  36.1 23.1 -334.5
+    position  40.2 11.7 -337.2
     rotation  75.5 -138 0
     scale  30 30 30
 
@@ -414,7 +306,7 @@ Node "Root" EMPTY {
       id  107
       terrainYOffset  false
       selectedTerrainID  0
-      position  0 0 0
+      position  0 0.2 0
       rotation  0 0 0
       scale  1 1 1
       sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user/bhishma.glb
@@ -489,9 +381,9 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.659901 -0.0174524 0.75115
+      sunDirection  -0.912358 0.241922 0.330269
       sunColor  1 1 1
-      sunIntensity  20
+      sunIntensity  10
       ambientStrength  1.2
       scatterG  0.35
       densityScale  9.1
@@ -523,6 +415,27 @@ Node "Root" EMPTY {
       weatherMapScale  0.002
       autoWeatherMap  true
       weatherMapGridExtent  0
+      wg_patternType  0
+      wg_centerX  0
+      wg_centerY  0
+      wg_arms  0
+      wg_tightness  0
+      wg_falloffRadius  0
+      wg_bandAngle  0
+      wg_bandWidth  0
+      wg_bandSpacing  0
+      wg_bandTurbulence  0
+      wg_noiseFreq  0
+      wg_coverageScale  0
+      wg_coverageMin  0
+      wg_coverageMax  0
+      wg_texResolution  0
+      wg_worldAnchorX  0
+      wg_worldAnchorZ  0
+      wg_followCamera  false
+      useBaseNoise  false
+      useWorleyErosion  false
+      useDetailNoise  false
       fogColor  0.7 0.78 0.86
       fogDensity  0
       fogStart  300
@@ -575,9 +488,9 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.659901 -0.0174524 0.75115
+      sunDirection  -0.912358 0.241922 0.330269
       sunColor  1 1 1
-      sunIntensity  20
+      sunIntensity  10
       ambientStrength  1.2
       scatterG  0.35
       densityScale  9.1
@@ -609,6 +522,27 @@ Node "Root" EMPTY {
       weatherMapScale  0.002
       autoWeatherMap  true
       weatherMapGridExtent  0
+      wg_patternType  0
+      wg_centerX  0
+      wg_centerY  0
+      wg_arms  0
+      wg_tightness  0
+      wg_falloffRadius  0
+      wg_bandAngle  0
+      wg_bandWidth  0
+      wg_bandSpacing  0
+      wg_bandTurbulence  0
+      wg_noiseFreq  0
+      wg_coverageScale  0
+      wg_coverageMin  0
+      wg_coverageMax  0
+      wg_texResolution  0
+      wg_worldAnchorX  0
+      wg_worldAnchorZ  0
+      wg_followCamera  false
+      useBaseNoise  false
+      useWorleyErosion  false
+      useDetailNoise  false
       fogColor  0.7 0.78 0.86
       fogDensity  0
       fogStart  300
@@ -661,14 +595,14 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.659901 -0.0174524 0.75115
+      sunDirection  -0.912358 0.241922 0.330269
       sunColor  1 1 1
-      sunIntensity  20
+      sunIntensity  10
       ambientStrength  1.2
       scatterG  0.35
       densityScale  9.1
       maxSteps  8192
-      stepSize  8
+      stepSize  1.1
       turbulence  0.5
       windSpeed  4.92
       localNoiseSpeed  10
@@ -695,6 +629,27 @@ Node "Root" EMPTY {
       weatherMapScale  0.002
       autoWeatherMap  true
       weatherMapGridExtent  0
+      wg_patternType  0
+      wg_centerX  0
+      wg_centerY  0
+      wg_arms  0
+      wg_tightness  0
+      wg_falloffRadius  0
+      wg_bandAngle  0
+      wg_bandWidth  0
+      wg_bandSpacing  0
+      wg_bandTurbulence  0
+      wg_noiseFreq  0
+      wg_coverageScale  0
+      wg_coverageMin  0
+      wg_coverageMax  0
+      wg_texResolution  0
+      wg_worldAnchorX  0
+      wg_worldAnchorZ  0
+      wg_followCamera  false
+      useBaseNoise  false
+      useWorleyErosion  false
+      useDetailNoise  false
       fogColor  0.7 0.78 0.86
       fogDensity  0
       fogStart  300
@@ -747,14 +702,14 @@ Node "Root" EMPTY {
       noiseRes  64
       noiseBasePath  _
       noiseDetailPath  _
-      sunDirection  0.659901 -0.0174524 0.75115
+      sunDirection  -0.912358 0.241922 0.330269
       sunColor  1 1 1
-      sunIntensity  20
+      sunIntensity  10
       ambientStrength  1.2
       scatterG  0.35
       densityScale  9.1
       maxSteps  8192
-      stepSize  8
+      stepSize  1.07
       turbulence  0.5
       windSpeed  4.92
       localNoiseSpeed  10
@@ -781,6 +736,27 @@ Node "Root" EMPTY {
       weatherMapScale  0.002
       autoWeatherMap  true
       weatherMapGridExtent  0
+      wg_patternType  0
+      wg_centerX  0
+      wg_centerY  0
+      wg_arms  0
+      wg_tightness  0
+      wg_falloffRadius  0
+      wg_bandAngle  0
+      wg_bandWidth  0
+      wg_bandSpacing  0
+      wg_bandTurbulence  0
+      wg_noiseFreq  0
+      wg_coverageScale  0
+      wg_coverageMin  0
+      wg_coverageMax  0
+      wg_texResolution  0
+      wg_worldAnchorX  0
+      wg_worldAnchorZ  0
+      wg_followCamera  false
+      useBaseNoise  false
+      useWorleyErosion  false
+      useDetailNoise  false
       fogColor  0.7 0.78 0.86
       fogDensity  0
       fogStart  300
@@ -803,6 +779,140 @@ Node "Root" EMPTY {
       nearOutputH  270
       farOutputW  960
       farOutputH  540
+    }
+  }
+
+  Node "Coverage_clouds" VOLUMETRIC_CLOUD {
+    id  115
+    terrainYOffset  false
+    selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    100
+      targetIndex  6
+    }
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  0.96 0.97 1
+      cloudColorBottom  0 0.0555556 0.166667
+      absorption  0.01
+      coverage  -2
+      erosion  0.1
+      silverLining  0.6
+      flatBottom  false
+      cloudType  1
+      noiseScale  0.001
+      detailScale  0.005
+      noiseRes  2
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  -0.912358 0.241922 0.330269
+      sunColor  1 1 1
+      sunIntensity  10
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  43.4
+      maxSteps  8192
+      stepSize  1.48
+      turbulence  0
+      windSpeed  200
+      localNoiseSpeed  200
+      useSceneDepth  false
+      boxSize  500 150 500
+      gridX  3
+      gridZ  3
+      gridSpacing  20
+      gridScale  1
+      spheresPerMin  3
+      spheresPerMax  8
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  true
+      planetRadius  5044
+      cloudBaseHeight  278
+      cloudThickness  485
+      domeExtent  1
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  3100
+      wg_patternType  2
+      wg_centerX  0.47
+      wg_centerY  0.36
+      wg_arms  5
+      wg_tightness  4.7
+      wg_falloffRadius  0.45
+      wg_bandAngle  0
+      wg_bandWidth  0
+      wg_bandSpacing  0
+      wg_bandTurbulence  0
+      wg_noiseFreq  0
+      wg_coverageScale  1
+      wg_coverageMin  0
+      wg_coverageMax  1
+      wg_texResolution  0
+      wg_worldAnchorX  0
+      wg_worldAnchorZ  0
+      wg_followCamera  false
+      useBaseNoise  false
+      useWorleyErosion  false
+      useDetailNoise  false
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  false
+      nvdfPath  _
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.002
+      nvdfRotAngle  0.963271
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  -478.155 0 493.5
+      nvdfYOffset  0
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
+  Node "Light" LIGHT {
+    id  142
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 300 -793.1
+    rotation  0 0 0
+    scale  1 1 1
+
+    Light {
+      type  0
+      color  1 0.765859 0.00490195
+      intensity  11.7
+      radius  100
+      direction  0 -1 0
+      innerCutoff  0.9
+      outerCutoff  0.8
+      castShadow  false
+      shadowResolution  2048
+      shadowBias  0.002
+      shadowOrthoSize  800
+      shadowNear  1
+      shadowFar  3000
+      shadowPolyFactor  1.5
+      shadowPolyUnits  4
     }
   }
 }

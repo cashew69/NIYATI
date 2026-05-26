@@ -73,14 +73,22 @@ uniform bool uFogEnabled;
 
 // Shadow
 layout(binding = 9) uniform sampler2DShadow uShadowMap;
-uniform bool uShadowEnabled;
+uniform bool  uShadowEnabled;
 uniform float uShadowBias;
+uniform float uShadowMinLight;
+
+// Diffuse model
+uniform bool uUseOrenNayar;
 
 // Stochastic Tiling
 uniform bool  uEnableStochastic;
 uniform float uStochasticContrast;
 uniform float uStochasticScale;
 uniform float uUVScale;
+
+// Terrain overlay (footprint normal map baked onto a terrain-UV texture)
+uniform bool      uHasOverlayTexture;
+uniform sampler2D uOverlayTexture;
 
 // Aerial perspective
 uniform bool      uAerialPerspective;
@@ -161,6 +169,35 @@ mat3 getTBN(vec3 N, vec3 p, vec2 uv)
 
     float invmax = inversesqrt(magSq);
     return mat3(T * invmax, B * invmax, N);
+}
+
+// Oren-Nayar diffuse — models rough Lambertian surfaces where inter-microfacet
+// scattering fills in grazing-angle darkness. Reduces to Lambertian at sigma=0.
+// Returns full diffuse radiance (already includes NdotL and 1/PI).
+vec3 orenNayarDiffuse(vec3 albedo, vec3 N, vec3 V, vec3 L, float sigma) {
+    float sigma2 = sigma * sigma;
+    float A = 1.0 - 0.5 * sigma2 / (sigma2 + 0.33);
+    float B = 0.45 * sigma2 / (sigma2 + 0.09);
+
+    // Clamp strictly to [0,1] so the sqrt arguments are never negative.
+    float NdotL = clamp(dot(N, L), 0.0, 1.0);
+    float NdotV = clamp(dot(N, V), 0.0, 1.0);
+
+    // Azimuthal cosine difference between projected L and V onto tangent plane.
+    // Safe-normalize: when V≈N (top-down view) the projected vector is near-zero;
+    // fall back to a harmless direction rather than producing NaN.
+    vec3  Lraw       = L - N * NdotL;
+    vec3  Vraw       = V - N * NdotV;
+    vec3  Lperp      = length(Lraw) > 1e-4 ? normalize(Lraw) : vec3(1.0, 0.0, 0.0);
+    vec3  Vperp      = length(Vraw) > 1e-4 ? normalize(Vraw) : vec3(1.0, 0.0, 0.0);
+    float cosPhiDiff = max(dot(Lperp, Vperp), 0.0);
+
+    float minDot    = min(NdotL, NdotV);
+    float maxDot    = max(NdotL, NdotV);
+    float sinAlpha  = sqrt(max(0.0, 1.0 - minDot * minDot));
+    float tanBeta   = sqrt(max(0.0, 1.0 - maxDot * maxDot)) / max(maxDot, 0.0001);
+
+    return albedo / PI * NdotL * (A + B * cosPhiDiff * sinAlpha * tanBeta);
 }
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -263,6 +300,18 @@ void main()
         N = length(tn) > 0.001 ? normalize(tn) : N;
     }
 
+    // Terrain overlay: footprint normals baked in terrain-UV space.
+    // rawUV is the unscaled [0,1] terrain UV (TexCoord was multiplied by uUVScale in the TES).
+    if (uHasOverlayTexture) {
+        vec2 rawUV = uUVScale > 0.001 ? TexCoord / uUVScale : TexCoord;
+        vec4 ovl   = texture(uOverlayTexture, rawUV);
+        if (ovl.a > 0.05) {
+            vec3 ovlTangent = ovl.rgb * 2.0 - 1.0;
+            mat3 TBN = getTBN(normalize(Normal), FragPos, rawUV);
+            N = normalize(mix(N, TBN * ovlTangent, ovl.a));
+        }
+    }
+
     float metallic = uMetalness;
     if (uHasMetallicMap && !uDebugDisableMetallicTex) {
         if (uEnableStochastic) {
@@ -339,17 +388,42 @@ void main()
     kD *= 1.0 - metallic;
 
     float NdotL = max(dot(N, L), 0.0);
-    Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+    vec3 diffuseTerm;
+    if (uUseOrenNayar) {
+        diffuseTerm = orenNayarDiffuse(albedo, N, V, L, roughness) * kD;
+    } else {
+        diffuseTerm = kD * albedo / PI * NdotL;
+    }
+    Lo += (diffuseTerm + specular * NdotL) * radiance;
 
     float shadow = 1.0;
     if (uShadowEnabled) {
         vec4 sc = ShadowCoord;
         if (sc.w > 0.0 && sc.z <= sc.w) {
             sc.z -= uShadowBias * sc.w;
-            shadow = textureProj(uShadowMap, sc);
+
+            // 8-tap Poisson disk PCF for soft shadow edges
+            const vec2 poissonDisk[8] = vec2[](
+                vec2(-0.9450, -0.3250),
+                vec2(-0.0940,  0.9290),
+                vec2( 0.3450, -0.6790),
+                vec2( 0.7360,  0.4680),
+                vec2(-0.4730,  0.6850),
+                vec2( 0.6640, -0.5410),
+                vec2(-0.6520, -0.7010),
+                vec2( 0.1520,  0.2290)
+            );
+            vec2 texelSize = 1.5 / vec2(textureSize(uShadowMap, 0));
+            shadow = 0.0;
+            for (int i = 0; i < 8; i++) {
+                vec4 ssc = sc;
+                ssc.xy += poissonDisk[i] * texelSize * sc.w;
+                shadow += textureProj(uShadowMap, ssc);
+            }
+            shadow /= 8.0;
         }
     }
-    Lo *= shadow;
+    Lo *= mix(uShadowMinLight, 1.0, shadow);
 
     float ao = 1.0;
     if (uHasAOMap && !uDebugDisableAOTex) {

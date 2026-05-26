@@ -150,6 +150,8 @@ typedef struct {
     GLint uShadowMatrix;
     GLint uShadowEnabled;
     GLint uShadowBias;
+    GLint uShadowMinLight;
+    GLint uUseOrenNayar;
     // Aerial perspective
     GLint uAerialPerspective;
     GLint uAerialTransmittanceLUT;
@@ -164,6 +166,10 @@ typedef struct {
     GLint uEnableStochastic;
     GLint uStochasticContrast;
     GLint uStochasticScale;
+
+    // Terrain overlay (footprint normal map)
+    GLint uOverlayTexture;
+    GLint uHasOverlayTexture;
 } ShaderLocations;
 
 typedef struct {
@@ -402,6 +408,33 @@ typedef struct {
     bool   autoWeatherMap;       // when true: generate noise map, ignore weatherMapPath
     float  weatherMapGridExtent; // extent to cover (0 = auto from box/sphere size)
 
+    // Weather map generator parameters (used when autoWeatherMap is true)
+    struct {
+        int   patternType;    // 0=FBM Noise 1=Spiral 2=Cyclone 3=Bands 4=Cellular
+        float centerX;        // pattern center in UV space
+        float centerY;
+        int   arms;           // spiral/cyclone arm count
+        float tightness;      // spiral winding rate (radians per UV radius)
+        float falloffRadius;  // outer envelope radius (UV units)
+        float bandAngle;      // band direction in radians
+        float bandWidth;      // cloud fraction of band period (0-1)
+        float bandSpacing;    // band period in UV units
+        float bandTurbulence; // turbulence displacement strength
+        float noiseFreq;      // frequency multiplier for noise/cellular
+        float coverageScale;  // global coverage density (0-1)
+        float coverageMin;    // remap dark end of coverage output (0 = no remap)
+        float coverageMax;    // remap bright end of coverage output (1 = no remap)
+        int   texResolution;  // 0=256  1=512  2=1024
+        float worldAnchorX;   // world XZ of map centre (used when !followCamera)
+        float worldAnchorZ;
+        bool  followCamera;   // true = anchor moves with camera (sphere default)
+    } weatherGen;
+
+    // Noise layer toggles
+    bool  useBaseNoise;      // false = coverage IS density (no cellular grid)
+    bool  useWorleyErosion;  // false = skip Worley GBA surface erosion
+    bool  useDetailNoise;    // false = skip high-freq detail texture erosion
+
     // Aerial perspective / atmospheric fog
     vec3  fogColor;
     float fogDensity;        // 0 = disabled
@@ -439,6 +472,8 @@ typedef struct {
         GLint useSphereField, planetRadius, cloudBaseHeight, cloudThickness, domeExtent;
         GLint blueNoise;
         GLint useWeatherMap, weatherMap, weatherMapScale, autoWeatherMap;
+        GLint weatherMapAnchor, weatherMapGridExtent;
+        GLint useBaseNoise, useWorleyErosion, useDetailNoise;
         GLint fogColor, fogDensity, fogStart;
         GLint useSceneDepth, sceneDepth;
     } computeLoc;
