@@ -1,0 +1,81 @@
+Node "Scene Root" EMPTY {
+  id  1
+  terrainYOffset  false
+  selectedTerrainID  0
+  position  0 0 0
+  rotation  0 0 0
+  scale  1 1 1
+
+  Node "Main Camera" CAMERA {
+    id  2
+    terrainYOffset  false
+    selectedTerrainID  0
+
+    Camera {
+      position  10 10 10
+      target  0 0 0
+      up  0 1 0
+      roll  0
+      fov  45
+      near  0.1
+      far  10000
+    }
+  }
+
+  Node "Model" EMPTY {
+    id  3
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 -1331.5 0
+    scale  10 10 10
+
+    Node "mesh_rep_0_ori_repair" MODEL {
+      id  4
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0 0 0
+      rotation  0 -415 0
+      scale  1 1 1
+      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user/wheel.glb
+      meshIndex   0
+
+      Material {
+        useDiffuseTexture  true
+        useNormalTexture  true
+        useORMTexture  true
+        useAOTexture  true
+        useEmissiveTexture  true
+        roughness  0
+        metalness  0
+      }
+    }
+  }
+
+  Node "whiteL" LIGHT {
+    id  12
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  -0.8 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    Light {
+      type  1
+      color  0.147059 1 0
+      intensity  500
+      radius  10
+      direction  0 -1 0
+      innerCutoff  0.9
+      outerCutoff  0.8
+      castShadow  false
+      shadowResolution  2048
+      shadowBias  0.002
+      shadowOrthoSize  200
+      shadowNear  1
+      shadowFar  400
+      shadowPolyFactor  1.5
+      shadowPolyUnits  4
+    }
+  }
+}

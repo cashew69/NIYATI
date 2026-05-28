@@ -594,7 +594,7 @@ void renderTerrain(GLint HeightMap, mat4 modelMatrix, mat4 view, mat4 proj) {
     }
 
     glUniform1i(loc.uHasDisplacementMap, g_enableTerrainDisplacement && g_terrainDisplacementMap != 0);
-    glUniform1i(loc.uUseOrenNayar,     1);
+    glUniform1i(loc.uUseOrenNayar,     0); // temporarily disabled — using Lambert
     glUniform1i(loc.uEnableStochastic, g_enableTerrainStochastic ? 1 : 0);
     glUniform1f(loc.uStochasticContrast, g_stochasticContrast > 0.0f ? g_stochasticContrast : 8.0f);
     glUniform1f(loc.uStochasticScale, g_stochasticScale > 0.0f ? g_stochasticScale : 1.0f);

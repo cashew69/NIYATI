@@ -299,7 +299,7 @@ Node "Root" EMPTY {
     terrainYOffset  false
     selectedTerrainID  0
     position  40.2 11.7 -337.2
-    rotation  75.5 -138 0
+    rotation  75.5 -153.5 0
     scale  30 30 30
 
     Node "Mesh_0" MODEL {
@@ -351,113 +351,6 @@ Node "Root" EMPTY {
         roughness  0
         metalness  0
       }
-    }
-  }
-
-  Node "Volumetric Cloud" VOLUMETRIC_CLOUD {
-    id  111
-    terrainYOffset  false
-    selectedTerrainID  0
-    RenderRule {
-      condition    2
-      threshold    100
-      targetIndex  2
-    }
-    position  -793.7 647.1 417.9
-    rotation  0 0 0
-    scale  1 1 1
-
-    VolumetricCloud {
-      cloudColorTop  0.96 0.97 1
-      cloudColorBottom  0 0 0
-      absorption  0.01
-      coverage  2
-      erosion  1
-      silverLining  3
-      flatBottom  false
-      cloudType  1
-      noiseScale  0.001
-      detailScale  0.005
-      noiseRes  64
-      noiseBasePath  _
-      noiseDetailPath  _
-      sunDirection  -0.912358 0.241922 0.330269
-      sunColor  1 1 1
-      sunIntensity  10
-      ambientStrength  1.2
-      scatterG  0.35
-      densityScale  9.1
-      maxSteps  8192
-      stepSize  1
-      turbulence  0.5
-      windSpeed  4.92
-      localNoiseSpeed  10
-      useSceneDepth  false
-      boxSize  588 343 535
-      gridX  1
-      gridZ  1
-      gridSpacing  1
-      gridScale  25
-      spheresPerMin  1
-      spheresPerMax  1
-      renderScale  0.5
-      enableTAA  false
-      taaBlend  0.1
-      useCircleField  false
-      circleRadius  250
-      useSphereField  false
-      planetRadius  6000
-      cloudBaseHeight  500
-      cloudThickness  800
-      domeExtent  0.5
-      useWeatherMap  true
-      weatherMapPath  _
-      weatherMapScale  0.002
-      autoWeatherMap  true
-      weatherMapGridExtent  0
-      wg_patternType  0
-      wg_centerX  0
-      wg_centerY  0
-      wg_arms  0
-      wg_tightness  0
-      wg_falloffRadius  0
-      wg_bandAngle  0
-      wg_bandWidth  0
-      wg_bandSpacing  0
-      wg_bandTurbulence  0
-      wg_noiseFreq  0
-      wg_coverageScale  0
-      wg_coverageMin  0
-      wg_coverageMax  0
-      wg_texResolution  0
-      wg_worldAnchorX  0
-      wg_worldAnchorZ  0
-      wg_followCamera  false
-      useBaseNoise  false
-      useWorleyErosion  false
-      useDetailNoise  false
-      fogColor  0.7 0.78 0.86
-      fogDensity  0
-      fogStart  300
-      useNVDF  true
-      nvdfPath  engine/effects/clouds/nvdf_textures/cloud.nvdf
-      hwModStrength  0.6
-      hwModScale  0.0025
-      curlStrength  0.4
-      nvdfTileScale  0.00344828
-      nvdfRotAngle  6.26232
-      nvdfRotX  0
-      nvdfRotZ  0
-      nvdfWorldOffset  -256.5 0 -402.5
-      nvdfYOffset  -0.015
-      adaptiveFactor  0.003
-      jitterSwitchDist  200
-      useDualPass  false
-      nearFarSplit  200
-      nearOutputW  480
-      nearOutputH  270
-      farOutputW  960
-      farOutputH  540
     }
   }
 
@@ -782,6 +675,113 @@ Node "Root" EMPTY {
     }
   }
 
+  Node "Volumetric Cloud" VOLUMETRIC_CLOUD {
+    id  111
+    terrainYOffset  false
+    selectedTerrainID  0
+    RenderRule {
+      condition    2
+      threshold    100
+      targetIndex  2
+    }
+    position  -793.7 647.1 417.9
+    rotation  0 0 0
+    scale  1 1 1
+
+    VolumetricCloud {
+      cloudColorTop  0.96 0.97 1
+      cloudColorBottom  0 0 0
+      absorption  0.01
+      coverage  2
+      erosion  1
+      silverLining  3
+      flatBottom  false
+      cloudType  1
+      noiseScale  0.001
+      detailScale  0.005
+      noiseRes  64
+      noiseBasePath  _
+      noiseDetailPath  _
+      sunDirection  -0.912358 0.241922 0.330269
+      sunColor  1 1 1
+      sunIntensity  10
+      ambientStrength  1.2
+      scatterG  0.35
+      densityScale  9.1
+      maxSteps  8192
+      stepSize  1
+      turbulence  0.5
+      windSpeed  4.92
+      localNoiseSpeed  10
+      useSceneDepth  false
+      boxSize  588 343 535
+      gridX  1
+      gridZ  1
+      gridSpacing  1
+      gridScale  25
+      spheresPerMin  1
+      spheresPerMax  1
+      renderScale  0.5
+      enableTAA  false
+      taaBlend  0.1
+      useCircleField  false
+      circleRadius  250
+      useSphereField  false
+      planetRadius  6000
+      cloudBaseHeight  500
+      cloudThickness  800
+      domeExtent  0.5
+      useWeatherMap  true
+      weatherMapPath  _
+      weatherMapScale  0.002
+      autoWeatherMap  true
+      weatherMapGridExtent  0
+      wg_patternType  0
+      wg_centerX  0
+      wg_centerY  0
+      wg_arms  0
+      wg_tightness  0
+      wg_falloffRadius  0
+      wg_bandAngle  0
+      wg_bandWidth  0
+      wg_bandSpacing  0
+      wg_bandTurbulence  0
+      wg_noiseFreq  0
+      wg_coverageScale  0
+      wg_coverageMin  0
+      wg_coverageMax  0
+      wg_texResolution  0
+      wg_worldAnchorX  0
+      wg_worldAnchorZ  0
+      wg_followCamera  false
+      useBaseNoise  false
+      useWorleyErosion  false
+      useDetailNoise  false
+      fogColor  0.7 0.78 0.86
+      fogDensity  0
+      fogStart  300
+      useNVDF  true
+      nvdfPath  engine/effects/clouds/nvdf_textures/cloud.nvdf
+      hwModStrength  0.6
+      hwModScale  0.0025
+      curlStrength  0.4
+      nvdfTileScale  0.00344828
+      nvdfRotAngle  6.26232
+      nvdfRotX  0
+      nvdfRotZ  0
+      nvdfWorldOffset  -256.5 0 -402.5
+      nvdfYOffset  -0.015
+      adaptiveFactor  0.003
+      jitterSwitchDist  200
+      useDualPass  false
+      nearFarSplit  200
+      nearOutputW  480
+      nearOutputH  270
+      farOutputW  960
+      farOutputH  540
+    }
+  }
+
   Node "Coverage_clouds" VOLUMETRIC_CLOUD {
     id  115
     terrainYOffset  false
@@ -854,7 +854,7 @@ Node "Root" EMPTY {
       wg_bandSpacing  0
       wg_bandTurbulence  0
       wg_noiseFreq  0
-      wg_coverageScale  1
+      wg_coverageScale  0.1
       wg_coverageMin  0
       wg_coverageMax  1
       wg_texResolution  0
@@ -900,7 +900,7 @@ Node "Root" EMPTY {
     Light {
       type  0
       color  1 0.765859 0.00490195
-      intensity  11.7
+      intensity  0
       radius  100
       direction  0 -1 0
       innerCutoff  0.9

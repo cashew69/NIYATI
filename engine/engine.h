@@ -50,6 +50,7 @@ ShaderProgram *lambertShaderProgram = NULL;
 ShaderProgram *lineShaderProgram = NULL;
 ShaderProgram *tessellationShaderProgram = NULL;
 ShaderProgram *pbrShaderProgram = NULL;
+ShaderProgram *sdfShaderProgram = NULL;
 ShaderProgram *VolumeRenderingProgram = NULL;
 ShaderProgram *instancedProgram = NULL;
 ShaderProgram *iconShaderProgram = NULL;

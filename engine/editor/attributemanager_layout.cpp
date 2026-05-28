@@ -24,6 +24,7 @@ void ShowOceanAttributes(SceneNode* node);
 #include "clouds_attribute_layout.cpp"
 #include "sky_atmosphere_layout.cpp"
 #include "ocean_attribute_layout.cpp"
+#include "sdf_attribute_layout.cpp"
 
 
 // File-scope browser for instance model selection
@@ -83,6 +84,17 @@ void showAttributeEditorUI()
                 sizeof(s_ModelContainerTarget->sourcePath) - 1);
         s_ModelContainerTarget = nullptr;
         s_ModelContainerBrowser.ClearSelected();
+    }
+
+    // SDF texture browser
+    s_SdfTexBrowser.Display();
+    if (s_SdfTexBrowser.HasSelected() && s_SdfTexTarget) {
+        auto path = s_SdfTexBrowser.GetSelected().string();
+        strncpy(s_SdfTexTarget->texturePath, path.c_str(), 255);
+        s_SdfTexTarget->texturePath[255] = '\0';
+        s_SdfTexTarget->textureID = 0;  // force lazy reload on next render
+        s_SdfTexTarget = nullptr;
+        s_SdfTexBrowser.ClearSelected();
     }
 }
 
@@ -502,7 +514,10 @@ void ShowSceneNodeAttributes(SceneNode* node) {
         ShowSkyAtmosphereAttributes(node);
     } else if (node->type == ENTITY_OCEAN) {
         ShowOceanAttributes(node);
-    } else if (node->type == ENTITY_FOG) {
+    } else if (node->type == ENTITY_SDF) {
+        ShowSDFAttributes(node);
+    }
+ else if (node->type == ENTITY_FOG) {
         RenderEntitySection(node);
     } else if (node->type == ENTITY_EMPTY && node->sourcePath[0] != '\0') {
         if (ImGui::CollapsingHeader("Model Source", ImGuiTreeNodeFlags_DefaultOpen)) {

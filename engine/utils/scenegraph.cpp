@@ -104,6 +104,19 @@ SceneNode* sg_CreateNode(NodeType type, const char* name) {
         ad->shadowFar = 400.0f;
         ad->shadowPolyFactor = 1.5f;
         ad->shadowPolyUnits = 4.0f;
+    } else if (type == ENTITY_SDF) {
+        SDFNodeData* sd = &node->data.sdf;
+        sd->shapeType      = 0;
+        sd->operation      = 0;
+        sd->radius         = 1.0f;
+        sd->smoothK        = 0.5f;
+        sd->color[0]       = 1.0f; sd->color[1] = 1.0f; sd->color[2] = 1.0f;
+        sd->opacity        = 1.0f;
+        sd->maxSteps       = 128;
+        sd->surfDist       = 0.001f;
+        sd->maxDist        = 200.0f;
+        sd->texturePath[0] = '\0';
+        sd->textureID      = 0;
     }
 
     return node;
@@ -1139,12 +1152,13 @@ void RenderSceneModels(mat4 view, mat4 proj) {
         };
 
         // Three separate buckets — sky renders first (background), transparent
-        // objects must be sorted back-to-front for correct alpha compositing,
-        // and volumetric effects composite over everything at the end.
+        // objects must be sorted back-to-front for correct alpha compositing.
+        // Clouds are intentionally excluded here; they render after the additive
+        // lighting pass so the sun additive draw cannot bleed through the cloud quad
+        // (the cloud writes no depth, so GL_EQUAL would re-add terrain colour on top).
         std::vector<SortItem> skyItems;
         std::vector<SortItem> opaqueItems;
         std::vector<SortItem> transparentItems;
-        std::vector<SortItem> effectItems;
 
         auto collect = [&](auto& self, SceneNode* n) -> void {
             if (!n) return;
@@ -1156,23 +1170,7 @@ void RenderSceneModels(mat4 view, mat4 proj) {
             if (n->type == ENTITY_SKYBOX || n->type == ENTITY_SKY_ATMOSPHERE) {
                 skyItems.push_back({n, d2});
             } else if (n->type == ENTITY_VOLUMETRIC_CLOUD) {
-                // Decide bucket based on camera's position relative to the cloud volume.
-                // Inside or above → render as a full-screen overlay (effectItems, drawn last).
-                // Outside/below   → sort back-to-front with scene so geometry in front occludes it.
-                VolumetricCloudNodeData* c = &n->data.volumetricCloud;
-                bool insideOrAbove = false;
-                if (c->useSphereField) {
-                    insideOrAbove = camPos[1] >= c->cloudBaseHeight;
-                } else {
-                    float sy = vmath::length(vec3(n->world_matrix[1][0], n->world_matrix[1][1], n->world_matrix[1][2]));
-                    float halfY = c->boxSize[1] * (sy > 0.0001f ? sy : 1.0f) * 0.5f;
-                    float cloudBottom = n->world_matrix[3][1] - halfY;
-                    insideOrAbove = camPos[1] >= cloudBottom;
-                }
-                if (insideOrAbove)
-                    effectItems.push_back({n, d2});
-                else
-                    transparentItems.push_back({n, d2});
+                // Clouds render after the additive pass — excluded from all sort buckets.
             } else if (n->type == ENTITY_MODEL) {
                 bool isTransparent = n->data.mesh.material.opacity < 1.0f;
                 if (isTransparent)
@@ -1251,8 +1249,13 @@ void RenderSceneModels(mat4 view, mat4 proj) {
         glDepthMask(GL_FALSE);
         for (auto& item : transparentItems) { recordDebug(item); drawSortedNode(item.node); }
         glDepthMask(GL_TRUE);
-        // 4. Volumetric effects composite over the rest
-        for (auto& item : effectItems)     { recordDebug(item); drawSortedNode(item.node); }
+        // 4. (Clouds rendered after additive pass — see below)
+
+        // 5. SDF raymarching — fullscreen quad rendered after scene geometry
+        {
+            extern void sg_RenderSDFScene(SceneNode* root, mat4 view, mat4 proj);
+            sg_RenderSDFScene(g_SceneRoot, view, proj);
+        }
     } else {
         // Rebuild BVH only when the scene structure or transforms have changed.
         // Call sg_MarkSceneDirty() after any transform change on animated nodes.
@@ -1309,17 +1312,7 @@ void RenderSceneModels(mat4 view, mat4 proj) {
             sg_RenderSkyboxNode(skyNode, view, proj);
         }
 
-        // Volumetric clouds are not in the BVH — walk the tree and render all of them
-        {
-            extern void sg_RenderVolumetricCloudNode(SceneNode* node, mat4 view, mat4 proj);
-            auto drawClouds = [&](auto& self, SceneNode* n) -> void {
-                if (!n) return;
-                if (n->type == ENTITY_VOLUMETRIC_CLOUD)
-                    sg_RenderVolumetricCloudNode(n, view, proj);
-                for (int i = 0; i < n->num_children; i++) self(self, n->children[i]);
-            };
-            drawClouds(drawClouds, g_SceneRoot);
-        }
+        // (Clouds rendered after additive pass — see below)
 
         // Sky Atmosphere — not in BVH, walk tree and render all instances
         {
@@ -1399,8 +1392,29 @@ void RenderSceneModels(mat4 view, mat4 proj) {
         glDepthMask(GL_TRUE);
     }
 
+    // Clouds composite AFTER the additive lighting pass.
+    // The cloud quad writes no depth; if rendered earlier the GL_EQUAL additive pass
+    // would re-draw the terrain on top of the already-composited cloud pixels,
+    // causing the sun colour to bleed through and make clouds look transparent.
+    {
+        extern void sg_RenderVolumetricCloudNode(SceneNode* node, mat4 view, mat4 proj);
+        auto drawClouds = [&](auto& self, SceneNode* n) -> void {
+            if (!n) return;
+            if (n->type == ENTITY_VOLUMETRIC_CLOUD)
+                sg_RenderVolumetricCloudNode(n, view, proj);
+            for (int i = 0; i < n->num_children; i++) self(self, n->children[i]);
+        };
+        drawClouds(drawClouds, g_SceneRoot);
+    }
+
     if (g_DrawBoundingBoxes) {
         bbox_DrawSceneGraph(g_SceneRoot, view, proj);
+    }
+
+    // SDF raymarching — fullscreen quad rendered after scene geometry
+    {
+        extern void sg_RenderSDFScene(SceneNode* root, mat4 view, mat4 proj);
+        sg_RenderSDFScene(g_SceneRoot, view, proj);
     }
 
     // Reset shadow texture compare mode back to GL_NONE so other systems
@@ -1498,6 +1512,10 @@ void sg_InitNode(SceneNode* node) {
     } else if (node->type == ENTITY_OCEAN) {
         extern void sg_InitOceanNode(SceneNode* node);
         sg_InitOceanNode(node);
+    } else if (node->type == ENTITY_SDF) {
+        extern void sg_InitSDFNode(SceneNode* node);
+        sg_InitSDFNode(node);
+        node->data.sdf.textureID = 0;  // runtime only — force lazy reload on init
     }
 
     for (int i = 0; i < node->num_children; i++) {
@@ -1540,6 +1558,7 @@ Material*        sg_Material(SceneNode* n) { return (n && n->type == ENTITY_MODE
 InstanceData*    sg_Instance(SceneNode* n) { return (n && n->type == ENTITY_INSTANCE)  ? &n->data.instance       : nullptr; }
 TerrainNodeData* sg_Terrain(SceneNode* n)  { return (n && n->type == ENTITY_TERRAIN)   ? &n->data.terrain        : nullptr; }
 OceanNodeData*   sg_Ocean(SceneNode* n)   { return (n && n->type == ENTITY_OCEAN)     ? &n->data.ocean          : nullptr; }
+SDFNodeData*     sg_SDF(SceneNode* n)     { return (n && n->type == ENTITY_SDF)       ? &n->data.sdf            : nullptr; }
 
 // Returns Camera* for a camera node — edit position/target/fov directly.
 Camera* sg_GetCamera(SceneNode* n) {

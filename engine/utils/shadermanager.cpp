@@ -86,6 +86,20 @@ static void cacheShaderLocations(ShaderProgram* program) {
 
     program->loc.uOverlayTexture     = glGetUniformLocation(id, "uOverlayTexture");
     program->loc.uHasOverlayTexture  = glGetUniformLocation(id, "uHasOverlayTexture");
+
+    // SDF Raymarching (N-shape array scene, max 8 shapes)
+    program->loc.uSdfPos        = glGetUniformLocation(id, "u_sdfPos[0]");
+    program->loc.uSdfRadius     = glGetUniformLocation(id, "u_sdfRadius[0]");
+    program->loc.uSdfColor      = glGetUniformLocation(id, "u_sdfColor[0]");
+    program->loc.uSdfCount      = glGetUniformLocation(id, "u_sdfCount");
+    program->loc.uSdfSmoothK    = glGetUniformLocation(id, "u_smoothK");
+    program->loc.uSdfOperation  = glGetUniformLocation(id, "u_operation");
+    program->loc.uSdf1HasTexture= glGetUniformLocation(id, "u_hasTexture");
+    program->loc.uSdf1Texture   = glGetUniformLocation(id, "u_sdf1Texture");
+    program->loc.uSdfMaxSteps   = glGetUniformLocation(id, "u_maxSteps");
+    program->loc.uSdfSurfDist   = glGetUniformLocation(id, "u_surfDist");
+    program->loc.uSdfMaxDist    = glGetUniformLocation(id, "u_maxDist");
+    program->loc.uSdfOpacity    = glGetUniformLocation(id, "u_opacity");
 }
 
 void InitializeShaders() {
@@ -163,5 +177,17 @@ void InitializeShaders() {
         };
         buildShaderProgramFromFiles(shadowFiles, 5, &instancedShadowProgram, attribNames, attribIndices, 4);
         cacheShaderLocations(instancedShadowProgram);
+    }
+
+    if (!sdfShaderProgram) {
+        const char* sdfFiles[5] = {
+            "engine/shaders/sdf_scene.vert",
+            NULL, NULL, NULL,
+            "engine/shaders/sdf_scene.frag"
+        };
+        extern const char* attribNames[];
+        extern GLint attribIndices[];
+        buildShaderProgramFromFiles(sdfFiles, 5, &sdfShaderProgram, attribNames, attribIndices, 4);
+        cacheShaderLocations(sdfShaderProgram);
     }
 }

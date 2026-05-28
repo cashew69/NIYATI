@@ -109,5 +109,5 @@ else()
     add_executable(window_x11 platforms/linux/linmain.cpp ${CORE_SOURCES})
 
     target_include_directories(window_x11 PRIVATE ${NIYATI_INCLUDES})
-    target_link_libraries(window_x11 GL X11 GLEW assimp)
+    target_link_libraries(window_x11 GL X11 GLEW assimp pthread)
 endif()

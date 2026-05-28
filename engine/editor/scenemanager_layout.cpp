@@ -151,7 +151,9 @@ static const char* NodeTypeTag(NodeType t) {
         case ENTITY_VOLUMETRIC_CLOUD: return "[VC]";
         case ENTITY_SKY_ATMOSPHERE:   return "[SA]";
         case ENTITY_FOG:              return "[F]";
-        case ENTITY_OCEAN:            return "[OC]";
+        case ENTITY_OCEAN:              return "[OCEAN]";
+        case ENTITY_SDF:                return "[SDF]";
+
         default:              return "[ ]";
     }
 }
@@ -168,7 +170,9 @@ static ImVec4 NodeTypeColor(NodeType t) {
         case ENTITY_VOLUMETRIC_CLOUD: return ImVec4(0.70f, 0.90f, 1.00f, 1.0f);
         case ENTITY_SKY_ATMOSPHERE:   return ImVec4(0.50f, 0.75f, 1.00f, 1.0f);
         case ENTITY_FOG:              return ImVec4(0.80f, 0.80f, 0.80f, 1.0f);
-        case ENTITY_OCEAN:            return ImVec4(0.20f, 0.60f, 0.90f, 1.0f);
+        case ENTITY_OCEAN:              return ImVec4(0.0f, 0.4f, 0.8f, 1.0f);
+        case ENTITY_SDF:                return ImVec4(1.0f, 0.4f, 1.0f, 1.0f); // Magenta
+
         default:              return ImVec4(0.70f, 0.70f, 0.70f, 1.0f);
     }
 }
@@ -355,11 +359,24 @@ void showSceneEditorUI()
     if (ImGui::BeginPopup("##AddNode")) {
         ImGui::SeparatorText("Add to Scene");
 
+if (ImGui::Selectable("[SDF] SDF Node")) {
+    if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
+    SceneNode* n = sg_CreateNode(ENTITY_SDF, "SDF Node");
+    if (n) {
+        SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+        sg_AddChild(to, n);
+        sg_InitNode(n);
+        g_SceneSelectedType = SEL_SCENENODE;
+        g_SelectedSceneNode = n;
+    }
+    ImGui::CloseCurrentPopup();
+}
+
         if (ImGui::Selectable("[C]  Camera")) {
             if (!g_SceneRoot) g_SceneRoot = sg_CreateNode(ENTITY_EMPTY, "Scene Root");
-            SceneNode* n = sg_AddCameraNode("Camera");
+            SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
+            SceneNode* n  = sg_AddCameraNode("Camera");
             if (n) {
-                SceneNode* to = (hasSelection && g_SelectedSceneNode) ? g_SelectedSceneNode : g_SceneRoot;
                 sg_AddChild(to, n);
                 g_SceneSelectedType = SEL_SCENENODE;
                 g_SelectedSceneNode = n;

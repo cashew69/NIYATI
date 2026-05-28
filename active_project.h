@@ -8,5 +8,6 @@
 //   void projectRender()
 //   void projectCleanup()
 
-#include "examples/TestSceneCreation/project.cpp"
+//#include "examples/TestSceneCreation/project.cpp"
 //#include "templates/project_template/project.cpp"
+#include "examples/wheel/project.cpp"

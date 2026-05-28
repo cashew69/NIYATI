@@ -385,7 +385,9 @@ static SceneNode* sg_LoadNodeNew(SceneParser& p) {
     return node;
 }
 
-SceneNode* sg_LoadScene(const char* filename) {
+// Parses the scene file into a node tree — no GL calls, safe to run on a background thread.
+// Caller must call sg_InitNode() on the main thread before using the result for rendering.
+SceneNode* sg_ParseScene(const char* filename) {
     FILE* f = fopen(filename, "rb");
     if (!f) return nullptr;
 
@@ -411,7 +413,13 @@ SceneNode* sg_LoadScene(const char* filename) {
     }
 
     SceneNode* root = sg_LoadNodeNew(p);
-    sg_InitNode(root);
     free(data);
+    return root;
+}
+
+// Convenience: parse + GPU init in one call (main thread only).
+SceneNode* sg_LoadScene(const char* filename) {
+    SceneNode* root = sg_ParseScene(filename);
+    sg_InitNode(root);
     return root;
 }

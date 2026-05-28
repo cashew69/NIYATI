@@ -287,6 +287,20 @@ static const AttrDesc kFog[] = {
     { "enabled", ATTR_BOOL,   (int)offsetof(FogNodeData, enabled), 0,     0,    0,    0 },
 };
 
+// ---- SDF -------------------------------------------------------------------
+static const AttrDesc kSdf[] = {
+    { "shapeType",   ATTR_INT,    (int)offsetof(SDFNodeData, shapeType),   1.0f,    0,       1,      0   },
+    { "operation",   ATTR_INT,    (int)offsetof(SDFNodeData, operation),   1.0f,    0,       1,      0   },
+    { "radius",      ATTR_FLOAT,  (int)offsetof(SDFNodeData, radius),      0.05f,   0.05f,   100,    0   },
+    { "smoothK",     ATTR_FLOAT,  (int)offsetof(SDFNodeData, smoothK),     0.01f,   0.001f,  10,     0   },
+    { "color",       ATTR_COLOR3, (int)offsetof(SDFNodeData, color),       0.01f,   0,       0,      0   },
+    { "opacity",     ATTR_FLOAT,  (int)offsetof(SDFNodeData, opacity),     0.01f,   0,       1,      0   },
+    { "maxSteps",    ATTR_INT,    (int)offsetof(SDFNodeData, maxSteps),    1.0f,    8,       512,    0   },
+    { "surfDist",    ATTR_FLOAT,  (int)offsetof(SDFNodeData, surfDist),    0.0001f, 0.00001f,0.01f,  0   },
+    { "maxDist",     ATTR_FLOAT,  (int)offsetof(SDFNodeData, maxDist),     1.0f,    1,       5000,   0   },
+    { "texturePath", ATTR_STRING, (int)offsetof(SDFNodeData, texturePath), 0,       0,       0,      256 },
+};
+
 // ============================================================================
 // THE TABLE — one row per entity type
 // ============================================================================
@@ -303,6 +317,7 @@ const EntityDesc g_EntityTable[] = {
     { ENTITY_SKY_ATMOSPHERE,    "SKY_ATMOSPHERE",     "SkyAtmosphere",     kSkyAtmosphere,    NELEM(kSkyAtmosphere),    offsetof(SceneNode, data.skyAtmosphere)    },
     { ENTITY_FOG,               "FOG",                "Fog",               kFog,              NELEM(kFog),             offsetof(SceneNode, data.fog)              },
     { ENTITY_OCEAN,             "OCEAN",              "Ocean",             kOcean,            NELEM(kOcean),           offsetof(SceneNode, data.ocean)            },
+    { ENTITY_SDF,               "SDF",                "SDF",               kSdf,              NELEM(kSdf),             offsetof(SceneNode, data.sdf)              },
 };
 const int g_EntityTableCount = NELEM(g_EntityTable);
 

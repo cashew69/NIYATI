@@ -21,7 +21,8 @@ void sg_DrawDepthNodes(SceneNode* node, mat4 vp, ShaderProgram* shader, ShaderPr
 void sg_SyncFirstLight(SceneNode* root);
 void RenderLightIcons(mat4 view, mat4 proj);  // editor only: billboard icon at each light
 bool sg_SaveScene(SceneNode* root, const char* filename);
-SceneNode* sg_LoadScene(const char* filename);
+SceneNode* sg_ParseScene(const char* filename);  // file I/O only — safe on background thread
+SceneNode* sg_LoadScene(const char* filename);   // sg_ParseScene + sg_InitNode (main thread only)
 
 // ---- Scene query -----------------------------------------------------------
 // Find by stable integer ID (persisted across save/load) or by name.
@@ -41,6 +42,7 @@ InstanceData*    sg_Instance(SceneNode* node);
 TerrainNodeData* sg_Terrain(SceneNode* node);
 CatmullRomNodeData* sg_CatmullRom(SceneNode* node);
 OceanNodeData*   sg_Ocean(SceneNode* node);
+SDFNodeData*     sg_SDF(SceneNode* node);
 
 // ---- Camera helpers for project code ---------------------------------------
 // Returns the Camera for a camera node — edit position/target/fov directly.

@@ -1,0 +1,95 @@
+Node "Scene Root" EMPTY {
+  id  1
+  terrainYOffset  false
+  selectedTerrainID  0
+  position  0 0.9 0
+  rotation  0 0 0
+  scale  1 1 1
+
+  Node "Main Camera" CAMERA {
+    id  2
+    terrainYOffset  false
+    selectedTerrainID  0
+
+    Camera {
+      position  10 10 10
+      target  0 0 0
+      up  0 1 0
+      roll  0
+      fov  45
+      near  0.1
+      far  10000
+    }
+  }
+
+  Node "Pruthvi" SDF {
+    id  3
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0.5 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    SDF {
+      shapeType  0
+      operation  1
+      radius  0.65
+      smoothK  0.291
+      color  1 1 1
+      opacity  1
+      maxSteps  128
+      surfDist  1e-05
+      maxDist  200
+      texturePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/earthmap1k.jpg
+    }
+  }
+
+  Node "SDF Node" SDF {
+    id  4
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    SDF {
+      shapeType  0
+      operation  1
+      radius  1
+      smoothK  0.5
+      color  0 0 0
+      opacity  1
+      maxSteps  128
+      surfDist  0.001
+      maxDist  200
+      texturePath  _
+    }
+  }
+
+  Node "Light" LIGHT {
+    id  5
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 -2.1 6.5
+    rotation  0 0 0
+    scale  1 1 1
+
+    Light {
+      type  1
+      color  1 1 1
+      intensity  500
+      radius  100
+      direction  0 -1 0
+      innerCutoff  0.9
+      outerCutoff  0.8
+      castShadow  false
+      shadowResolution  2048
+      shadowBias  0.002
+      shadowOrthoSize  200
+      shadowNear  1
+      shadowFar  400
+      shadowPolyFactor  1.5
+      shadowPolyUnits  4
+    }
+  }
+}

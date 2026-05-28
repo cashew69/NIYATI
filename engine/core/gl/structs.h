@@ -170,6 +170,20 @@ typedef struct {
     // Terrain overlay (footprint normal map)
     GLint uOverlayTexture;
     GLint uHasOverlayTexture;
+
+    // SDF Raymarching (N-shape array scene, max 8 shapes)
+    GLint uSdfPos;          // base of u_sdfPos[0]
+    GLint uSdfRadius;       // base of u_sdfRadius[0]
+    GLint uSdfColor;        // base of u_sdfColor[0]
+    GLint uSdfCount;
+    GLint uSdfSmoothK;
+    GLint uSdfOperation;
+    GLint uSdf1HasTexture;
+    GLint uSdf1Texture;
+    GLint uSdfMaxSteps;
+    GLint uSdfSurfDist;
+    GLint uSdfMaxDist;
+    GLint uSdfOpacity;
 } ShaderLocations;
 
 typedef struct {
@@ -620,6 +634,20 @@ typedef struct {
     void*  oceanObj;       // Ocean* — heap-allocated on first draw
 } OceanNodeData;
 
+typedef struct {
+    int   shapeType;        // 0 = Sphere
+    int   operation;        // 0 = Union, 1 = Smooth Union
+    float radius;
+    float smoothK;
+    float color[3];
+    float opacity;          // 0..1 — transparency control
+    int   maxSteps;         // raymarching step count (used from primary node)
+    float surfDist;         // surface hit threshold
+    float maxDist;          // maximum march distance
+    char  texturePath[256]; // texture image for this SDF shape
+    GLuint textureID;       // runtime only — not serialised
+} SDFNodeData;
+
 typedef enum {
     ENTITY_EMPTY,
     ENTITY_MODEL,
@@ -632,7 +660,8 @@ typedef enum {
     ENTITY_VOLUMETRIC_CLOUD,
     ENTITY_SKY_ATMOSPHERE,
     ENTITY_FOG,
-    ENTITY_OCEAN
+    ENTITY_OCEAN,
+    ENTITY_SDF
 } NodeType;
 
 typedef enum {
@@ -707,6 +736,7 @@ typedef struct SceneNode {
         SkyAtmosphereNodeData   skyAtmosphere;
         FogNodeData             fog;
         OceanNodeData           ocean;
+        SDFNodeData             sdf;
     } data;
 
     const char *name;

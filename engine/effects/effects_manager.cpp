@@ -33,7 +33,7 @@ void effects_RenderAll(EffectsManager* manager, SceneNode* root, vmath::mat4 vie
     extern void sg_SyncFirstLight(SceneNode* root);
     sg_SyncFirstLight(root);
 
-    // Direct scene rendering without post-processing
+    // Direct scene rendering without post-processing (SDF rendering is handled inside)
     RenderSceneModels(view, proj);
 }
 

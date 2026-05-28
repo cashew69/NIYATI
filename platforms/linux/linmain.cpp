@@ -13,6 +13,7 @@
 
 #include "../../engine/engine.h"
 #include "../../platform_common.cpp"
+#include "../../engine/effects/sdf_renderer.cpp"
 #include "platform.h"
 
 // Stub for the editor depth texture — 0 disables cloud depth masking in the
@@ -328,6 +329,11 @@ int main(void)
                         case XK_C:
                             mouse_captured = !mouse_captured;
                             fprintf(gpFile, "Mouse %s\n", mouse_captured ? "captured" : "released");
+                            break;
+                        case XK_n:
+                        case XK_N:
+                            extern void nextScene();
+                            nextScene();
                             break;
                         default:
                             break;

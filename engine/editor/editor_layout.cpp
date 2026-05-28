@@ -4,6 +4,7 @@
 // Framebuffer manager and effects system implementations
 #include "engine/core/gl/framebuffer.cpp"
 #include "engine/effects/effects_manager.cpp"
+#include "engine/effects/sdf_renderer.cpp"
 
 // Forward decls
 extern void CreateSceneModel(const char* name, const char* path, SceneNode* parent);
