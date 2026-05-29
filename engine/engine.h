@@ -55,6 +55,7 @@ ShaderProgram *VolumeRenderingProgram = NULL;
 ShaderProgram *instancedProgram = NULL;
 ShaderProgram *iconShaderProgram = NULL;
 ShaderProgram *instancedShadowProgram = NULL;
+ShaderProgram *g_glowMeshShader       = NULL;
 
 extern bool   g_ShadowActive;
 extern mat4   g_ShadowSBPV;

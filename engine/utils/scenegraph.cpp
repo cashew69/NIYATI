@@ -117,6 +117,15 @@ SceneNode* sg_CreateNode(NodeType type, const char* name) {
         sd->maxDist        = 200.0f;
         sd->texturePath[0] = '\0';
         sd->textureID      = 0;
+    } else if (type == ENTITY_GLOW_MESH) {
+        GlowMeshNodeData* gd = &node->data.glow;
+        gd->color        = vec3(1.0f, 0.72f, 0.10f);
+        gd->intensity    = 1.0f;
+        gd->fresnelPower = 2.8f;
+        gd->rimStrength  = 3.5f;
+        gd->coreStrength = 0.35f;
+        gd->pulseSpeed   = 2.5f;
+        gd->pulseAmt     = 0.30f;
     }
 
     return node;
@@ -644,6 +653,74 @@ static void sg_DrawModelNode(SceneNode* node, mat4 view, mat4 proj) {
     glBindVertexArray(mesh->vao);
     glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}
+
+static void sg_DrawGlowMeshNode(SceneNode* node, mat4 view, mat4 proj) {
+    if (!node || node->type != ENTITY_GLOW_MESH) return;
+    if (!node->parent || node->parent->type != ENTITY_MODEL) return;
+
+    Mesh* mesh = &node->parent->data.mesh;
+    if (!mesh || mesh->vao == 0 || mesh->indexCount <= 0) return;
+
+    extern ShaderProgram* g_glowMeshShader;
+    if (!g_glowMeshShader) return;
+
+    GlowMeshNodeData* gd = &node->data.glow;
+
+    static GLint locModel     = -2;
+    static GLint locView      = -2;
+    static GLint locProj      = -2;
+    static GLint locViewPos   = -2;
+    static GLint locTime      = -2;
+    static GLint locColor     = -2;
+    static GLint locIntensity = -2;
+    static GLint locFresnel   = -2;
+    static GLint locRim       = -2;
+    static GLint locCore      = -2;
+    static GLint locPulse     = -2;
+    static GLint locPulseAmt  = -2;
+    if (locModel == -2) {
+        GLuint pid    = g_glowMeshShader->id;
+        locModel      = glGetUniformLocation(pid, "uModel");
+        locView       = glGetUniformLocation(pid, "uView");
+        locProj       = glGetUniformLocation(pid, "uProjection");
+        locViewPos    = glGetUniformLocation(pid, "uViewPos");
+        locTime       = glGetUniformLocation(pid, "uTime");
+        locColor      = glGetUniformLocation(pid, "uGlowColor");
+        locIntensity  = glGetUniformLocation(pid, "uIntensity");
+        locFresnel    = glGetUniformLocation(pid, "uFresnelPower");
+        locRim        = glGetUniformLocation(pid, "uRimStrength");
+        locCore       = glGetUniformLocation(pid, "uCoreStrength");
+        locPulse      = glGetUniformLocation(pid, "uPulseSpeed");
+        locPulseAmt   = glGetUniformLocation(pid, "uPulseAmt");
+    }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glDepthMask(GL_FALSE);
+
+    glUseProgram(g_glowMeshShader->id);
+    glUniformMatrix4fv(locProj,  1, GL_FALSE, proj);
+    glUniformMatrix4fv(locView,  1, GL_FALSE, view);
+    glUniformMatrix4fv(locModel, 1, GL_FALSE, node->parent->world_matrix);
+
+    vec3 vp = GetActiveCameraPosition();
+    glUniform3fv(locViewPos,   1, (const float*)&vp);
+    glUniform1f(locTime,       g_Time);
+    glUniform3fv(locColor,     1, (const float*)&gd->color);
+    glUniform1f(locIntensity,  gd->intensity);
+    glUniform1f(locFresnel,    gd->fresnelPower);
+    glUniform1f(locRim,        gd->rimStrength);
+    glUniform1f(locCore,       gd->coreStrength);
+    glUniform1f(locPulse,      gd->pulseSpeed);
+    glUniform1f(locPulseAmt,   gd->pulseAmt);
+
+    glBindVertexArray(mesh->vao);
+    glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
 }
 
 static void sg_DrawTerrainNode(SceneNode* node, mat4 view, mat4 proj) {
@@ -1392,6 +1469,17 @@ void RenderSceneModels(mat4 view, mat4 proj) {
         glDepthMask(GL_TRUE);
     }
 
+    // Glow mesh additive pass — after all opaque/transparent geometry and multi-light passes.
+    {
+        auto drawGlows = [&](auto& self, SceneNode* n) -> void {
+            if (!n) return;
+            if (n->type == ENTITY_GLOW_MESH)
+                sg_DrawGlowMeshNode(n, view, proj);
+            for (int i = 0; i < n->num_children; i++) self(self, n->children[i]);
+        };
+        drawGlows(drawGlows, g_SceneRoot);
+    }
+
     // Clouds composite AFTER the additive lighting pass.
     // The cloud quad writes no depth; if rendered earlier the GL_EQUAL additive pass
     // would re-draw the terrain on top of the already-composited cloud pixels,
@@ -1432,7 +1520,7 @@ void RenderSceneModels(mat4 view, mat4 proj) {
 }
 }
 
-void sg_InitNode(SceneNode* node) {
+void sg_InitNodeSingle(SceneNode* node) {
     if (!node) return;
 
     if (node->type == ENTITY_MODEL) {
@@ -1517,10 +1605,13 @@ void sg_InitNode(SceneNode* node) {
         sg_InitSDFNode(node);
         node->data.sdf.textureID = 0;  // runtime only — force lazy reload on init
     }
+}
 
-    for (int i = 0; i < node->num_children; i++) {
+void sg_InitNode(SceneNode* node) {
+    if (!node) return;
+    sg_InitNodeSingle(node);
+    for (int i = 0; i < node->num_children; i++)
         sg_InitNode(node->children[i]);
-    }
 }
 
 // ============================================================================
@@ -1557,8 +1648,9 @@ Mesh*            sg_Mesh(SceneNode* n)     { return (n && n->type == ENTITY_MODE
 Material*        sg_Material(SceneNode* n) { return (n && n->type == ENTITY_MODEL)     ? &n->data.mesh.material  : nullptr; }
 InstanceData*    sg_Instance(SceneNode* n) { return (n && n->type == ENTITY_INSTANCE)  ? &n->data.instance       : nullptr; }
 TerrainNodeData* sg_Terrain(SceneNode* n)  { return (n && n->type == ENTITY_TERRAIN)   ? &n->data.terrain        : nullptr; }
-OceanNodeData*   sg_Ocean(SceneNode* n)   { return (n && n->type == ENTITY_OCEAN)     ? &n->data.ocean          : nullptr; }
-SDFNodeData*     sg_SDF(SceneNode* n)     { return (n && n->type == ENTITY_SDF)       ? &n->data.sdf            : nullptr; }
+OceanNodeData*    sg_Ocean(SceneNode* n)    { return (n && n->type == ENTITY_OCEAN)     ? &n->data.ocean : nullptr; }
+SDFNodeData*      sg_SDF(SceneNode* n)     { return (n && n->type == ENTITY_SDF)       ? &n->data.sdf   : nullptr; }
+GlowMeshNodeData* sg_GlowMesh(SceneNode* n){ return (n && n->type == ENTITY_GLOW_MESH) ? &n->data.glow  : nullptr; }
 
 // Returns Camera* for a camera node — edit position/target/fov directly.
 Camera* sg_GetCamera(SceneNode* n) {

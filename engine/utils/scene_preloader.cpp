@@ -2,20 +2,36 @@
 #include "scenegraph.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 static void* preloader_ThreadFunc(void* arg) {
     ScenePreloader* p = (ScenePreloader*)arg;
     p->node = sg_ParseScene(p->path);
-    __sync_synchronize();         // full memory barrier before publishing status
+    __sync_synchronize();
     p->status = PRELOAD_PARSED;
     return NULL;
 }
 
+// Flatten the scene tree into a contiguous array for per-frame init.
+static void collectNodes(SceneNode* node, SceneNode*** arr, int* count, int* cap) {
+    if (!node) return;
+    if (*count >= *cap) {
+        *cap = (*cap == 0) ? 16 : (*cap * 2);
+        *arr = (SceneNode**)realloc(*arr, *cap * sizeof(SceneNode*));
+    }
+    (*arr)[(*count)++] = node;
+    for (int i = 0; i < node->num_children; i++)
+        collectNodes(node->children[i], arr, count, cap);
+}
+
 void preloader_Init(ScenePreloader* p) {
-    p->node          = NULL;
-    p->status        = PRELOAD_IDLE;
-    p->thread_active = 0;
-    p->path[0]       = '\0';
+    p->node            = NULL;
+    p->status          = PRELOAD_IDLE;
+    p->thread_active   = 0;
+    p->path[0]         = '\0';
+    p->initQueue       = NULL;
+    p->initQueueCount  = 0;
+    p->initQueueHead   = 0;
 }
 
 void preloader_Start(ScenePreloader* p, const char* path) {
@@ -35,18 +51,33 @@ void preloader_Start(ScenePreloader* p, const char* path) {
 }
 
 void preloader_Tick(ScenePreloader* p) {
-    if (p->status != PRELOAD_PARSED) return;
+    // Parsing just finished — join thread and build the flat init queue.
+    if (p->status == PRELOAD_PARSED) {
+        if (p->thread_active) {
+            pthread_join(p->thread, NULL);
+            p->thread_active = 0;
+        }
+        if (!p->node) { p->status = PRELOAD_IDLE; return; }
 
-    if (p->node) {
-        sg_InitNode(p->node);   // GL uploads — main thread only
+        int cap = 0;
+        collectNodes(p->node, &p->initQueue, &p->initQueueCount, &cap);
+        p->initQueueHead = 0;
+        p->status = PRELOAD_INITING;
     }
 
-    if (p->thread_active) {
-        pthread_join(p->thread, NULL);
-        p->thread_active = 0;
+    // Drain one node per tick — each gets its GL resources in a separate frame.
+    if (p->status == PRELOAD_INITING) {
+        if (p->initQueueHead < p->initQueueCount) {
+            sg_InitNodeSingle(p->initQueue[p->initQueueHead++]);
+        }
+        if (p->initQueueHead >= p->initQueueCount) {
+            free(p->initQueue);
+            p->initQueue      = NULL;
+            p->initQueueCount = 0;
+            p->initQueueHead  = 0;
+            p->status         = PRELOAD_READY;
+        }
     }
-
-    p->status = p->node ? PRELOAD_READY : PRELOAD_IDLE;
 }
 
 int preloader_IsReady(const ScenePreloader* p) {
@@ -66,6 +97,12 @@ void preloader_Destroy(ScenePreloader* p) {
     if (p->thread_active) {
         pthread_join(p->thread, NULL);
         p->thread_active = 0;
+    }
+    if (p->initQueue) {
+        free(p->initQueue);
+        p->initQueue      = NULL;
+        p->initQueueCount = 0;
+        p->initQueueHead  = 0;
     }
     if (p->node) {
         sg_FreeNode(p->node);

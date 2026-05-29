@@ -635,6 +635,16 @@ typedef struct {
 } OceanNodeData;
 
 typedef struct {
+    vec3  color;          // emissive glow color
+    float intensity;      // overall brightness multiplier
+    float fresnelPower;   // rim-glow sharpness (higher = tighter edge band)
+    float rimStrength;    // rim-glow peak amplitude
+    float coreStrength;   // ambient body glow
+    float pulseSpeed;     // animation frequency in Hz (0 = no pulse)
+    float pulseAmt;       // pulse modulation depth [0..1]
+} GlowMeshNodeData;
+
+typedef struct {
     int   shapeType;        // 0 = Sphere
     int   operation;        // 0 = Union, 1 = Smooth Union
     float radius;
@@ -661,7 +671,8 @@ typedef enum {
     ENTITY_SKY_ATMOSPHERE,
     ENTITY_FOG,
     ENTITY_OCEAN,
-    ENTITY_SDF
+    ENTITY_SDF,
+    ENTITY_GLOW_MESH
 } NodeType;
 
 typedef enum {
@@ -737,6 +748,7 @@ typedef struct SceneNode {
         FogNodeData             fog;
         OceanNodeData           ocean;
         SDFNodeData             sdf;
+        GlowMeshNodeData        glow;
     } data;
 
     const char *name;

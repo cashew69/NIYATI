@@ -107,3 +107,5 @@ void projectCleanup()
 
 
 }
+
+void nextScene() {}

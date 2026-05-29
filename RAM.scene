@@ -6,14 +6,14 @@ Node "Scene Root" EMPTY {
   rotation  0 0 0
   scale  1 1 1
 
-  Node "Main Camera" CAMERA {
+  Node "ramCam" CAMERA {
     id  2
     terrainYOffset  false
     selectedTerrainID  0
 
     Camera {
-      position  10 10 10
-      target  0 0 0
+      position  240.9 22.9 198.7
+      target  542 30.7 501.5
       up  0 1 0
       roll  0
       fov  45
@@ -34,15 +34,15 @@ Node "Scene Root" EMPTY {
       bottomRadius  6360
       topRadius  6460
       groundAlbedo  0.3 0.3 0.3
-      rayleighScattering  0.005802 0.013558 0.0331
-      rayleighDensityExpScale  -0.125
+      rayleighScattering  0.00665 0.00466 0.00275
+      rayleighDensityExpScale  -0.144928
       mieScattering  0.003996
       mieAbsorption  0.000444
       mieAnisotropy  0.8
       mieDensityExpScale  -0.8333
-      absorptionExtinction  0.00065 0.001881 8.5e-05
-      sunDirection  -1.09575e-06 0.78152 -0.62388
-      sunColor  1 1 1
+      absorptionExtinction  0.0063 0.005511 0.005185
+      sunDirection  0.889959 0.151261 0.430224
+      sunColor  0 0 0
       sunIntensity  20
       sunAngularRadius  0.02
       worldScale  0.001
@@ -211,6 +211,31 @@ Node "Scene Root" EMPTY {
         roughness  0
         metalness  0
       }
+    }
+  }
+
+  Node "spline" CATMULLROMSPLINE {
+    id  12
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  0 0 0
+    rotation  0 0 0
+    scale  1 1 1
+
+    CatmullRomSpline {
+      tension  0.5
+      segmentsPerCurve  20
+      isLooping  false
+      showControlPoints  true
+      color  1 1 0
+    }
+    ControlPoints {
+      pointCount  5
+      p0  500 7.1 500
+      p1  412.6 9 448.1
+      p2  295.4 16.6 291.6
+      p3  240.9 23.1 198.7
+      p4  240 22 198
     }
   }
 }

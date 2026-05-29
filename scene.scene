@@ -290,6 +290,25 @@ Node "Root" EMPTY {
           roughness  0
           metalness  0
         }
+
+        Node "Wheel Glow" GLOW_MESH {
+          id  150
+          terrainYOffset  false
+          selectedTerrainID  0
+          position  0 0 0
+          rotation  0 0 0
+          scale  1 1 1
+
+          GlowMesh {
+            color  1 0.72 0.1
+            intensity  1
+            fresnelPower  2.8
+            rimStrength  3.5
+            coreStrength  0.35
+            pulseSpeed  2.5
+            pulseAmt  0.3
+          }
+        }
       }
     }
   }

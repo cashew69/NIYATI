@@ -287,6 +287,17 @@ static const AttrDesc kFog[] = {
     { "enabled", ATTR_BOOL,   (int)offsetof(FogNodeData, enabled), 0,     0,    0,    0 },
 };
 
+// ---- Glow Mesh -------------------------------------------------------------
+static const AttrDesc kGlowMesh[] = {
+    { "color",        ATTR_COLOR3, (int)offsetof(GlowMeshNodeData, color),        0.01f,  0,    0,   0 },
+    { "intensity",    ATTR_FLOAT,  (int)offsetof(GlowMeshNodeData, intensity),    0.05f,  0,    10,  0 },
+    { "fresnelPower", ATTR_FLOAT,  (int)offsetof(GlowMeshNodeData, fresnelPower), 0.05f,  0.1f, 10,  0 },
+    { "rimStrength",  ATTR_FLOAT,  (int)offsetof(GlowMeshNodeData, rimStrength),  0.1f,   0,    20,  0 },
+    { "coreStrength", ATTR_FLOAT,  (int)offsetof(GlowMeshNodeData, coreStrength), 0.01f,  0,    2,   0 },
+    { "pulseSpeed",   ATTR_FLOAT,  (int)offsetof(GlowMeshNodeData, pulseSpeed),   0.05f,  0,    20,  0 },
+    { "pulseAmt",     ATTR_FLOAT,  (int)offsetof(GlowMeshNodeData, pulseAmt),     0.01f,  0,    1,   0 },
+};
+
 // ---- SDF -------------------------------------------------------------------
 static const AttrDesc kSdf[] = {
     { "shapeType",   ATTR_INT,    (int)offsetof(SDFNodeData, shapeType),   1.0f,    0,       1,      0   },
@@ -318,6 +329,7 @@ const EntityDesc g_EntityTable[] = {
     { ENTITY_FOG,               "FOG",                "Fog",               kFog,              NELEM(kFog),             offsetof(SceneNode, data.fog)              },
     { ENTITY_OCEAN,             "OCEAN",              "Ocean",             kOcean,            NELEM(kOcean),           offsetof(SceneNode, data.ocean)            },
     { ENTITY_SDF,               "SDF",                "SDF",               kSdf,              NELEM(kSdf),             offsetof(SceneNode, data.sdf)              },
+    { ENTITY_GLOW_MESH,         "GLOW_MESH",          "GlowMesh",          kGlowMesh,         NELEM(kGlowMesh),        offsetof(SceneNode, data.glow)             },
 };
 const int g_EntityTableCount = NELEM(g_EntityTable);
 

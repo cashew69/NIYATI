@@ -190,4 +190,14 @@ void InitializeShaders() {
         buildShaderProgramFromFiles(sdfFiles, 5, &sdfShaderProgram, attribNames, attribIndices, 4);
         cacheShaderLocations(sdfShaderProgram);
     }
+
+    extern ShaderProgram* g_glowMeshShader;
+    if (!g_glowMeshShader) {
+        const char* glowFiles[5] = {
+            "engine/shaders/glow_wheel.vert",
+            NULL, NULL, NULL,
+            "engine/shaders/glow_wheel.frag"
+        };
+        buildShaderProgramFromFiles(glowFiles, 5, &g_glowMeshShader, attribNames, attribIndices, 4);
+    }
 }

@@ -11,6 +11,7 @@ void sg_MarkSceneDirty(); // call after any transform change on animated nodes
 void sg_SetAllVisible(SceneNode* node);
 void sg_UpdateWorldMatrix(SceneNode* node, mat4 parentWorldMatrix);
 void sg_InitNode(SceneNode* node);
+void sg_InitNodeSingle(SceneNode* node);  // init this node only, no children
 SceneNode* sg_AddCameraNode(const char* name); // creates ENTITY_CAMERA node with default values
 void sg_DrawNode(SceneNode* node, mat4 view, mat4 proj, int* nodesDrawn = nullptr);
 
@@ -43,6 +44,7 @@ TerrainNodeData* sg_Terrain(SceneNode* node);
 CatmullRomNodeData* sg_CatmullRom(SceneNode* node);
 OceanNodeData*   sg_Ocean(SceneNode* node);
 SDFNodeData*     sg_SDF(SceneNode* node);
+GlowMeshNodeData* sg_GlowMesh(SceneNode* node);
 
 // ---- Camera helpers for project code ---------------------------------------
 // Returns the Camera for a camera node — edit position/target/fov directly.

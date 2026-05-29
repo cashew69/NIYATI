@@ -6,14 +6,14 @@ Node "Scene Root" EMPTY {
   rotation  0 0 0
   scale  1 1 1
 
-  Node "Main Camera" CAMERA {
+  Node "eCam" CAMERA {
     id  2
     terrainYOffset  false
     selectedTerrainID  0
 
     Camera {
-      position  10 10 10
-      target  0 0 0
+      position  0 1 7.5
+      target  0 1 0
       up  0 1 0
       roll  0
       fov  45
@@ -26,7 +26,7 @@ Node "Scene Root" EMPTY {
     id  3
     terrainYOffset  false
     selectedTerrainID  0
-    position  0 0.5 0
+    position  0 -2 0
     rotation  0 0 0
     scale  1 1 1
 
@@ -90,6 +90,176 @@ Node "Scene Root" EMPTY {
       shadowFar  400
       shadowPolyFactor  1.5
       shadowPolyUnits  4
+    }
+  }
+
+  Node "sCam" CAMERA {
+    id  8
+    terrainYOffset  false
+    selectedTerrainID  0
+
+    Camera {
+      position  0 1 -7.5
+      target  0 1 0
+      up  0 1 0
+      roll  0
+      fov  45
+      near  0.1
+      far  10000
+    }
+  }
+
+  Node "B" EMPTY {
+    id  9
+    terrainYOffset  false
+    selectedTerrainID  0
+    position  -200 0 0
+    rotation  90 90 0
+    scale  20 20 20
+
+    Node "Mesh_0" MODEL {
+      id  10
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0 0 0
+      rotation  0 0 0
+      scale  1 1 1
+      sourcePath  /run/media/cashew/NewVolume/Win-LinSync/MyProjects/Fun/NIYATI/user/brahma_color_full.glb
+      meshIndex   0
+
+      Material {
+        useDiffuseTexture  true
+        useNormalTexture  true
+        useORMTexture  true
+        useAOTexture  true
+        useEmissiveTexture  true
+        roughness  0.176
+        metalness  1
+      }
+    }
+
+    Node "gL" LIGHT {
+      id  11
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0 0.35 -0.7
+      rotation  0 0 0
+      scale  1 1 1
+
+      Light {
+        type  1
+        color  0.504902 1 0.796136
+        intensity  300
+        radius  18.3
+        direction  0 -1 0
+        innerCutoff  0.920988
+        outerCutoff  0.873458
+        castShadow  false
+        shadowResolution  2048
+        shadowBias  0.002
+        shadowOrthoSize  200
+        shadowNear  1
+        shadowFar  400
+        shadowPolyFactor  1.5
+        shadowPolyUnits  4
+      }
+    }
+
+    Node "rL" LIGHT {
+      id  12
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  -0.2 0.1 -0.7
+      rotation  0 0 0
+      scale  1 1 1
+
+      Light {
+        type  1
+        color  0.995098 0.351211 0
+        intensity  150
+        radius  30
+        direction  0 -1 0
+        innerCutoff  0.920988
+        outerCutoff  0.873458
+        castShadow  false
+        shadowResolution  2048
+        shadowBias  0.002
+        shadowOrthoSize  200
+        shadowNear  1
+        shadowFar  400
+        shadowPolyFactor  1.5
+        shadowPolyUnits  4
+      }
+    }
+
+    Node "rL (copy)" LIGHT {
+      id  13
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0.2 0.1 -0.7
+      rotation  0 0 0
+      scale  1 1 1
+
+      Light {
+        type  1
+        color  0.995098 0.351211 0
+        intensity  150
+        radius  30
+        direction  0 -1 0
+        innerCutoff  0.920988
+        outerCutoff  0.873458
+        castShadow  false
+        shadowResolution  2048
+        shadowBias  0.002
+        shadowOrthoSize  200
+        shadowNear  1
+        shadowFar  400
+        shadowPolyFactor  1.5
+        shadowPolyUnits  4
+      }
+    }
+
+    Node "gL (copy)" LIGHT {
+      id  14
+      terrainYOffset  false
+      selectedTerrainID  0
+      position  0 0 0
+      rotation  0 0 0
+      scale  1 1 1
+
+      Light {
+        type  1
+        color  0.980825 0.348039 1
+        intensity  800
+        radius  15.2
+        direction  0 -1 0
+        innerCutoff  0.920988
+        outerCutoff  0.873458
+        castShadow  false
+        shadowResolution  2048
+        shadowBias  0.002
+        shadowOrthoSize  200
+        shadowNear  1
+        shadowFar  400
+        shadowPolyFactor  1.5
+        shadowPolyUnits  4
+      }
+    }
+
+    Node "brahma" CAMERA {
+      id  16
+      terrainYOffset  false
+      selectedTerrainID  0
+
+      Camera {
+        position  -148.3 15 0
+        target  -200 15 0
+        up  0 0 0
+        roll  0
+        fov  45
+        near  0.1
+        far  10000
+      }
     }
   }
 }
